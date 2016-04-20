@@ -5,10 +5,14 @@
 # http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html for details.
 ##########################################################################
 
+"""
+Wrapper to Connectomist's 'Local modeling' tab.
+"""
+
 # System import
 import os
 
-# Clindmri import
+# pyConnectomist import
 from pyconnectomist.exceptions import ConnectomistBadFileError
 from pyconnectomist.exceptions import ConnectomistError
 from pyconnectomist.wrappers import ConnectomistWrapper
@@ -48,7 +52,6 @@ def dwi_local_modeling(
         sd_kernel_lower_fa=0.65,
         sd_kernel_upper_fa=0.85,
         sd_kernel_voxel_count=300,
-        nb_tries=10,
         path_connectomist=(
             "/i2bm/local/Ubuntu-14.04-x86_64/ptk/bin/connectomist")):
     """ Diffusion model estimation.
@@ -87,10 +90,6 @@ def dwi_local_modeling(
         upper fractional anisotrpy threshold.
     sd_kernel_voxel_count: int (optional, default 300)
         kernel size in voxels.
-    nb_tries: int (optional, default 10)
-        nb of times to try an algorithm if it fails.
-        It often crashes when running in parallel. The reason
-        why it crashes is unknown.
     path_connectomist: str (optional)
         path to the Connectomist executable.
 
@@ -111,16 +110,21 @@ def dwi_local_modeling(
 
     # Check input parameters
     if model not in odf_model_map:
-        raise ConnectomistError("'{0}' model not supported.".format(model))
+        raise ConnectomistError(
+            "'{0}' local DWI model not supported (must be in {1}).".format(
+                model, odf_model_map.keys()))
     if dti_estimator not in dti_estimator_map:
-        raise ConnectomistError("'{0}' dti estimator not supported.".format(
-            dti_estimator))
+        raise ConnectomistError(
+            "'{0}' dti estimator not supported (must be in {1}).".format(
+                dti_estimator,  dti_estimator_map.keys()))
     if not isinstance(constrained_sd, bool):
-        raise ConnectomistError("'constrained_sd' is not a boolean.")
+        raise ConnectomistError(
+            "'constrained_sd' input parameter must be a boolean.")
     constrained_sd = int(constrained_sd)
     if sd_kernel_type not in sd_kernel_map:
-        raise ConnectomistError("'{0}' kernel not supported.".format(
-            sd_kernel_type))
+        raise ConnectomistError(
+            "'{0}' kernel not supported (must be in {1}).".format(
+                sd_kernel_type, sd_kernel_map.keys()))
 
     # Dict with all parameters for connectomist
     algorithm = "DWI-Local-Modeling"
@@ -187,6 +191,6 @@ def dwi_local_modeling(
     connprocess = ConnectomistWrapper(path_connectomist)
     parameter_file = ConnectomistWrapper.create_parameter_file(
         algorithm, parameters_dict, outdir)
-    connprocess(algorithm, parameter_file, outdir, nb_tries=nb_tries)
+    connprocess(algorithm, parameter_file, outdir)
 
     return outdir
