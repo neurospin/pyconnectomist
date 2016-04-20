@@ -16,9 +16,6 @@ fake return string.
 # System import
 import unittest
 import sys
-import os
-import copy
-import numpy
 # COMPATIBILITY: since python 3.3 mock is included in unittest module
 python_version = sys.version_info
 if python_version[:2] <= (3, 3):
@@ -52,7 +49,8 @@ class ConnectomistMask(unittest.TestCase):
         self.mock_popen.return_value = mock_process
         self.kwargs = {
             "outdir": "/my/path/mock_outdir",
-            "raw_dwi_dir": "/my/path/mock_rawdwidir"
+            "raw_dwi_dir": "/my/path/mock_rawdwidir",
+            "subject_id": "Lola"
         }
 
     def tearDown(self):

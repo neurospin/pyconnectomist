@@ -18,7 +18,6 @@ import unittest
 import sys
 import os
 import copy
-import numpy
 # COMPATIBILITY: since python 3.3 mock is included in unittest module
 python_version = sys.version_info
 if python_version[:2] <= (3, 3):
@@ -55,7 +54,7 @@ class ConnectomistDWIModel(unittest.TestCase):
         self.kwargs = {
             "outdir": "/my/path/mock_outdir",
             "registered_dwi_dir": "/my/path/mock_regitereddwidir",
-            "subjectid": "Lola",
+            "subject_id": "Lola",
             "model": "aqbi",
             "order": 4,
             "aqbi_laplacebeltrami_sharpefactor": 0.0,

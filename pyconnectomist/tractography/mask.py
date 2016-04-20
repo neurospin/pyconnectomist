@@ -17,8 +17,8 @@ from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
 from pyconnectomist.exceptions import ConnectomistBadFileError
 from pyconnectomist.wrappers import ConnectomistWrapper
 
-
-bool_map = {
+# Boolean mapused by Connectomist
+BOOL_MAP = {
     False: 0,
     True: 2
 }
@@ -26,7 +26,7 @@ bool_map = {
 
 def tractography_mask(
         outdir,
-        subjectid,
+        subject_id,
         morphologist_dir,
         add_cerebelum=False,
         add_commissures=True,
@@ -37,7 +37,7 @@ def tractography_mask(
     ----------
     outdir: str
         path to Connectomist output work directory.
-    subjectid: str
+    subject_id: str
         the subject code in study.
     morphologist_dir: str
         path to Morphologist directory.
@@ -55,18 +55,18 @@ def tractography_mask(
     """
     # Get morphologist result files and check existance
     apcfile = os.path.join(
-        morphologist_dir, subjectid, "t1mri", "default_acquisition",
-        "{0}.APC".format(subjectid))
+        morphologist_dir, subject_id, "t1mri", "default_acquisition",
+        "{0}.APC".format(subject_id))
     histofile = os.path.join(
-        morphologist_dir, subjectid, "t1mri", "default_acquisition",
-        "default_analysis", "nobias_{0}.han".format(subjectid))
+        morphologist_dir, subject_id, "t1mri", "default_acquisition",
+        "default_analysis", "nobias_{0}.han".format(subject_id))
     t1file = os.path.join(
-        morphologist_dir, subjectid, "t1mri", "default_acquisition",
-        "default_analysis", "nobias_{0}.nii.gz".format(subjectid))
+        morphologist_dir, subject_id, "t1mri", "default_acquisition",
+        "default_analysis", "nobias_{0}.nii.gz".format(subject_id))
     voronoifile = os.path.join(
-        morphologist_dir, subjectid, "t1mri", "default_acquisition",
+        morphologist_dir, subject_id, "t1mri", "default_acquisition",
         "default_analysis", "segmentation",
-        "voronoi_{0}.nii.gz".format(subjectid))
+        "voronoi_{0}.nii.gz".format(subject_id))
     for fpath in (apcfile, histofile, t1file, voronoifile):
         if not os.path.isfile(fpath):
             raise ConnectomistBadFileError(fpath)
@@ -74,9 +74,9 @@ def tractography_mask(
     # Dict with all parameters for connectomist
     algorithm = "DWI-Tractography-Mask"
     parameters_dict = {
-        '_subjectName': subjectid,
-        'addCerebellum': bool_map[add_cerebelum],
-        'addCommissures': bool_map[add_commissures],
+        '_subjectName': subject_id,
+        'addCerebellum': BOOL_MAP[add_cerebelum],
+        'addCommissures': BOOL_MAP[add_commissures],
         'addROIMask': 0,
         'fileNameCommissureCoordinates': apcfile,
         'fileNameHistogramAnalysis': histofile,

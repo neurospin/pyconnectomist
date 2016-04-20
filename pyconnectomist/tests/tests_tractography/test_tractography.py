@@ -18,7 +18,6 @@ import unittest
 import sys
 import os
 import copy
-import numpy
 # COMPATIBILITY: since python 3.3 mock is included in unittest module
 python_version = sys.version_info
 if python_version[:2] <= (3, 3):
@@ -54,7 +53,7 @@ class ConnectomistTractography(unittest.TestCase):
         self.mock_popen.return_value = mock_process
         self.kwargs = {
             "outdir": "/my/path/mock_outdir",
-            "subjectid": "Lola",
+            "subject_id": "Lola",
             "mask_dir": "/my/path/mock_maskdir",
             "model": "aqbi",
             "model_dir": "/my/path/mock_modeldir",
@@ -130,7 +129,7 @@ class ConnectomistTractography(unittest.TestCase):
                       "{0}_odf_site_map.sitemap".format(self.kwargs["model"])),
             mock.call(self.kwargs["model_dir"],
                       "{0}_odf_texture_map.texturemap".format(
-                            self.kwargs["model"])),
+                          self.kwargs["model"])),
             mock.call(self.kwargs["model_dir"],
                       "{0}_rgb.ima".format(self.kwargs["model"])),
             mock.call(self.kwargs["registration_dir"], "t1.ima"),
@@ -142,13 +141,13 @@ class ConnectomistTractography(unittest.TestCase):
                                    "tractography_mask.ima")),
             mock.call(os.path.join(self.kwargs["model_dir"],
                                    "{0}_odf_site_map.sitemap".format(
-                                        self.kwargs["model"]))),
+                                       self.kwargs["model"]))),
             mock.call(os.path.join(self.kwargs["model_dir"],
                                    "{0}_odf_texture_map.texturemap".format(
-                                        self.kwargs["model"]))),
+                                       self.kwargs["model"]))),
             mock.call(os.path.join(self.kwargs["model_dir"],
                                    "{0}_rgb.ima".format(
-                                        self.kwargs["model"]))),
+                                       self.kwargs["model"]))),
             mock.call(os.path.join(self.kwargs["registration_dir"],
                                    "t1.ima")),
             mock.call(os.path.join(self.kwargs["registration_dir"],

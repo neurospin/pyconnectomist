@@ -18,8 +18,8 @@ from pyconnectomist.exceptions import ConnectomistBadFileError
 from pyconnectomist.exceptions import ConnectomistError
 from pyconnectomist.wrappers import ConnectomistWrapper
 
-
-odf_model_map = {
+# Map ODF model to index used by Connectomist
+ODF_MODEL_MAP = {
     "dot": 0,
     "sd": 3,
     "sdt": 4,
@@ -28,12 +28,14 @@ odf_model_map = {
     "dti": 7
 }
 
-dti_estimator_map = {
+# Map estimator to index used by Connectomist
+DTI_ESTIMATOR_MAP = {
     "linear": 0,
     "positive": 1
 }
 
-sd_kernel_map = {
+# Map SD kernel to index used by Connectomist
+SD_KERNEL_MAP = {
     "symmetric_tensor": 0,
     "normal": 1
 }
@@ -42,7 +44,7 @@ sd_kernel_map = {
 def dwi_local_modeling(
         outdir,
         registered_dwi_dir,
-        subjectid,
+        subject_id,
         model="aqbi",
         order=4,
         aqbi_laplacebeltrami_sharpefactor=0.0,
@@ -62,7 +64,7 @@ def dwi_local_modeling(
         path to Connectomist output work directory.
     registered_dwi_dir: str
         path to Connectomist registeres DWI directory.
-    subjectid: str
+    subject_id: str
         the subject code in study.
     model: str (optional, default 'aqbi')
         the name of the model to be estimated: 'dot', 'sd', 'sdt', 'aqbi',
@@ -109,29 +111,29 @@ def dwi_local_modeling(
             raise ConnectomistBadFileError(fpath)
 
     # Check input parameters
-    if model not in odf_model_map:
+    if model not in ODF_MODEL_MAP:
         raise ConnectomistError(
             "'{0}' local DWI model not supported (must be in {1}).".format(
-                model, odf_model_map.keys()))
-    if dti_estimator not in dti_estimator_map:
+                model, ODF_MODEL_MAP.keys()))
+    if dti_estimator not in DTI_ESTIMATOR_MAP:
         raise ConnectomistError(
             "'{0}' dti estimator not supported (must be in {1}).".format(
-                dti_estimator,  dti_estimator_map.keys()))
+                dti_estimator,  DTI_ESTIMATOR_MAP.keys()))
     if not isinstance(constrained_sd, bool):
         raise ConnectomistError(
             "'constrained_sd' input parameter must be a boolean.")
     constrained_sd = int(constrained_sd)
-    if sd_kernel_type not in sd_kernel_map:
+    if sd_kernel_type not in SD_KERNEL_MAP:
         raise ConnectomistError(
             "'{0}' kernel not supported (must be in {1}).".format(
-                sd_kernel_type, sd_kernel_map.keys()))
+                sd_kernel_type, SD_KERNEL_MAP.keys()))
 
     # Dict with all parameters for connectomist
     algorithm = "DWI-Local-Modeling"
     parameters_dict = {
-        '_subjectName': subjectid,
-        'odfType': odf_model_map[model],
-        'viewType': odf_model_map[model],
+        '_subjectName': subject_id,
+        'odfType': ODF_MODEL_MAP[model],
+        'viewType': ODF_MODEL_MAP[model],
         'computeOdfVolume': 0,
         'rgbScale': 1.0,
         'outputOrientationCount': 500,
@@ -157,7 +159,7 @@ def dwi_local_modeling(
         'dsiMaximumR0': 15.0,
         'dsiMinimumR0': 1.0})
     parameters_dict.update({
-        'dtiEstimatorType': dti_estimator_map[dti_estimator]})
+        'dtiEstimatorType': DTI_ESTIMATOR_MAP[dti_estimator]})
     parameters_dict.update({
         'qbiEquatorPointCount': 50,
         'qbiPhiFunctionAngle': 0.0,
@@ -173,14 +175,14 @@ def dwi_local_modeling(
             '1 1 1 0.5 0.1 0.02 0.002 0.0005 0.0001 0.00010.00001 0.00001 '
             '0.00001 0.00001 0.00001 0.00001 0.00001'),
         'sdKernelLowerFAThreshold': sd_kernel_lower_fa,
-        'sdKernelType': sd_kernel_map[sd_kernel_type],
+        'sdKernelType': SD_KERNEL_MAP[sd_kernel_type],
         'sdKernelUpperFAThreshold': sd_kernel_upper_fa,
         'sdKernelVoxelCount': sd_kernel_voxel_count,
         'sdMaximumSHOrder': order,
         'sdUseCSD': constrained_sd})
     parameters_dict.update({
         'sdtKernelLowerFAThreshold': sd_kernel_lower_fa,
-        'sdtKernelType': sd_kernel_map[sd_kernel_type],
+        'sdtKernelType': SD_KERNEL_MAP[sd_kernel_type],
         'sdtKernelUpperFAThreshold': sd_kernel_upper_fa,
         'sdtKernelVoxelCount': sd_kernel_voxel_count,
         'sdtMaximumSHOrder': order,

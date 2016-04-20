@@ -18,15 +18,16 @@ from pyconnectomist.exceptions import ConnectomistBadFileError
 from pyconnectomist.exceptions import ConnectomistError
 from pyconnectomist.wrappers import ConnectomistWrapper
 
-
-bundle_map = {
+# Map bundle format to index used by Connectomist
+BUNDLE_MAP = {
     "aimsbundlemap": 0,
     "bundlemap": 1,
     "vtkbundlemap": 2,
     "trkbundlemap": 3
 }
 
-track_map = {
+# Map tractography algorithm name to index used by Connectomist
+TRACK_MAP = {
     "streamline_deterministic": 0,
     "streamline_regularize_deterministic": 1,
     "streamline_probabilistic": 2,
@@ -35,7 +36,7 @@ track_map = {
 
 def tractography(
         outdir,
-        subjectid,
+        subject_id,
         mask_dir,
         model,
         model_dir,
@@ -57,7 +58,7 @@ def tractography(
     ----------
     outdir: str
         path to Connectomist output work directory.
-    subjectid: str
+    subject_id: str
         the subject code in study.
     mask_dir: str
         the path to the Connectomist tractography mask directory.
@@ -102,14 +103,14 @@ def tractography(
         path to Connectomist's output directory.
     """
     # Check input parameters
-    if bundlemap not in bundle_map:
+    if bundlemap not in BUNDLE_MAP:
         raise ConnectomistError(
             "'{0}' is not a valid bundle format (must be in {1}).".format(
-                bundlemap, bundle_map.keys()))
-    if tracking_type not in track_map:
+                bundlemap, BUNDLE_MAP.keys()))
+    if tracking_type not in TRACK_MAP:
         raise ConnectomistError(
             "'{0}' is not a valid track algo (must be in {1}).".format(
-                tracking_type, track_map.keys()))
+                tracking_type, TRACK_MAP.keys()))
 
     # Get previous steps files and check existance
     maskfile = os.path.join(mask_dir, "tractography_mask.ima")
@@ -129,8 +130,8 @@ def tractography(
     # Dict with all parameters for connectomist
     algorithm = "DWI-Tractography"
     parameters_dict = {
-        '_subjectName': subjectid,
-        'bundleMapFormat': bundle_map[bundlemap],
+        '_subjectName': subject_id,
+        'bundleMapFormat': BUNDLE_MAP[bundlemap],
         'fileNameMask': maskfile,
         'fileNameOdfSiteMap': odfsitefile,
         'fileNameOdfTextureMap': odftexturefile,
@@ -141,7 +142,7 @@ def tractography(
         'outputOrientationCount': output_orientation_count,
         'outputWorkDirectory': outdir,
         'stepCount': 1,
-        'trackingType': track_map[tracking_type]}
+        'trackingType': TRACK_MAP[tracking_type]}
     parameters_dict.update({
         'deterministicApertureAngle': aperture_angle,
         'deterministicForwardStep': forward_step,

@@ -25,7 +25,7 @@ from .registration import dwi_to_anatomy
 
 
 # Define steps
-steps = [
+STEPS = [
     "01-Import_and_qspace_model",
     "02-Rough_mask",
     "03-Outliers",
@@ -136,9 +136,10 @@ def complete_preprocessing(
         os.mkdir(outdir)
 
     # Step 2 - Import files to Connectomist and choose q-space model
-    raw_dwi_dir = os.path.join(outdir, steps[0])
+    raw_dwi_dir = os.path.join(outdir, STEPS[0])
     data_import_and_qspace_sampling(
         raw_dwi_dir,
+        subject_id,
         dwi,
         bval,
         bvec,
@@ -152,27 +153,30 @@ def complete_preprocessing(
         path_connectomist=path_connectomist)
 
     # Step 3 - Create a brain mask
-    rough_mask_dir = os.path.join(outdir, steps[1])
+    rough_mask_dir = os.path.join(outdir, STEPS[1])
     rough_mask_extraction(
         rough_mask_dir,
         raw_dwi_dir,
+        subject_id,
         path_connectomist=path_connectomist)
 
     # Step 4 - Detect and correct outlying diffusion slices
-    outliers_dir = os.path.join(outdir, steps[2])
+    outliers_dir = os.path.join(outdir, STEPS[2])
     outlying_slice_detection(
         outliers_dir,
         raw_dwi_dir,
         rough_mask_dir,
+        subject_id,
         path_connectomist=path_connectomist)
 
     # Step 5 - Susceptibility correction
-    susceptibility_dir = os.path.join(outdir, steps[3])
+    susceptibility_dir = os.path.join(outdir, STEPS[3])
     susceptibility_correction(
         susceptibility_dir,
         raw_dwi_dir,
         rough_mask_dir,
         outliers_dir,
+        subject_id,
         delta_TE,
         partial_fourier_factor,
         parallel_acceleration_factor,
@@ -184,12 +188,13 @@ def complete_preprocessing(
         path_connectomist=path_connectomist)
 
     # Step 6 - Eddy current and motion correction
-    eddy_motion_dir = os.path.join(outdir, steps[4])
+    eddy_motion_dir = os.path.join(outdir, STEPS[4])
     eddy_and_motion_correction(
         eddy_motion_dir,
         raw_dwi_dir,
         rough_mask_dir,
         susceptibility_dir,
+        subject_id,
         path_connectomist=path_connectomist)
 
     # Step 7 - Export result as a Nifti with a .bval and a .bvec
@@ -205,7 +210,7 @@ def complete_preprocessing(
 
     # Step 9 - Registration t1 - dwi
     if morphologist_dir is not None:
-        registration_dir = os.path.join(outdir, steps[5])
+        registration_dir = os.path.join(outdir, STEPS[5])
         dwi_to_anatomy(
             registration_dir,
             eddy_motion_dir,

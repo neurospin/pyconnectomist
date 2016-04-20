@@ -56,6 +56,7 @@ class ConnectomistEddy(unittest.TestCase):
             "outdir": "/my/path/mock_outdir",
             "raw_dwi_dir": "/my/path/mock_rawdwidir",
             "rough_mask_dir": "/my/path/mock_rawmaskdir",
+            "subject_id": "Lola",
             "corrected_dir": "/my/path/mock_correcteddir"
         }
 
@@ -94,7 +95,7 @@ class ConnectomistEddyExport(unittest.TestCase):
         self.bvals = numpy.array([1500, 1500])
 
     @mock.patch("os.mkdir")
-    def test_normal_execution(self, mock_mkdir):
+    def test_badfileerror_execution(self, mock_mkdir):
         """ A wrong input -> raise ConnectomistBadFileError.
         """
         # Test execution

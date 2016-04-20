@@ -16,7 +16,6 @@ fake return string.
 # System import
 import unittest
 import sys
-import os
 import copy
 import numpy
 # COMPATIBILITY: since python 3.3 mock is included in unittest module
@@ -32,7 +31,6 @@ else:
 from pyconnectomist.exceptions import ConnectomistBadManufacturerNameError
 from pyconnectomist.exceptions import ConnectomistBadFileError
 from pyconnectomist.exceptions import ConnectomistError
-from pyconnectomist.exceptions import ConnectomistRuntimeError
 from pyconnectomist.preproc.qspace import data_import_and_qspace_sampling
 
 
@@ -66,7 +64,8 @@ class ConnectomistQspace(unittest.TestCase):
             "invertX": True,
             "invertY": False,
             "invertZ": False,
-            "manufacturer": "Siemens"
+            "manufacturer": "Siemens",
+            "subject_id": "Lola"
         }
         self.bvecs = numpy.array([[0, 0, 0], [0, 0, 0], [1, 0, 0], [0, 1, 0]])
         self.bvals = numpy.array([0, 0, 1500, 1500])

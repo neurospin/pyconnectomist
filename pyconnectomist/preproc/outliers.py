@@ -18,6 +18,7 @@ def outlying_slice_detection(
         outdir,
         raw_dwi_dir,
         rough_mask_dir,
+        subject_id,
         path_connectomist=DEFAULT_CONNECTOMIST_PATH):
     """ Wrapper to Connectomist's 'Outliers' tab.
 
@@ -29,6 +30,8 @@ def outlying_slice_detection(
         path to Connectomist Raw DWI folder.
     rough_mask_dir: str
         path to Connectomist Rough Mask folder.
+    subject_id: str
+        the subject code in study.
     path_connectomist: str (optional)
         path to the Connectomist executable.
 
@@ -39,12 +42,14 @@ def outlying_slice_detection(
     """
     # Dict with all parameters for connectomist
     algorithm = "DWI-Outlier-Detection"
-    parameters_dict = {'rawDwiDirectory':        raw_dwi_dir,
-                       'roughMaskDirectory':  rough_mask_dir,
-                       'outputWorkDirectory':         outdir,
-                       '_subjectName':                    '',
-                       'discardedOrientationList':        '',
-                       'outlierFactor':                  3.0}
+    parameters_dict = {
+        "rawDwiDirectory": raw_dwi_dir,
+        "roughMaskDirectory": rough_mask_dir,
+        "outputWorkDirectory": outdir,
+        "discardedOrientationList": "",
+        "outlierFactor": 3.0,
+        "_subjectName": subject_id
+    }
 
     # Call with Connectomist
     connprocess = ConnectomistWrapper(path_connectomist)

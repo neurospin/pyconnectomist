@@ -19,7 +19,7 @@ from pyconnectomist.exceptions import ConnectomistError
 from pyconnectomist.wrappers import ConnectomistWrapper
 
 
-# Sets for checking arguments that can take values in a finite set
+# Set for checking bundle names that can take values in a finite set
 BUNDLE_NAMES = frozenset([
     "Arcuate_Anterior_Left",
     "Arcuate_Anterior_Right",
@@ -59,7 +59,7 @@ BUNDLE_NAMES = frozenset([
     "Uncinate_Right"
 ])
 
-# Map atlas name to index used by Connectomist to identify the atlas
+# Map atlas name to index used by Connectomist
 INDEX_OF_ATLAS = {
     "Guevara long bundle":  0,
     "Guevara short bundle": 1,

@@ -16,9 +16,6 @@ fake return string.
 # System import
 import unittest
 import sys
-import os
-import copy
-import numpy
 # COMPATIBILITY: since python 3.3 mock is included in unittest module
 python_version = sys.version_info
 if python_version[:2] <= (3, 3):
@@ -53,7 +50,7 @@ class ConnectomistMask(unittest.TestCase):
         self.mock_popen.return_value = mock_process
         self.kwargs = {
             "outdir": "/my/path/mock_outdir",
-            "subjectid": "Lola",
+            "subject_id": "Lola",
             "morphologist_dir": "/my/path/mock_morphologist",
             "add_cerebelum": False,
             "add_commissures": True,
@@ -93,10 +90,10 @@ class ConnectomistMask(unittest.TestCase):
         self.assertEqual(len(mock_params.call_args_list), 1)
         self.assertEqual(len(self.mock_popen.call_args_list), 2)
         self.assertEqual([
-            mock.call("{0}.APC".format(self.kwargs["subjectid"])),
-            mock.call("nobias_{0}.han".format(self.kwargs["subjectid"])),
-            mock.call("nobias_{0}.nii.gz".format(self.kwargs["subjectid"])),
-            mock.call("voronoi_{0}.nii.gz".format(self.kwargs["subjectid"]))],
+            mock.call("{0}.APC".format(self.kwargs["subject_id"])),
+            mock.call("nobias_{0}.han".format(self.kwargs["subject_id"])),
+            mock.call("nobias_{0}.nii.gz".format(self.kwargs["subject_id"])),
+            mock.call("voronoi_{0}.nii.gz".format(self.kwargs["subject_id"]))],
             mock_path.isfile.call_args_list)
 
 

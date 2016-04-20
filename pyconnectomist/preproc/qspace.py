@@ -113,6 +113,7 @@ def gather_and_format_input_files(
 
 def data_import_and_qspace_sampling(
         outdir,
+        subject_id,
         dwi,
         bval,
         bvec,
@@ -120,7 +121,6 @@ def data_import_and_qspace_sampling(
         invertX=True,
         invertY=False,
         invertZ=False,
-        subject_id=None,
         b0_magnitude=None,
         b0_phase=None,
         path_connectomist=DEFAULT_CONNECTOMIST_PATH):
@@ -130,6 +130,8 @@ def data_import_and_qspace_sampling(
     ----------
     outdir: str
         path to Connectomist's output directory.
+    subject_id: str
+        the subject code in study.
     dwi: str
         path to Nifti diffusion-weighted data.
     bvec: str
@@ -239,7 +241,7 @@ def data_import_and_qspace_sampling(
         "outputWorkDirectory": outdir,
         # ---------------------------------------------------------------------
         # unknown parameter
-        "_subjectName": subject_id if subject_id else "",
+        "_subjectName": subject_id,
     }
 
     # Map the manufacturer name with Connectomist convention

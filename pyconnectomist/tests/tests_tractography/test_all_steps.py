@@ -17,8 +17,6 @@ fake return string.
 import unittest
 import sys
 import os
-import copy
-import numpy
 # COMPATIBILITY: since python 3.3 mock is included in unittest module
 python_version = sys.version_info
 if python_version[:2] <= (3, 3):
@@ -30,7 +28,7 @@ else:
 
 # pyConnectomist module
 from pyconnectomist.tractography.all_steps import complete_tractography
-from pyconnectomist.tractography.all_steps import steps
+from pyconnectomist.tractography.all_steps import STEPS
 from pyconnectomist.exceptions import ConnectomistError
 
 
@@ -112,10 +110,10 @@ class ConnectomistTractography(unittest.TestCase):
         self.assertEqual([
             mock.call(self.kwargs["dwi_preproc_dir"], "*Anatomy_Talairach"),
             mock.call(self.kwargs["outdir"],
-                      steps[0].format(self.kwargs["model"])),
-            mock.call(self.kwargs["outdir"], steps[1]),
+                      STEPS[0].format(self.kwargs["model"])),
+            mock.call(self.kwargs["outdir"], STEPS[1]),
             mock.call(self.kwargs["outdir"],
-                      steps[2].format(self.kwargs["tracking_type"]))],
+                      STEPS[2].format(self.kwargs["tracking_type"]))],
             mock_path.join.call_args_list)
         self.assertEqual([
             mock.call(os.path.join(self.kwargs["dwi_preproc_dir"],

@@ -16,9 +16,7 @@ fake return string.
 # System import
 import unittest
 import sys
-import os
 import copy
-import numpy
 # COMPATIBILITY: since python 3.3 mock is included in unittest module
 python_version = sys.version_info
 if python_version[:2] <= (3, 3):

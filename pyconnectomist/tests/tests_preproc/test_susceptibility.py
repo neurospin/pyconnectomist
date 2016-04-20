@@ -18,7 +18,6 @@ import unittest
 import sys
 import os
 import copy
-import numpy
 # COMPATIBILITY: since python 3.3 mock is included in unittest module
 python_version = sys.version_info
 if python_version[:2] <= (3, 3):
@@ -58,6 +57,7 @@ class ConnectomistMask(unittest.TestCase):
             "raw_dwi_dir": "/my/path/mock_rawdwidir",
             "rough_mask_dir": "/my/path/mock_rawmaskdir",
             "outliers_dir": "/my/path/mock_outliersdir",
+            "subject_id": "Lola",
             "delta_TE": 5,
             "partial_fourier_factor": 1,
             "parallel_acceleration_factor": 2,

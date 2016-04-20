@@ -27,6 +27,7 @@ def eddy_and_motion_correction(
         raw_dwi_dir,
         rough_mask_dir,
         corrected_dir,
+        subject_id,
         path_connectomist=DEFAULT_CONNECTOMIST_PATH):
     """ Wrapper to Connectomist's 'Eddy current & motion' tab.
 
@@ -42,6 +43,8 @@ def eddy_and_motion_correction(
         path to Connectomist Susceptibility or Outlier directory.
         Depending whether you make Eddy Current correction before
         or after susceptibility correction.
+    subject_id: str
+        the subject code in study.
     path_connectomist: str (optional)
         path to the Connectomist executable.
 
@@ -63,7 +66,7 @@ def eddy_and_motion_correction(
         "motionCorrection":                   1,
         # ---------------------------------------------------------------------
         # Parameters not used/handled by the code
-        "_subjectName": "",
+        "_subjectName": subject_id,
         "fileNameMotionTransform": "",
         "eddyCurrentCorrectionOptions": {
             "optimizerParametersTranslationY":  2,

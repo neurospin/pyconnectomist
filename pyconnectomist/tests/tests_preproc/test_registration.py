@@ -65,12 +65,11 @@ class ConnectomistRegistration(unittest.TestCase):
         self.popen_patcher.stop()
 
     @mock.patch("os.path")
-    def test_normal_execution(self, mock_path):
+    def test_badfileerror_raise(self, mock_path):
         """ A wrong input -> raise ConnectomistBadFileError.
         """
         # Set the mocked functions returned values
         mock_path.isfile.side_effect = [False]
-        mock_params.return_value = "/my/path/mock_parameters"
         mock_path.join.side_effect = lambda *x: (
             x[0] + "/" + x[1] + "/" + x[2] + "/" + x[3] + "/" + x[4])
 

@@ -18,7 +18,7 @@ from .tractography import tractography
 
 
 # Define steps
-steps = [
+STEPS = [
     "07-Local_modeling_{0}",
     "08-Tractography_mask",
     "09-Tractography_{0}"
@@ -151,7 +151,7 @@ def complete_tractography(
     registered_dwi_dir = registered_dwi_dir[0]
 
     # Step 3 - Compute the diffusion model
-    model_dir = os.path.join(outdir, steps[0].format(model))
+    model_dir = os.path.join(outdir, STEPS[0].format(model))
     dwi_local_modeling(
         model_dir,
         registered_dwi_dir,
@@ -169,7 +169,7 @@ def complete_tractography(
         path_connectomist=path_connectomist)
 
     # Step 4 - Create the tractography mask
-    mask_dir = os.path.join(outdir, steps[1])
+    mask_dir = os.path.join(outdir, STEPS[1])
     tractography_mask(
         mask_dir,
         subject_id,
@@ -179,7 +179,7 @@ def complete_tractography(
         path_connectomist=path_connectomist)
 
     # Step 5 - The tractography algorithm
-    tractography_dir = os.path.join(outdir, steps[2].format(tracking_type))
+    tractography_dir = os.path.join(outdir, STEPS[2].format(tracking_type))
     tractography(
         tractography_dir,
         subject_id,

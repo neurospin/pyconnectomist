@@ -17,8 +17,6 @@ fake return string.
 import unittest
 import sys
 import os
-import copy
-import numpy
 # COMPATIBILITY: since python 3.3 mock is included in unittest module
 python_version = sys.version_info
 if python_version[:2] <= (3, 3):
@@ -30,7 +28,7 @@ else:
 
 # pyConnectomist module
 from pyconnectomist.preproc.all_steps import complete_preprocessing
-from pyconnectomist.preproc.all_steps import steps
+from pyconnectomist.preproc.all_steps import STEPS
 
 
 class ConnectomistPreproc(unittest.TestCase):
@@ -89,10 +87,10 @@ class ConnectomistPreproc(unittest.TestCase):
         # Test execution
         output_files = complete_preprocessing(**self.kwargs)
         mock_copy.assert_called_once_with(
-            os.path.join(self.kwargs["outdir"], steps[2], "outliers.py"),
+            os.path.join(self.kwargs["outdir"], STEPS[2], "outliers.py"),
             self.kwargs["outdir"])
         expected_rmtree_calls = []
-        for dirname in steps[:-1]:
+        for dirname in STEPS[:-1]:
             expected_rmtree_calls.append(
                 mock.call(os.path.join(self.kwargs["outdir"], dirname)))
         self.assertTrue(expected_rmtree_calls == mock_rmtree.call_args_list)
