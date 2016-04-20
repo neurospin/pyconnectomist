@@ -5,10 +5,14 @@
 # http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html for details.
 ##########################################################################
 
+"""
+Wrapper to Connectomist's 'Tractography mask' tab.
+"""
+
 # System import
 import os
 
-# Clindmri import
+# pyConnectomist import
 from pyconnectomist.exceptions import ConnectomistBadFileError
 from pyconnectomist.wrappers import ConnectomistWrapper
 
@@ -25,7 +29,6 @@ def tractography_mask(
         morphologist_dir,
         add_cerebelum=False,
         add_commissures=True,
-        nb_tries=10,
         path_connectomist=(
             "/i2bm/local/Ubuntu-14.04-x86_64/ptk/bin/connectomist")):
     """ Tractography mask computation.
@@ -42,10 +45,6 @@ def tractography_mask(
         if True add the cerebelum to the tractography mask.
     add_commissures: bool (optional, default False)
         if True add the commissures to the tractography mask.
-    nb_tries: int (optional, default 10)
-        nb of times to try an algorithm if it fails.
-        It often crashes when running in parallel. The reason
-        why it crashes is unknown.
     path_connectomist: str (optional)
         path to the Connectomist executable.
 
@@ -93,6 +92,6 @@ def tractography_mask(
     connprocess = ConnectomistWrapper(path_connectomist)
     parameter_file = ConnectomistWrapper.create_parameter_file(
         algorithm, parameters_dict, outdir)
-    connprocess(algorithm, parameter_file, outdir, nb_tries=nb_tries)
+    connprocess(algorithm, parameter_file, outdir)
 
     return outdir

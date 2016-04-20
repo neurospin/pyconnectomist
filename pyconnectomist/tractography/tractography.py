@@ -5,10 +5,14 @@
 # http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html for details.
 ##########################################################################
 
+"""
+Wrapper to Connectomist's 'Tractography' tab.
+"""
+
 # System import
 import os
 
-# Clindmri import
+# pyConnectomist import
 from pyconnectomist.exceptions import ConnectomistBadFileError
 from pyconnectomist.exceptions import ConnectomistError
 from pyconnectomist.wrappers import ConnectomistWrapper
@@ -31,10 +35,10 @@ track_map = {
 def tractography(
         outdir,
         subjectid,
-        maskdir,
+        mask_dir,
         model,
-        modeldir,
-        registrationdir,
+        model_dir,
+        registration_dir,
         tracking_type="streamline_regularize_deterministic",
         bundlemap="vtkbundlemap",
         min_fiber_length=5.,
@@ -45,7 +49,6 @@ def tractography(
         gibbs_temperature=1.,
         storing_increment=10,
         output_orientation_count=500,
-        nb_tries=10,
         path_connectomist=(
             "/i2bm/local/Ubuntu-14.04-x86_64/ptk/bin/connectomist")):
     """ Tractography algorithm.
@@ -56,12 +59,14 @@ def tractography(
         path to Connectomist output work directory.
     subjectid: str
         the subject code in study.
+    mask_dir: str
+        the path to the Connectomist tractography mask directory.
     model: str
-        the name of the model to be estimated: 'dot', 'sd', 'sdt', 'aqbi',
+        the name of the estimated model: 'dot', 'sd', 'sdt', 'aqbi',
         'sa-qbi', 'dti'.
-    modeldir str
+    model_dir: str
         the path to the Connectomist model directory.
-    registrationdir str
+    registration_dir str
         the path to the Connectomist registration directory.
     tracking_type: str (optional, default
             'streamline_regularize_deterministic')
@@ -88,10 +93,6 @@ def tractography(
     output_orientation_count: int (optional, default 500)
         the number of the point in the sphere, default is equivalent to a
         2 degs resolution.
-    nb_tries: int (optional, default 10)
-        nb of times to try an algorithm if it fails.
-        It often crashes when running in parallel. The reason
-        why it crashes is unknown.
     path_connectomist: str (optional)
         path to the Connectomist executable.
 
@@ -103,21 +104,23 @@ def tractography(
     # Check input parameters
     if bundlemap not in bundle_map:
         raise ConnectomistError(
-            "'{0}' is not a valid bundle format.".format(bundlemap))
+            "'{0}' is not a valid bundle format (must be in {1}).".format(
+                bundlemap, bundle_map.keys()))
     if tracking_type not in track_map:
         raise ConnectomistError(
-            "'{0}' is not a valid track algo.".format(tracking_type))
+            "'{0}' is not a valid track algo (must be in {1}).".format(
+                tracking_type, track_map.keys()))
 
     # Get previous steps files and check existance
-    maskfile = os.path.join(maskdir, "tractography_mask.ima")
+    maskfile = os.path.join(mask_dir, "tractography_mask.ima")
     odfsitefile = os.path.join(
-        modeldir, "{0}_odf_site_map.sitemap".format(model))
+        model_dir, "{0}_odf_site_map.sitemap".format(model))
     odftexturefile = os.path.join(
-        modeldir, "{0}_odf_texture_map.texturemap".format(model))
-    odfrgbfile = os.path.join(modeldir, "aqbi_rgb.ima")
-    t1file = os.path.join(registrationdir, "t1.ima")
-    dwtot1file = os.path.join(registrationdir, "talairach_to_t1.trm")
-    masktodwfile = os.path.join(registrationdir, "t1_to_talairach.trm")
+        model_dir, "{0}_odf_texture_map.texturemap".format(model))
+    odfrgbfile = os.path.join(model_dir, "{0}_rgb.ima".format(model))
+    t1file = os.path.join(registration_dir, "t1.ima")
+    dwtot1file = os.path.join(registration_dir, "talairach_to_t1.trm")
+    masktodwfile = os.path.join(registration_dir, "t1_to_talairach.trm")
     for fpath in (maskfile, odfsitefile, odftexturefile, odfrgbfile, t1file,
                   dwtot1file, masktodwfile):
         if not os.path.isfile(fpath):
@@ -169,6 +172,6 @@ def tractography(
     connprocess = ConnectomistWrapper(path_connectomist)
     parameter_file = ConnectomistWrapper.create_parameter_file(
         algorithm, parameters_dict, outdir)
-    connprocess(algorithm, parameter_file, outdir, nb_tries=nb_tries)
+    connprocess(algorithm, parameter_file, outdir)
 
     return outdir

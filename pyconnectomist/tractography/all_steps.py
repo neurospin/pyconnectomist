@@ -11,9 +11,17 @@ import glob
 
 # Wrappers of Connectomist's tabs
 from pyconnectomist.exceptions import ConnectomistError
-from .dwi_local_modeling import dwi_local_modeling
+from .model import dwi_local_modeling
 from .mask import tractography_mask
 from .tractography import tractography
+
+
+# Define steps
+steps = [
+    "07-Local_modeling_{0}",
+    "08-Tractography_mask",
+    "09-Tractography_{0}"
+]
 
 
 def complete_tractography(
@@ -43,7 +51,6 @@ def complete_tractography(
         gibbs_temperature=1.,
         storing_increment=10,
         output_orientation_count=500,
-        nb_tries=10,
         path_connectomist=(
             "/i2bm/local/Ubuntu-14.04-x86_64/ptk/bin/connectomist")):
     """
@@ -122,10 +129,6 @@ def complete_tractography(
     output_orientation_count: int (optional, default 500)
         the number of the point in the sphere, default is equivalent to a
         2 degs resolution.
-    nb_tries: int (optional, default 10)
-        nb of times to try an algorithm if it fails.
-        It often crashes when running in parallel. The reason
-        why it crashes is unknown.
     path_connectomist: str (optional)
         path to the Connectomist executable.
 
@@ -148,7 +151,7 @@ def complete_tractography(
     registered_dwi_dir = registered_dwi_dir[0]
 
     # Step 3 - Compute the diffusion model
-    model_dir = os.path.join(outdir, "07-Local_modeling_{0}".format(model))
+    model_dir = os.path.join(outdir, steps[0].format(model))
     dwi_local_modeling(
         model_dir,
         registered_dwi_dir,
@@ -163,23 +166,20 @@ def complete_tractography(
         sd_kernel_lower_fa=sd_kernel_lower_fa,
         sd_kernel_upper_fa=sd_kernel_upper_fa,
         sd_kernel_voxel_count=sd_kernel_voxel_count,
-        nb_tries=nb_tries,
         path_connectomist=path_connectomist)
 
     # Step 4 - Create the tractography mask
-    mask_dir = os.path.join(outdir, "08-Tractography_mask")
+    mask_dir = os.path.join(outdir, steps[1])
     tractography_mask(
         mask_dir,
         subject_id,
         morphologist_dir=morphologist_dir,
         add_cerebelum=add_cerebelum,
         add_commissures=add_commissures,
-        nb_tries=nb_tries,
         path_connectomist=path_connectomist)
 
     # Step 5 - The tractography algorithm
-    tractography_dir = os.path.join(outdir, "09-Tractography_{0}".format(
-        tracking_type))
+    tractography_dir = os.path.join(outdir, steps[2].format(tracking_type))
     tractography(
         tractography_dir,
         subject_id,
@@ -197,5 +197,4 @@ def complete_tractography(
         gibbs_temperature=gibbs_temperature,
         storing_increment=storing_increment,
         output_orientation_count=output_orientation_count,
-        nb_tries=nb_tries,
         path_connectomist=path_connectomist)
