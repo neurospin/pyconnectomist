@@ -13,6 +13,7 @@ Wrapper to Connectomist's 'Local modeling' tab.
 import os
 
 # pyConnectomist import
+from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
 from pyconnectomist.exceptions import ConnectomistBadFileError
 from pyconnectomist.exceptions import ConnectomistError
 from pyconnectomist.wrappers import ConnectomistWrapper
@@ -52,8 +53,7 @@ def dwi_local_modeling(
         sd_kernel_lower_fa=0.65,
         sd_kernel_upper_fa=0.85,
         sd_kernel_voxel_count=300,
-        path_connectomist=(
-            "/i2bm/local/Ubuntu-14.04-x86_64/ptk/bin/connectomist")):
+        path_connectomist=DEFAULT_CONNECTOMIST_PATH):
     """ Diffusion model estimation.
 
     Parameters

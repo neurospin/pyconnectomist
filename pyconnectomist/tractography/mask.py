@@ -13,6 +13,7 @@ Wrapper to Connectomist's 'Tractography mask' tab.
 import os
 
 # pyConnectomist import
+from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
 from pyconnectomist.exceptions import ConnectomistBadFileError
 from pyconnectomist.wrappers import ConnectomistWrapper
 
@@ -29,8 +30,7 @@ def tractography_mask(
         morphologist_dir,
         add_cerebelum=False,
         add_commissures=True,
-        path_connectomist=(
-            "/i2bm/local/Ubuntu-14.04-x86_64/ptk/bin/connectomist")):
+        path_connectomist=DEFAULT_CONNECTOMIST_PATH):
     """ Tractography mask computation.
 
     Parameters

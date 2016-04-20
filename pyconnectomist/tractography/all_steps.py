@@ -10,6 +10,7 @@ import os
 import glob
 
 # Wrappers of Connectomist's tabs
+from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
 from pyconnectomist.exceptions import ConnectomistError
 from .model import dwi_local_modeling
 from .mask import tractography_mask
@@ -51,8 +52,7 @@ def complete_tractography(
         gibbs_temperature=1.,
         storing_increment=10,
         output_orientation_count=500,
-        path_connectomist=(
-            "/i2bm/local/Ubuntu-14.04-x86_64/ptk/bin/connectomist")):
+        path_connectomist=DEFAULT_CONNECTOMIST_PATH):
     """
     Function that runs all preprocessing tabs from Connectomist.
 

@@ -13,6 +13,7 @@ Wrapper to Connectomist's 'Tractography' tab.
 import os
 
 # pyConnectomist import
+from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
 from pyconnectomist.exceptions import ConnectomistBadFileError
 from pyconnectomist.exceptions import ConnectomistError
 from pyconnectomist.wrappers import ConnectomistWrapper
@@ -49,8 +50,7 @@ def tractography(
         gibbs_temperature=1.,
         storing_increment=10,
         output_orientation_count=500,
-        path_connectomist=(
-            "/i2bm/local/Ubuntu-14.04-x86_64/ptk/bin/connectomist")):
+        path_connectomist=DEFAULT_CONNECTOMIST_PATH):
     """ Tractography algorithm.
 
     Parameters
