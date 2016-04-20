@@ -14,3 +14,5 @@ of a dedicated function of the package.
 All the tractography steps can be done at once using the
 complete_tractography() function.
 """
+
+from .all_steps import complete_tractography
