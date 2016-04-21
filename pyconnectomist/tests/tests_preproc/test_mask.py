@@ -59,8 +59,10 @@ class ConnectomistMask(unittest.TestCase):
         self.popen_patcher.stop()
 
     @mock.patch("pyconnectomist.preproc.mask.ConnectomistWrapper."
+                "_connectomist_version_check")
+    @mock.patch("pyconnectomist.preproc.mask.ConnectomistWrapper."
                 "create_parameter_file")
-    def test_normal_execution(self, mock_params):
+    def test_normal_execution(self, mock_params, mock_version):
         """ Test the normal behaviour of the function.
         """
         # Set the mocked functions returned values

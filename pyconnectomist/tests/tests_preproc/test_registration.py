@@ -17,8 +17,6 @@ fake return string.
 import unittest
 import sys
 import os
-import copy
-import numpy
 # COMPATIBILITY: since python 3.3 mock is included in unittest module
 python_version = sys.version_info
 if python_version[:2] <= (3, 3):
@@ -78,9 +76,11 @@ class ConnectomistRegistration(unittest.TestCase):
                           dwi_to_anatomy, **self.kwargs)
 
     @mock.patch("pyconnectomist.preproc.registration.ConnectomistWrapper."
+                "_connectomist_version_check")
+    @mock.patch("pyconnectomist.preproc.registration.ConnectomistWrapper."
                 "create_parameter_file")
     @mock.patch("os.path")
-    def test_normal_execution(self, mock_path, mock_params):
+    def test_normal_execution(self, mock_path, mock_params, mock_version):
         """ Test the normal behaviour of the function.
         """
         # Set the mocked functions returned values

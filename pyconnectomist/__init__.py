@@ -7,8 +7,4 @@
 ##########################################################################
 
 from .info import __version__
-
-
-# Define default Connectomist path for hte package
-DEFAULT_CONNECTOMIST_PATH = ("/i2bm/local/Ubuntu-14.04-x86_64/ptk/bin/"
-                             "connectomist")
+from .info import DEFAULT_CONNECTOMIST_PATH

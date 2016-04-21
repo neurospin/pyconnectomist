@@ -15,6 +15,13 @@ version_micro = 0
 # Expected by setup.py: string of form "X.Y.Z"
 __version__ = "{0}.{1}.{2}".format(version_major, version_minor, version_micro)
 
+# Define default Connectomist path for the package
+DEFAULT_CONNECTOMIST_PATH = ("/i2bm/local/Ubuntu-14.04-x86_64/ptk/bin/"
+                             "connectomist")
+
+# Define Connectomist PTK supported version
+PTK_RELEASE = "5.0"
+
 # Expected by setup.py: the status of the project
 CLASSIFIERS = ["Development Status :: 5 - Production/Stable",
                "Environment :: Console",
@@ -45,8 +52,8 @@ MAINTAINER = "Antoine Grigis"
 MAINTAINER_EMAIL = "antoine.grigis@cea.fr"
 DESCRIPTION = description
 LONG_DESCRIPTION = long_description
-URL = ""
-DOWNLOAD_URL = ""
+URL = "https://github.com/neurospin/pyconnectomist"
+DOWNLOAD_URL = "https://github.com/neurospin/pyconnectomist"
 LICENSE = "CeCILL-B"
 CLASSIFIERS = CLASSIFIERS
 AUTHOR = "pyConnectomist developers"
@@ -60,8 +67,4 @@ REQUIRES = [
     "scipy>=0.9.0",
     "nibabel>=1.1.0"
 ]
-EXTRA_REQUIRES = {
-    "doc": [
-        "sphinx>=1.0",
-    ]
-}
+EXTRA_REQUIRES = {}

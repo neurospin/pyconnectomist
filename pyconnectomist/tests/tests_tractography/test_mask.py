@@ -74,9 +74,11 @@ class ConnectomistMask(unittest.TestCase):
                           **self.kwargs)
 
     @mock.patch("pyconnectomist.tractography.mask.ConnectomistWrapper."
+                "_connectomist_version_check")
+    @mock.patch("pyconnectomist.tractography.mask.ConnectomistWrapper."
                 "create_parameter_file")
     @mock.patch("os.path")
-    def test_normal_execution(self, mock_path, mock_params):
+    def test_normal_execution(self, mock_path, mock_params, mock_version):
         """ Test the normal behaviour of the function.
         """
         # Set the mocked functions returned values

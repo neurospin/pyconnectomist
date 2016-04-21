@@ -120,6 +120,8 @@ class ConnectomistQspace(unittest.TestCase):
 
     @mock.patch("numpy.savetxt")
     @mock.patch("pyconnectomist.preproc.qspace.ConnectomistWrapper."
+                "_connectomist_version_check")
+    @mock.patch("pyconnectomist.preproc.qspace.ConnectomistWrapper."
                 "create_parameter_file")
     @mock.patch("pyconnectomist.preproc.qspace.read_bvals_bvecs")
     @mock.patch("pyconnectomist.preproc.qspace.ptk_nifti_to_gis")
@@ -128,7 +130,7 @@ class ConnectomistQspace(unittest.TestCase):
     @mock.patch("os.mkdir")
     def test_normal_execution(self, mock_mkdir, mock_copyfile, mock_path,
                               mock_conversion, mock_bvecs, mock_params,
-                              mock_savetxt):
+                              mock_version, mock_savetxt):
         """ Test the normal behaviour of the function.
         """
         # Set the mocked functions returned values

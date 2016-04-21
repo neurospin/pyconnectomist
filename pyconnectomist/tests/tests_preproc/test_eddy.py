@@ -17,7 +17,6 @@ fake return string.
 import unittest
 import sys
 import os
-import copy
 import numpy
 # COMPATIBILITY: since python 3.3 mock is included in unittest module
 python_version = sys.version_info
@@ -65,9 +64,11 @@ class ConnectomistEddy(unittest.TestCase):
         """
         self.popen_patcher.stop()
 
-    @mock.patch("pyconnectomist.preproc.outliers.ConnectomistWrapper."
+    @mock.patch("pyconnectomist.preproc.eddy.ConnectomistWrapper."
+                "_connectomist_version_check")
+    @mock.patch("pyconnectomist.preproc.eddy.ConnectomistWrapper."
                 "create_parameter_file")
-    def test_normal_execution(self, mock_params):
+    def test_normal_execution(self, mock_params, mock_version):
         """ Test the normal behaviour of the function.
         """
         # Set the mocked functions returned values

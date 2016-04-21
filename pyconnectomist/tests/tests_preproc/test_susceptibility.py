@@ -73,15 +73,12 @@ class ConnectomistMask(unittest.TestCase):
         """
         self.popen_patcher.stop()
 
-    @mock.patch("pyconnectomist.preproc.susceptibility.ConnectomistWrapper."
-                "create_parameter_file")
     @mock.patch("pyconnectomist.preproc.susceptibility.exec_file")
     @mock.patch("os.path")
-    def test_manufacturermiss_raise(self, mock_path, mock_exec, mock_params):
+    def test_manufacturermiss_raise(self, mock_path, mock_exec):
         """ No manufacturer -> raise ConnectomistBadFileError.
         """
         # Set the mocked functions returned values
-        mock_params.return_value = "/my/path/mock_parameters"
         mock_path.join.side_effect = lambda *x: x[0] + "/" + x[1]
         mock_exec.return_value = {
             "acquisitionParameters": {}
@@ -91,15 +88,12 @@ class ConnectomistMask(unittest.TestCase):
         self.assertRaises(ConnectomistBadFileError,
                           susceptibility_correction, **self.kwargs)
 
-    @mock.patch("pyconnectomist.preproc.susceptibility.ConnectomistWrapper."
-                "create_parameter_file")
     @mock.patch("pyconnectomist.preproc.susceptibility.exec_file")
     @mock.patch("os.path")
-    def test_manufacturer_raise(self, mock_path, mock_exec, mock_params):
+    def test_manufacturer_raise(self, mock_path, mock_exec):
         """ No manufacturer -> raise ConnectomistBadManufacturerNameError.
         """
         # Set the mocked functions returned values
-        mock_params.return_value = "/my/path/mock_parameters"
         mock_path.join.side_effect = lambda *x: x[0] + "/" + x[1]
         mock_exec.return_value = {
             "acquisitionParameters": {
@@ -111,15 +105,12 @@ class ConnectomistMask(unittest.TestCase):
         self.assertRaises(ConnectomistBadManufacturerNameError,
                           susceptibility_correction, **self.kwargs)
 
-    @mock.patch("pyconnectomist.preproc.susceptibility.ConnectomistWrapper."
-                "create_parameter_file")
     @mock.patch("pyconnectomist.preproc.susceptibility.exec_file")
     @mock.patch("os.path")
-    def test_params_raise(self, mock_path, mock_exec, mock_params):
+    def test_params_raise(self, mock_path, mock_exec):
         """ Wrong parameters -> raise ConnectomistMissingParametersError.
         """
         # Set the mocked functions returned values
-        mock_params.return_value = "/my/path/mock_parameters"
         mock_path.join.side_effect = lambda *x: x[0] + "/" + x[1]
         mock_exec.return_value = {
             "acquisitionParameters": {
@@ -132,10 +123,13 @@ class ConnectomistMask(unittest.TestCase):
                           susceptibility_correction, **self.kwargs)
 
     @mock.patch("pyconnectomist.preproc.susceptibility.ConnectomistWrapper."
+                "_connectomist_version_check")
+    @mock.patch("pyconnectomist.preproc.susceptibility.ConnectomistWrapper."
                 "create_parameter_file")
     @mock.patch("pyconnectomist.preproc.susceptibility.exec_file")
     @mock.patch("os.path")
-    def test_normal_execution(self, mock_path, mock_exec, mock_params):
+    def test_normal_execution(self, mock_path, mock_exec, mock_params,
+                              mock_version):
         """ Test the normal behaviour of the function.
         """
         # Set the mocked functions returned values
