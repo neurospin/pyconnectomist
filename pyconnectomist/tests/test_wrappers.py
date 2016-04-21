@@ -39,8 +39,8 @@ class ConnectomistWrappers(unittest.TestCase):
                           ConnectomistWrapper._connectomist_version_check,
                           "/my/path/mock_conf")
 
-    @mock.patch("__builtin__.ValueError")
-    @mock.patch("__builtin__.open")
+    @mock.patch("pyconnectomist.wrappers.ValueError")
+    @mock.patch("pyconnectomist.wrappers.open")
     @mock.patch("os.path")
     def test_noreleaseerror_raise(self, mock_path, mock_open, mock_error):
         """ No PTK release found -> raise ValueError.
@@ -62,7 +62,7 @@ class ConnectomistWrappers(unittest.TestCase):
         self.assertEqual(len(mock_error.call_args_list), 1)
 
     @mock.patch("warnings.warn")
-    @mock.patch("__builtin__.open")
+    @mock.patch("pyconnectomist.wrappers.open")
     @mock.patch("os.path")
     def test_normal_execution(self, mock_path, mock_open, mock_warn):
         """ Test the normal behaviour of the function.
