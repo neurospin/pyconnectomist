@@ -11,12 +11,15 @@ Common wrappers from Connectomist package.
 
 # System import
 import os
+import re
+import warnings
 import time
 import pprint
 import subprocess
 
 # Clindmri import
 from . import DEFAULT_CONNECTOMIST_PATH
+from .info import PTK_RELEASE
 from .exceptions import ConnectomistError
 from .exceptions import ConnectomistConfigurationError
 from .exceptions import ConnectomistRuntimeError
@@ -41,6 +44,9 @@ class ConnectomistWrapper(object):
         # Class parameters
         self.path_connectomist = path_connectomist
         self.environment = os.environ
+
+        # Check Connectomist can be configured
+        self._connectomist_version_check(self.path_connectomist)
 
         # Check Connectomist has been configured so the command can be found
         cmd = "%s --help" % (self.path_connectomist)
@@ -123,6 +129,37 @@ class ConnectomistWrapper(object):
             f.write("parameterValues = {\n " + pretty_dict)
 
         return parameter_file
+
+    @classmethod
+    def _connectomist_version_check(cls, path_connectomist):
+        """ Check that a tested Connectomist version is installed.
+        """
+        # If a configuration file is passed
+        if os.path.isfile(path_connectomist):
+
+            # Check PTK version
+            version_regex = "PTK_RELEASE=.*\n"
+            with open(path_connectomist, "r") as open_file:
+                match_object = re.search(version_regex, open_file.read())
+                if match_object is None:
+                    message = ("Can't detect 'PTK_RELEASE' version from "
+                               "configuration file '{0}'. You have not "
+                               "provided a valid configuration file.".format(
+                                   path_connectomist))
+                    raise ValueError(message)
+                else:
+                    version = match_object.group(0).split("=")[1].strip("\n")
+                    if version != PTK_RELEASE:
+                        message = ("Installed '{0}' version of Connectomist "
+                                   "not tested. Currently supported version "
+                                   "is '{1}'.".format(version, PTK_RELEASE))
+                        warnings.warn(message)
+
+        # Configuration file is not a file
+        else:
+            message = ("'{0}' is not a valid file, can't configure "
+                       "Connectomist.".format(path_connectomist))
+            raise ValueError(message)
 
 
 class PtkWrapper(object):
