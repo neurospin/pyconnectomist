@@ -15,9 +15,11 @@ python_version = sys.version_info
 if python_version[:2] <= (3, 3):
     import mock
     from mock import patch
+    mock_builtin = "__builtin__"
 else:
     import unittest.mock as mock
     from unittest.mock import patch
+    mock_builtin = "builtins"
 
 # pyConnectomist import
 from pyconnectomist.wrappers import ConnectomistWrapper
@@ -39,8 +41,8 @@ class ConnectomistWrappers(unittest.TestCase):
                           ConnectomistWrapper._connectomist_version_check,
                           "/my/path/mock_conf")
 
-    @mock.patch("pyconnectomist.wrappers.ValueError")
-    @mock.patch("pyconnectomist.wrappers.open")
+    @mock.patch("{0}.ValueError".format(mock_builtin))
+    @mock.patch("{0}.open".format(mock_builtin))
     @mock.patch("os.path")
     def test_noreleaseerror_raise(self, mock_path, mock_open, mock_error):
         """ No PTK release found -> raise ValueError.
@@ -62,7 +64,7 @@ class ConnectomistWrappers(unittest.TestCase):
         self.assertEqual(len(mock_error.call_args_list), 1)
 
     @mock.patch("warnings.warn")
-    @mock.patch("pyconnectomist.wrappers.open")
+    @mock.patch("{0}.open".format(mock_builtin))
     @mock.patch("os.path")
     def test_normal_execution(self, mock_path, mock_open, mock_warn):
         """ Test the normal behaviour of the function.
