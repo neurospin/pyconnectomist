@@ -86,15 +86,17 @@ class ConnectomistPreproc(unittest.TestCase):
 
         # Test execution
         output_files = complete_preprocessing(**self.kwargs)
+        mock_outliers = os.path.join(self.kwargs["outdir"], "outliers.py")
         mock_copy.assert_called_once_with(
             os.path.join(self.kwargs["outdir"], STEPS[2], "outliers.py"),
-            self.kwargs["outdir"])
+            mock_outliers)
         expected_rmtree_calls = []
         for dirname in STEPS[:-1]:
             expected_rmtree_calls.append(
                 mock.call(os.path.join(self.kwargs["outdir"], dirname)))
-        self.assertTrue(expected_rmtree_calls == mock_rmtree.call_args_list)
-        self.assertTrue(output_files == mock_expeddy.return_value)
+        self.assertEqual(expected_rmtree_calls, mock_rmtree.call_args_list)
+        self.assertEqual(output_files, mock_expeddy.return_value +
+                         (mock_outliers, ))
 
 
 if __name__ == "__main__":

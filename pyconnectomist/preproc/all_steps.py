@@ -63,14 +63,23 @@ def complete_preprocessing(
     Steps:
 
     1- Create the preprocessing output directory if not existing.
+
     2- Import files to Connectomist and choose q-space model.
+
     3- Create a brain mask.
+
     4- Detect and correct outlying diffusion slices.
+
     5- Susceptibility correction.
+
     6- Eddy current and motion correction.
+
     7- Export result as a Nifti with a .bval and a .bvec.
+
     8- Export outliers.
-    9- Registration t1 - dwi
+
+    9- Registration t1 - dwi.
+
     10- Delete intermediate files and directories if requested.
 
     Parameters
@@ -129,6 +138,8 @@ def complete_preprocessing(
     -------
     preproc_dwi, preproc_bval, preproc_bvec: str
         paths to output diffusion Nifti files.
+    preproc_outliers: str
+        path to the outliers detection summary.
     """
 
     # Step 1 - Create the preprocessing output directory if not existing
@@ -147,7 +158,6 @@ def complete_preprocessing(
         invertX,
         invertY,
         invertZ,
-        subject_id,
         b0_magnitude,
         b0_phase,
         path_connectomist=path_connectomist)
@@ -206,7 +216,8 @@ def complete_preprocessing(
 
     # Step 8 - Export outliers.py
     path_outliers_py = os.path.join(outliers_dir, "outliers.py")
-    shutil.copy(path_outliers_py, outdir)
+    preproc_outliers = os.path.join(outdir, "outliers.py")
+    shutil.copy(path_outliers_py, preproc_outliers)
 
     # Step 9 - Registration t1 - dwi
     if morphologist_dir is not None:
@@ -226,4 +237,4 @@ def complete_preprocessing(
         for directory in intermediate_dirs:
             shutil.rmtree(directory)
 
-    return preproc_dwi, preproc_bval, preproc_bvec
+    return preproc_dwi, preproc_bval, preproc_bvec, preproc_outliers
