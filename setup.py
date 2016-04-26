@@ -20,6 +20,11 @@ with open(infopath) as open_file:
 pkgdata = {
     "pyconnectomist": ["tests/*.py", "tests/*/*.py"],
 }
+scripts = [
+    "pyconnectomist/scripts/pyconnectomist_preproc",
+    "pyconnectomist/scripts/pyconnectomist_tractography",
+    "pyconnectomist/scripts/pyconnectomist_labeling"
+]
 
 setup(
     name=release_info["NAME"],
@@ -35,5 +40,6 @@ setup(
     platforms=release_info["PLATFORMS"],
     extras_require=release_info["EXTRA_REQUIRES"],
     install_requires=release_info["REQUIRES"],
-    package_data=pkgdata
+    package_data=pkgdata,
+    scripts=scripts
 )
