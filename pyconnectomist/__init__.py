@@ -6,5 +6,14 @@
 # for details.
 ##########################################################################
 
+"""
+Package to wrap the Connectomist software and simplify scripting calls.
+In the root location of the module are implemented:
+
+    * the Connectomist's dedicated exceptions.
+    * the Connectomist's wrappers.
+    * the supported manufacturers.
+"""
+
 from .info import __version__
 from .info import DEFAULT_CONNECTOMIST_PATH

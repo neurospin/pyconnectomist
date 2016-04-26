@@ -6,6 +6,9 @@
 ##########################################################################
 
 """
-All the preprocessing steps can be done at once using the
-complete_clustering() function.
+Each labeling/clustering step (i.e. one Connectomist tab) can be run through
+the use of a dedicated function of the package.
+
+All the labelings steps can be done at once calling the
+'complete_labeling' function.
 """
