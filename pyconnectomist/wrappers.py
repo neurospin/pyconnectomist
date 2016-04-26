@@ -83,7 +83,7 @@ class ConnectomistWrapper(object):
 
         # Run the command.
         process = subprocess.Popen(
-            cmd,
+            cmd, shell=True,
             env=self.environment,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
