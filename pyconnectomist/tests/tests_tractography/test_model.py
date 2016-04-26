@@ -155,24 +155,23 @@ class ConnectomistDWIModel(unittest.TestCase):
         self.assertEqual(len(mock_params.call_args_list), 1)
         self.assertEqual(len(self.mock_popen.call_args_list), 2)
         self.assertEqual([
-            mock.call(self.kwargs["registered_dwi_dir"], "dw_talairach.ima"),
-            mock.call(self.kwargs["registered_dwi_dir"], "mask_talairach.ima"),
+            mock.call(self.kwargs["registered_dwi_dir"], "dw_extended.ima"),
+            mock.call(self.kwargs["registered_dwi_dir"], "mask_extended.ima"),
             mock.call(self.kwargs["registered_dwi_dir"], "t1.ima"),
-            mock.call(self.kwargs["registered_dwi_dir"], "t2_talairach.ima"),
-            mock.call(self.kwargs["registered_dwi_dir"],
-                      "talairach_to_t1.trm")],
+            mock.call(self.kwargs["registered_dwi_dir"], "t2_extended.ima"),
+            mock.call(self.kwargs["registered_dwi_dir"], "dw_to_t1.trm")],
             mock_path.join.call_args_list)
         self.assertEqual([
             mock.call(os.path.join(self.kwargs["registered_dwi_dir"],
-                      "dw_talairach.ima")),
+                      "dw_extended.ima")),
             mock.call(os.path.join(self.kwargs["registered_dwi_dir"],
-                      "mask_talairach.ima")),
+                      "mask_extended.ima")),
             mock.call(os.path.join(self.kwargs["registered_dwi_dir"],
                       "t1.ima")),
             mock.call(os.path.join(self.kwargs["registered_dwi_dir"],
-                      "t2_talairach.ima")),
+                      "t2_extended.ima")),
             mock.call(os.path.join(self.kwargs["registered_dwi_dir"],
-                      "talairach_to_t1.trm"))],
+                      "dw_to_t1.trm"))],
             mock_path.isfile.call_args_list)
 
 

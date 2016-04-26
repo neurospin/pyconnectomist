@@ -101,11 +101,11 @@ def dwi_local_modeling(
         path to Connectomist's output directory.
     """
     # Get Connectomist registration result files and check existance
-    dwifile = os.path.join(registered_dwi_dir, "dw_talairach.ima")
-    maskfile = os.path.join(registered_dwi_dir, "mask_talairach.ima")
+    dwifile = os.path.join(registered_dwi_dir, "dw_extended.ima")
+    maskfile = os.path.join(registered_dwi_dir, "mask_extended.ima")
     t1file = os.path.join(registered_dwi_dir, "t1.ima")
-    t2file = os.path.join(registered_dwi_dir, "t2_talairach.ima")
-    dwtot1file = os.path.join(registered_dwi_dir, "talairach_to_t1.trm")
+    t2file = os.path.join(registered_dwi_dir, "t2_extended.ima")
+    dwtot1file = os.path.join(registered_dwi_dir, "dw_to_t1.trm")
     for fpath in (dwifile, maskfile, t1file, t2file, dwtot1file):
         if not os.path.isfile(fpath):
             raise ConnectomistBadFileError(fpath)

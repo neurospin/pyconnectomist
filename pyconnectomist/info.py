@@ -41,8 +41,8 @@ pyConnectomist
 [pyconnectomist] Python wrappers for Connectomist.
 
 Package to wrap the Connectomist software and simplify scripting calls.
-Each preprocessing step (i.e. one Connectomist tab) can be run through the use
-of a dedicated function of the package.
+Each preprocessing, tractography and labeling step (i.e. one Connectomist tab)
+can be run through the use of a dedicated function of the package.
 """
 
 # Main setup parameters

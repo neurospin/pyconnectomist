@@ -5,6 +5,10 @@
 # http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html for details.
 ##########################################################################
 
+"""
+Function that runs all tractography tabs from Connectomist.
+"""
+
 # System import
 import os
 import glob
@@ -53,15 +57,18 @@ def complete_tractography(
         storing_increment=10,
         output_orientation_count=500,
         path_connectomist=DEFAULT_CONNECTOMIST_PATH):
-    """
-    Function that runs all preprocessing tabs from Connectomist.
+    """ Function that runs all preprocessing tabs from Connectomist.
 
     Steps:
 
     1- Create the tractography output directory if not existing.
+
     2- Detect the Connectomist registration folder.
+
     3- Compute the diffusion model.
+
     4- Create the tractography mask.
+
     5- The tractography algorithm.
 
     Parameters
@@ -87,8 +94,8 @@ def complete_tractography(
     regularization_lccurvefactor: float (optional default 0.006)
         for 'sdt', 'aqbi' and 'sa-aqbi' regularization factor.
     dti_estimator: str (optional default 'linear')
-        the secend order tensor fitting method: 'linear' or 'positive'.
-        The seconf method generates positive definite tensors.
+        the secend order tensor fitting method ('linear' or 'positive').
+        The second method generates positive definite tensors.
     constrained_sd: bool (optiona, default False)
         If True us constrained spherical deconvolution.
     sd_kernel_type: str (optional, default 'symmetric_tensor')
@@ -104,8 +111,7 @@ def complete_tractography(
         if True add the cerebelum to the tractography mask.
     add_commissures: bool (optional, default False)
         if True add the commissures to the tractography mask.
-    tracking_type: str (optional, default
-            'streamline_regularize_deterministic')
+    tracking_type: str (optional)
         the tractography algorithm: 'streamline_regularize_deterministic',
         'streamline_deterministic' or 'streamline_probabilistic'
     bundlemap: str (optional, default 'vtkbundlemap')

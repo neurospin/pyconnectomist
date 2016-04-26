@@ -135,8 +135,8 @@ class ConnectomistTractography(unittest.TestCase):
             mock.call(self.kwargs["model_dir"],
                       "{0}_rgb.ima".format(self.kwargs["model"])),
             mock.call(self.kwargs["registration_dir"], "t1.ima"),
-            mock.call(self.kwargs["registration_dir"], "talairach_to_t1.trm"),
-            mock.call(self.kwargs["registration_dir"], "t1_to_talairach.trm")],
+            mock.call(self.kwargs["registration_dir"], "dw_to_t1.trm"),
+            mock.call(self.kwargs["registration_dir"], "t1_to_dw.trm")],
             mock_path.join.call_args_list)
         self.assertEqual([
             mock.call(os.path.join(self.kwargs["mask_dir"],
@@ -153,9 +153,9 @@ class ConnectomistTractography(unittest.TestCase):
             mock.call(os.path.join(self.kwargs["registration_dir"],
                                    "t1.ima")),
             mock.call(os.path.join(self.kwargs["registration_dir"],
-                                   "talairach_to_t1.trm")),
+                                   "dw_to_t1.trm")),
             mock.call(os.path.join(self.kwargs["registration_dir"],
-                                   "t1_to_talairach.trm"))],
+                                   "t1_to_dw.trm"))],
             mock_path.isfile.call_args_list)
 
 

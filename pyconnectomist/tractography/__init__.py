@@ -6,13 +6,11 @@
 ##########################################################################
 
 """
-Package to wrap the Connectomist software and simplify scripting calls.
-
 Each tractography step (i.e. one Connectomist tab) can be run through the use
 of a dedicated function of the package.
 
-All the tractography steps can be done at once using the
-complete_tractography() function.
+All the tractography steps can be done at once calling the
+'complete_tractography' function.
 """
 
 from .all_steps import complete_tractography

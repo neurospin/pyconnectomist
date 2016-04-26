@@ -69,8 +69,7 @@ def tractography(
         the path to the Connectomist model directory.
     registration_dir str
         the path to the Connectomist registration directory.
-    tracking_type: str (optional, default
-            'streamline_regularize_deterministic')
+    tracking_type: str (optional)
         the tractography algorithm: 'streamline_regularize_deterministic',
         'streamline_deterministic' or 'streamline_probabilistic'
     bundlemap: str (optional, default 'vtkbundlemap')
@@ -85,7 +84,7 @@ def tractography(
     forward_step: float (optional, default 0.2)
         the propagation step in mm.
     voxel_sampler_point_count: int (optional, default 1)
-        the number of seeds per voxel
+        the number of seeds per voxel.
     gibbs_temperature: float (optional, default 1)
         the temperature if the Gibb's sampler: only for the probabilistic
         tractography.
@@ -120,8 +119,8 @@ def tractography(
         model_dir, "{0}_odf_texture_map.texturemap".format(model))
     odfrgbfile = os.path.join(model_dir, "{0}_rgb.ima".format(model))
     t1file = os.path.join(registration_dir, "t1.ima")
-    dwtot1file = os.path.join(registration_dir, "talairach_to_t1.trm")
-    masktodwfile = os.path.join(registration_dir, "t1_to_talairach.trm")
+    dwtot1file = os.path.join(registration_dir, "dw_to_t1.trm")
+    masktodwfile = os.path.join(registration_dir, "t1_to_dw.trm")
     for fpath in (maskfile, odfsitefile, odftexturefile, odfrgbfile, t1file,
                   dwtot1file, masktodwfile):
         if not os.path.isfile(fpath):
@@ -130,43 +129,43 @@ def tractography(
     # Dict with all parameters for connectomist
     algorithm = "DWI-Tractography"
     parameters_dict = {
-        '_subjectName': subject_id,
-        'bundleMapFormat': BUNDLE_MAP[bundlemap],
-        'fileNameMask': maskfile,
-        'fileNameOdfSiteMap': odfsitefile,
-        'fileNameOdfTextureMap': odftexturefile,
-        'fileNameRgb': odfrgbfile,
-        'fileNameT1': t1file,
-        'fileNameTransformationDwToT1': dwtot1file,
-        'fileNameTransformationMaskToDw': masktodwfile,
-        'outputOrientationCount': output_orientation_count,
-        'outputWorkDirectory': outdir,
-        'stepCount': 1,
-        'trackingType': TRACK_MAP[tracking_type]}
+        "_subjectName": subject_id,
+        "bundleMapFormat": BUNDLE_MAP[bundlemap],
+        "fileNameMask": maskfile,
+        "fileNameOdfSiteMap": odfsitefile,
+        "fileNameOdfTextureMap": odftexturefile,
+        "fileNameRgb": odfrgbfile,
+        "fileNameT1": t1file,
+        "fileNameTransformationDwToT1": dwtot1file,
+        "fileNameTransformationMaskToDw": masktodwfile,
+        "outputOrientationCount": output_orientation_count,
+        "outputWorkDirectory": outdir,
+        "stepCount": voxel_sampler_point_count,
+        "trackingType": TRACK_MAP[tracking_type]}
     parameters_dict.update({
-        'deterministicApertureAngle': aperture_angle,
-        'deterministicForwardStep': forward_step,
-        'deterministicMaximumFiberLength': max_fiber_length,
-        'deterministicMinimumFiberLength': min_fiber_length,
-        'deterministicStoringIncrement': storing_increment,
-        'deterministicVoxelSamplerPointCount': voxel_sampler_point_count})
+        "deterministicApertureAngle": aperture_angle,
+        "deterministicForwardStep": forward_step,
+        "deterministicMaximumFiberLength": max_fiber_length,
+        "deterministicMinimumFiberLength": min_fiber_length,
+        "deterministicStoringIncrement": storing_increment,
+        "deterministicVoxelSamplerPointCount": voxel_sampler_point_count})
     parameters_dict.update({
-        'probabilisticApertureAngle': aperture_angle,
-        'probabilisticForwardStep': forward_step,
-        'probabilisticGibbsTemperature': gibbs_temperature,
-        'probabilisticMaximumFiberLength': max_fiber_length,
-        'probabilisticMinimumFiberLength': min_fiber_length,
-        'probabilisticStoringIncrement': storing_increment,
-        'probabilisticVoxelSamplerPointCount': voxel_sampler_point_count})
+        "probabilisticApertureAngle": aperture_angle,
+        "probabilisticForwardStep": forward_step,
+        "probabilisticGibbsTemperature": gibbs_temperature,
+        "probabilisticMaximumFiberLength": max_fiber_length,
+        "probabilisticMinimumFiberLength": min_fiber_length,
+        "probabilisticStoringIncrement": storing_increment,
+        "probabilisticVoxelSamplerPointCount": voxel_sampler_point_count})
     parameters_dict.update({
-        'regularizedDeterministicApertureAngle': aperture_angle,
-        'regularizedDeterministicForwardStep': forward_step,
-        'regularizedDeterministicLowerGFABoundary': -1.,
-        'regularizedDeterministicMaximumFiberLength': max_fiber_length,
-        'regularizedDeterministicMinimumFiberLength': min_fiber_length,
-        'regularizedDeterministicStoringIncrement': storing_increment,
-        'regularizedDeterministicUpperGFABoundary': -1.,
-        'regularizedDeterministicVoxelSamplerPointCount': (
+        "regularizedDeterministicApertureAngle": aperture_angle,
+        "regularizedDeterministicForwardStep": forward_step,
+        "regularizedDeterministicLowerGFABoundary": -1.,
+        "regularizedDeterministicMaximumFiberLength": max_fiber_length,
+        "regularizedDeterministicMinimumFiberLength": min_fiber_length,
+        "regularizedDeterministicStoringIncrement": storing_increment,
+        "regularizedDeterministicUpperGFABoundary": -1.,
+        "regularizedDeterministicVoxelSamplerPointCount": (
             voxel_sampler_point_count)})
 
     # Call with Connectomist
