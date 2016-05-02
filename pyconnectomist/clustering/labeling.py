@@ -66,18 +66,24 @@ INDEX_OF_ATLAS = {
     "custom":               2
 }
 
+# Boolean map used by Connectomist
+BOOL_MAP = {
+    False: 0,
+    True: 2
+}
+
 
 def fast_bundle_labeling(
         outdir,
+        registered_dwi_dir,
+        morphologist_dir,
+        subject_id,
         paths_bundle_map,
-        path_bundle_map_to_t1_trf,
-        path_t1_to_tal_trf,
         atlas="Guevara long bundle",
         custom_atlas_dir=None,
         bundle_names=None,
         nb_fibers_to_process_at_once=50000,
         resample_fibers=True,
-        subject_id=None,
         remove_temporary_files=True,
         path_connectomist=DEFAULT_CONNECTOMIST_PATH):
     """ Wrapper to Connectomist's 'Fast Bundle Labeling' tab.
@@ -85,13 +91,15 @@ def fast_bundle_labeling(
     Parameters
     ----------
     outdir: str
-        Path to Connectomist output work directory.
+        Path to the Connectomist output working directory.
+    registered_dwi_dir: str
+        path to Connectomist register DWI directory.
+    morphologist_dir: str
+        path to Morphologist directory.
+    subject_id: str
+        the subject identifier.
     paths_bundle_map: list of str
         Paths to the bundle maps.
-    path_bundle_map_to_t1_trf: str
-        Path to the transform: bundle map(s) -> T1.
-    path_t1_to_tal_trf: str
-        Path to the transform: T1 -> Talairach.
     atlas: str, {["Guevara long bundle"], "Guevara short bundle", "custom"}
         Atlas to use.
     custom_atlas_dir: str, optional
@@ -104,8 +112,6 @@ def fast_bundle_labeling(
     resample_fibers: bool, optional
         If True resample fibers, mandatory if fibers are not 21 points
         resampled.
-    subject_id: str, optional
-        Subject identifier.
     remove_temporary_files: bool, optional
         If True remove temporary files.
     path_connectomist: str, optional
@@ -136,11 +142,18 @@ def fast_bundle_labeling(
                     "'{0}' bundle name not supported (must be in {1}).".format(
                         bundle_name, BUNDLE_NAMES))
     else:
-        bundle_names = []
+        bundle_names = " ".join(BUNDLE_NAMES)
+
+    # Get Connectomist transformations
+    dwtot1file = os.path.join(registered_dwi_dir, "dw_to_t1.trm")
+    t1total = os.path.join(
+            morphologist_dir, subject_id, "t1mri", "default_acquisition",
+            "registration",
+            "RawT1-{0}_default_acquisition_TO_Talairach-ACPC.trm".format(
+                subject_id))
 
     # Check input parameter files existence
-    required_files = paths_bundle_map + [path_bundle_map_to_t1_trf,
-                                         path_t1_to_tal_trf]
+    required_files = paths_bundle_map + [dwtot1file, t1total]
     for path in required_files:
         if not os.path.isfile(path):
             raise ConnectomistBadFileError(path)
@@ -152,9 +165,8 @@ def fast_bundle_labeling(
 
         # 'Input data' panel
         "inputBundleMapFileNames": " ".join(paths_bundle_map),
-        "fileNameBundleMapToTalairachTransformation":
-            path_bundle_map_to_t1_trf,
-        "fileNameT1ToTalairachTransformation": path_t1_to_tal_trf,
+        "fileNameBundleMapToTalairachTransformation": dwtot1file,
+        "fileNameT1ToTalairachTransformation": t1total,
         "atlasName": INDEX_OF_ATLAS[atlas],
         "customAtlasDirectory": custom_atlas_dir if custom_atlas_dir else "",
 
@@ -163,16 +175,16 @@ def fast_bundle_labeling(
 
         # 'Labelling option' panel
         "fiberCount": nb_fibers_to_process_at_once,
-        "doResampling": 2 if resample_fibers else 0,
+        "doResampling": BOOL_MAP[resample_fibers],
 
         # 'Output option' panel
-        "removeTemporaryFiles": remove_temporary_files,
+        "removeTemporaryFiles": BOOL_MAP[remove_temporary_files],
 
         # 'Work directory' panel
         "outputWorkDirectory": outdir,
 
         # Parameter not in GUI
-        "_subjectName": subject_id if subject_id is not None else "",
+        "_subjectName": subject_id,
 
     }
 

@@ -17,7 +17,7 @@ from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
 from pyconnectomist.exceptions import ConnectomistBadFileError
 from pyconnectomist.wrappers import ConnectomistWrapper
 
-# Boolean mapused by Connectomist
+# Boolean map used by Connectomist
 BOOL_MAP = {
     False: 0,
     True: 2
@@ -74,19 +74,19 @@ def tractography_mask(
     # Dict with all parameters for connectomist
     algorithm = "DWI-Tractography-Mask"
     parameters_dict = {
-        '_subjectName': subject_id,
-        'addCerebellum': BOOL_MAP[add_cerebelum],
-        'addCommissures': BOOL_MAP[add_commissures],
-        'addROIMask': 0,
-        'fileNameCommissureCoordinates': apcfile,
-        'fileNameHistogramAnalysis': histofile,
-        'fileNameROIMaskToAdd': '',
-        'fileNameROIMaskToRemove': '',
-        'fileNameUnbiasedT1': t1file,
-        'fileNameVoronoiMask': voronoifile,
-        'outputWorkDirectory': outdir,
-        'removeROIMask': 0,
-        'removeTemporaryFiles': 2}
+        "_subjectName": subject_id,
+        "addCerebellum": BOOL_MAP[add_cerebelum],
+        "addCommissures": BOOL_MAP[add_commissures],
+        "addROIMask": 0,
+        "fileNameCommissureCoordinates": apcfile,
+        "fileNameHistogramAnalysis": histofile,
+        "fileNameROIMaskToAdd": "",
+        "fileNameROIMaskToRemove": "",
+        "fileNameUnbiasedT1": t1file,
+        "fileNameVoronoiMask": voronoifile,
+        "outputWorkDirectory": outdir,
+        "removeROIMask": 0,
+        "removeTemporaryFiles": 2}
 
     # Call with Connectomist
     connprocess = ConnectomistWrapper(path_connectomist)

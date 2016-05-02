@@ -44,6 +44,8 @@ SD_KERNEL_MAP = {
 def dwi_local_modeling(
         outdir,
         registered_dwi_dir,
+        eddy_motion_dir,
+        rough_mask_dir,
         subject_id,
         model="aqbi",
         order=4,
@@ -63,7 +65,11 @@ def dwi_local_modeling(
     outdir: str
         path to Connectomist output work directory.
     registered_dwi_dir: str
-        path to Connectomist registeres DWI directory.
+        path to Connectomist register DWI directory.
+    eddy_motion_dir: str
+        path to Connectomist eddy motion correction directory.
+    rough_mask_dir: str
+        path to Connectomist rough mask directory.
     subject_id: str
         the subject code in study.
     model: str (optional, default 'aqbi')
@@ -101,10 +107,11 @@ def dwi_local_modeling(
         path to Connectomist's output directory.
     """
     # Get Connectomist registration result files and check existance
-    dwifile = os.path.join(registered_dwi_dir, "dw_extended.ima")
-    maskfile = os.path.join(registered_dwi_dir, "mask_extended.ima")
+    dwifile = os.path.join(eddy_motion_dir,
+                           "dw_wo_eddy_current_and_motion.ima")
+    maskfile = os.path.join(rough_mask_dir, "mask.ima")
     t1file = os.path.join(registered_dwi_dir, "t1.ima")
-    t2file = os.path.join(registered_dwi_dir, "t2_extended.ima")
+    t2file = os.path.join(eddy_motion_dir, "t2_wo_eddy_current_and_motion.ima")
     dwtot1file = os.path.join(registered_dwi_dir, "dw_to_t1.trm")
     for fpath in (dwifile, maskfile, t1file, t2file, dwtot1file):
         if not os.path.isfile(fpath):
@@ -131,63 +138,63 @@ def dwi_local_modeling(
     # Dict with all parameters for connectomist
     algorithm = "DWI-Local-Modeling"
     parameters_dict = {
-        '_subjectName': subject_id,
-        'odfType': ODF_MODEL_MAP[model],
-        'viewType': ODF_MODEL_MAP[model],
-        'computeOdfVolume': 0,
-        'rgbScale': 1.0,
-        'outputOrientationCount': 500,
-        'outputWorkDirectory': outdir,
-        'fileNameDw': dwifile,
-        'fileNameMask': maskfile,
-        'fileNameT1': t1file,
-        'fileNameT2': t2file,
-        'fileNameTransformationDwToT1': dwtot1file}
+        "_subjectName": subject_id,
+        "odfType": ODF_MODEL_MAP[model],
+        "viewType": ODF_MODEL_MAP[model],
+        "computeOdfVolume": 0,
+        "rgbScale": 1.0,
+        "outputOrientationCount": 500,
+        "outputWorkDirectory": outdir,
+        "fileNameDw": dwifile,
+        "fileNameMask": maskfile,
+        "fileNameT1": t1file,
+        "fileNameT2": t2file,
+        "fileNameTransformationDwToT1": dwtot1file}
     parameters_dict.update({
-        'aqbiLaplaceBeltramiSharpeningFactor': (
+        "aqbiLaplaceBeltramiSharpeningFactor": (
             aqbi_laplacebeltrami_sharpefactor),
-        'aqbiMaximumSHOrder': order,
-        'aqbiRegularizationLcurveFactor': regularization_lccurvefactor})
+        "aqbiMaximumSHOrder": order,
+        "aqbiRegularizationLcurveFactor": regularization_lccurvefactor})
     parameters_dict.update({
-        'dotEffectiveDiffusionTime': 25.0,
-        'dotMaximumSHOrder': order,
-        'dotOdfComputation': 2,
-        'dotR0': 12.0})
+        "dotEffectiveDiffusionTime": 25.0,
+        "dotMaximumSHOrder": order,
+        "dotOdfComputation": 2,
+        "dotR0": 12.0})
     parameters_dict.update({
-        'dsiFilteringDataBeforeFFT': 2,
-        'dsiMarginalOdf': 2,
-        'dsiMaximumR0': 15.0,
-        'dsiMinimumR0': 1.0})
+        "dsiFilteringDataBeforeFFT": 2,
+        "dsiMarginalOdf": 2,
+        "dsiMaximumR0": 15.0,
+        "dsiMinimumR0": 1.0})
     parameters_dict.update({
-        'dtiEstimatorType': DTI_ESTIMATOR_MAP[dti_estimator]})
+        "dtiEstimatorType": DTI_ESTIMATOR_MAP[dti_estimator]})
     parameters_dict.update({
-        'qbiEquatorPointCount': 50,
-        'qbiPhiFunctionAngle': 0.0,
-        'qbiPhiFunctionMaximumAngle': 0.0,
-        'qbiPhiFunctionType': 0})
+        "qbiEquatorPointCount": 50,
+        "qbiPhiFunctionAngle": 0.0,
+        "qbiPhiFunctionMaximumAngle": 0.0,
+        "qbiPhiFunctionType": 0})
     parameters_dict.update({
-        'saAqbiLaplaceBeltramiSharpeningFactor': (
+        "saAqbiLaplaceBeltramiSharpeningFactor": (
             aqbi_laplacebeltrami_sharpefactor),
-        'saAqbiMaximumSHOrder': order,
-        'saAqbiRegularizationLcurveFactor': regularization_lccurvefactor})
+        "saAqbiMaximumSHOrder": order,
+        "saAqbiRegularizationLcurveFactor": regularization_lccurvefactor})
     parameters_dict.update({
-        'sdFilterCoefficients': (
-            '1 1 1 0.5 0.1 0.02 0.002 0.0005 0.0001 0.00010.00001 0.00001 '
-            '0.00001 0.00001 0.00001 0.00001 0.00001'),
-        'sdKernelLowerFAThreshold': sd_kernel_lower_fa,
-        'sdKernelType': SD_KERNEL_MAP[sd_kernel_type],
-        'sdKernelUpperFAThreshold': sd_kernel_upper_fa,
-        'sdKernelVoxelCount': sd_kernel_voxel_count,
-        'sdMaximumSHOrder': order,
-        'sdUseCSD': constrained_sd})
+        "sdFilterCoefficients": (
+            "1 1 1 0.5 0.1 0.02 0.002 0.0005 0.0001 0.00010.00001 0.00001 "
+            "0.00001 0.00001 0.00001 0.00001 0.00001"),
+        "sdKernelLowerFAThreshold": sd_kernel_lower_fa,
+        "sdKernelType": SD_KERNEL_MAP[sd_kernel_type],
+        "sdKernelUpperFAThreshold": sd_kernel_upper_fa,
+        "sdKernelVoxelCount": sd_kernel_voxel_count,
+        "sdMaximumSHOrder": order,
+        "sdUseCSD": constrained_sd})
     parameters_dict.update({
-        'sdtKernelLowerFAThreshold': sd_kernel_lower_fa,
-        'sdtKernelType': SD_KERNEL_MAP[sd_kernel_type],
-        'sdtKernelUpperFAThreshold': sd_kernel_upper_fa,
-        'sdtKernelVoxelCount': sd_kernel_voxel_count,
-        'sdtMaximumSHOrder': order,
-        'sdtRegularizationLcurveFactor': regularization_lccurvefactor,
-        'sdtUseCSD': constrained_sd})
+        "sdtKernelLowerFAThreshold": sd_kernel_lower_fa,
+        "sdtKernelType": SD_KERNEL_MAP[sd_kernel_type],
+        "sdtKernelUpperFAThreshold": sd_kernel_upper_fa,
+        "sdtKernelVoxelCount": sd_kernel_voxel_count,
+        "sdtMaximumSHOrder": order,
+        "sdtRegularizationLcurveFactor": regularization_lccurvefactor,
+        "sdtUseCSD": constrained_sd})
 
     # Call with Connectomist
     connprocess = ConnectomistWrapper(path_connectomist)

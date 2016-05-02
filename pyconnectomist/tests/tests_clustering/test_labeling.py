@@ -17,6 +17,7 @@ fake return string.
 import unittest
 import sys
 import copy
+import os
 # COMPATIBILITY: since python 3.3 mock is included in unittest module
 python_version = sys.version_info
 if python_version[:2] <= (3, 3):
@@ -52,16 +53,16 @@ class ConnectomistFastLabeling(unittest.TestCase):
         self.mock_popen.return_value = mock_process
         self.kwargs = {
             "outdir": "/my/path/mock_outdir",
+            "registered_dwi_dir": "/my/path/mock_regdwidir",
+            "morphologist_dir": "/my/path/mock_morphologistdir",
             "paths_bundle_map": ["/my/path/mock_bundle1",
                                  "/my/path/mock_bundle2"],
-            "path_bundle_map_to_t1_trf": "/my/path/mock_bundlet1trf",
-            "path_t1_to_tal_trf": "/my/path/mock_t1taltrf",
             "atlas": "Guevara long bundle",
             "custom_atlas_dir": None,
             "bundle_names": None,
             "nb_fibers_to_process_at_once": 50000,
             "resample_fibers": True,
-            "subject_id": None,
+            "subject_id": "Lola",
             "remove_temporary_files": True,
             "path_connectomist": "/my/path/mock_connectomist"
         }
@@ -134,14 +135,20 @@ class ConnectomistFastLabeling(unittest.TestCase):
 
         # Test execution
         outdir = fast_bundle_labeling(**self.kwargs)
+        dwtot1file = os.path.join(self.kwargs["registered_dwi_dir"],
+                                  "dw_to_t1.trm")
+        t1total = os.path.join(
+                self.kwargs["morphologist_dir"], self.kwargs["subject_id"],
+                "t1mri", "default_acquisition", "registration",
+                "RawT1-{0}_default_acquisition_TO_Talairach-ACPC.trm".format(
+                    self.kwargs["subject_id"]))
         self.assertEqual(outdir, self.kwargs["outdir"])
         self.assertEqual(len(mock_params.call_args_list), 1)
         self.assertEqual(len(self.mock_popen.call_args_list), 2)
         self.assertEqual([
             mock.call(self.kwargs["paths_bundle_map"][0]),
             mock.call(self.kwargs["paths_bundle_map"][1]),
-            mock.call(self.kwargs["path_bundle_map_to_t1_trf"]),
-            mock.call(self.kwargs["path_t1_to_tal_trf"])],
+            mock.call(dwtot1file), mock.call(t1total)],
             mock_path.isfile.call_args_list)
 
 

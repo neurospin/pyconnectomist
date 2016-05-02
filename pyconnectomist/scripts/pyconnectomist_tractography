@@ -25,6 +25,8 @@ try:
                      names=["tractography_mask"])
     bredala.register("pyconnectomist.tractography.tractography",
                      names=["tractography"])
+    bredala.register("pyconnectomist.clustering.labeling",
+                     names=["fast_bundle_labeling"])
     bredala.register("pyconnectomist.wrappers",
                      names=["ConnectomistWrapper.__call__"])
 except:
@@ -131,6 +133,8 @@ preprocdir = args.preprocdir
 morphologistdir = args.morphologistdir
 if preprocdir is None:
     preprocdir = os.path.join(args.outdir, subjectid, "preproc")
+    if args.verbose > 0:
+        print("[info] Preproc: {0}.".format(preprocdir))
 if not os.path.isdir(subjdir):
     os.makedirs(subjdir)
 elif os.path.isdir(subjdir) and args.erase:
@@ -157,15 +161,15 @@ complete_tractography(
     sd_kernel_lower_fa=0.65,
     sd_kernel_upper_fa=0.85,
     sd_kernel_voxel_count=300,
-    add_cerebelum=False,
+    add_cerebelum=True,
     add_commissures=True,
     tracking_type="streamline_regularize_deterministic",
-    bundlemap="vtkbundlemap",
+    bundlemap="trkbundlemap",
     min_fiber_length=5.,
     max_fiber_length=300.,
     aperture_angle=30.,
     forward_step=0.2,
-    voxel_sampler_point_count=8,
+    voxel_sampler_point_count=1, #8,
     gibbs_temperature=1.,
     storing_increment=10,
     output_orientation_count=500,

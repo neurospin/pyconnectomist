@@ -54,6 +54,8 @@ class ConnectomistDWIModel(unittest.TestCase):
         self.kwargs = {
             "outdir": "/my/path/mock_outdir",
             "registered_dwi_dir": "/my/path/mock_regitereddwidir",
+            "eddy_motion_dir": "/my/path/mock_eddydir",
+            "rough_mask_dir": "/my/path/mock_maskdir",
             "subject_id": "Lola",
             "model": "aqbi",
             "order": 4,
@@ -155,21 +157,23 @@ class ConnectomistDWIModel(unittest.TestCase):
         self.assertEqual(len(mock_params.call_args_list), 1)
         self.assertEqual(len(self.mock_popen.call_args_list), 2)
         self.assertEqual([
-            mock.call(self.kwargs["registered_dwi_dir"], "dw_extended.ima"),
-            mock.call(self.kwargs["registered_dwi_dir"], "mask_extended.ima"),
+            mock.call(self.kwargs["eddy_motion_dir"],
+                      "dw_wo_eddy_current_and_motion.ima"),
+            mock.call(self.kwargs["rough_mask_dir"], "mask.ima"),
             mock.call(self.kwargs["registered_dwi_dir"], "t1.ima"),
-            mock.call(self.kwargs["registered_dwi_dir"], "t2_extended.ima"),
+            mock.call(self.kwargs["eddy_motion_dir"],
+                      "t2_wo_eddy_current_and_motion.ima"),
             mock.call(self.kwargs["registered_dwi_dir"], "dw_to_t1.trm")],
             mock_path.join.call_args_list)
         self.assertEqual([
-            mock.call(os.path.join(self.kwargs["registered_dwi_dir"],
-                      "dw_extended.ima")),
-            mock.call(os.path.join(self.kwargs["registered_dwi_dir"],
-                      "mask_extended.ima")),
+            mock.call(os.path.join(self.kwargs["eddy_motion_dir"],
+                      "dw_wo_eddy_current_and_motion.ima")),
+            mock.call(os.path.join(self.kwargs["rough_mask_dir"],
+                      "mask.ima")),
             mock.call(os.path.join(self.kwargs["registered_dwi_dir"],
                       "t1.ima")),
-            mock.call(os.path.join(self.kwargs["registered_dwi_dir"],
-                      "t2_extended.ima")),
+            mock.call(os.path.join(self.kwargs["eddy_motion_dir"],
+                      "t2_wo_eddy_current_and_motion.ima")),
             mock.call(os.path.join(self.kwargs["registered_dwi_dir"],
                       "dw_to_t1.trm"))],
             mock_path.isfile.call_args_list)

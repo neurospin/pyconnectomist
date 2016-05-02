@@ -19,13 +19,16 @@ from pyconnectomist.exceptions import ConnectomistError
 from .model import dwi_local_modeling
 from .mask import tractography_mask
 from .tractography import tractography
+from pyconnectomist.clustering.labeling import fast_bundle_labeling
+from pyconnectomist.preproc.all_steps import STEPS as PREPROC_STEPS
 
 
 # Define steps
 STEPS = [
     "07-Local_modeling_{0}",
     "08-Tractography_mask",
-    "09-Tractography_{0}"
+    "09-Tractography_{0}",
+    "10-Fast_bundle_labeling"
 ]
 
 
@@ -65,11 +68,17 @@ def complete_tractography(
 
     2- Detect the Connectomist registration folder.
 
-    3- Compute the diffusion model.
+    3- Detect the Connectomist eddy motion correction folder.
 
-    4- Create the tractography mask.
+    4- Detect the Connectomist rough mask folder.
 
-    5- The tractography algorithm.
+    5- Compute the diffusion model.
+
+    6- Create the tractography mask.
+
+    7- The tractography algorithm.
+
+    8- Fast bundle labeling
 
     Parameters
     ----------
@@ -147,20 +156,33 @@ def complete_tractography(
         os.mkdir(outdir)
 
     # Step 2 - Detect the Connectomist registration folder
-    registered_dwi_dir = glob.glob(os.path.join(dwi_preproc_dir,
-                                                "*Anatomy_Talairach"))
-    if (len(registered_dwi_dir) != 1 or not os.path.isdir(
-            registered_dwi_dir[0])):
+    registered_dwi_dir = os.path.join(dwi_preproc_dir, PREPROC_STEPS[5])
+    if not os.path.isdir(registered_dwi_dir):
         raise ConnectomistError(
             "In '{0}' can't detect Connectomist registration "
-            "folder.".format(registered_dwi_dir))
-    registered_dwi_dir = registered_dwi_dir[0]
+            "folder '{1}'.".format(dwi_preproc_dir, PREPROC_STEPS[5]))
 
-    # Step 3 - Compute the diffusion model
+    # Step 3 - Detect the Connectomist eddy motion correction folder
+    eddy_motion_dir = os.path.join(dwi_preproc_dir, PREPROC_STEPS[4])
+    if not os.path.isdir(eddy_motion_dir):
+        raise ConnectomistError(
+            "In '{0}' can't detect Connectomist eddy motion correction "
+            "folder '{1}'.".format(dwi_preproc_dir, PREPROC_STEPS[4]))
+
+    # Step 4 - Detect the Connectomist rough mask folder
+    rough_mask_dir = os.path.join(dwi_preproc_dir, PREPROC_STEPS[1])
+    if not os.path.isdir(rough_mask_dir):
+        raise ConnectomistError(
+            "In '{0}' can't detect Connectomist rough mask "
+            "folder '{1}'.".format(dwi_preproc_dir, PREPROC_STEPS[1]))
+
+    # Step 5 - Compute the diffusion model
     model_dir = os.path.join(outdir, STEPS[0].format(model))
     dwi_local_modeling(
         model_dir,
         registered_dwi_dir,
+        eddy_motion_dir,
+        rough_mask_dir,
         subject_id,
         model=model,
         order=order,
@@ -174,7 +196,7 @@ def complete_tractography(
         sd_kernel_voxel_count=sd_kernel_voxel_count,
         path_connectomist=path_connectomist)
 
-    # Step 4 - Create the tractography mask
+    # Step 6 - Create the tractography mask
     mask_dir = os.path.join(outdir, STEPS[1])
     tractography_mask(
         mask_dir,
@@ -184,7 +206,7 @@ def complete_tractography(
         add_commissures=add_commissures,
         path_connectomist=path_connectomist)
 
-    # Step 5 - The tractography algorithm
+    # Step 7 - The tractography algorithm
     tractography_dir = os.path.join(outdir, STEPS[2].format(tracking_type))
     tractography(
         tractography_dir,
@@ -203,4 +225,22 @@ def complete_tractography(
         gibbs_temperature=gibbs_temperature,
         storing_increment=storing_increment,
         output_orientation_count=output_orientation_count,
+        path_connectomist=path_connectomist)
+
+    # Step 8 - Fast bundle labeling
+    labeling_dir = os.path.join(outdir, STEPS[3])
+    paths_bundle_map = glob.glob(
+        os.path.join(tractography_dir, "*.bundlesdata"))
+    fast_bundle_labeling(
+        labeling_dir,
+        registered_dwi_dir,
+        morphologist_dir,
+        subject_id,
+        paths_bundle_map,
+        atlas="Guevara long bundle",
+        custom_atlas_dir=None,
+        bundle_names=None,
+        nb_fibers_to_process_at_once=50000,
+        resample_fibers=True,
+        remove_temporary_files=True,
         path_connectomist=path_connectomist)
