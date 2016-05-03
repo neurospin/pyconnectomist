@@ -29,6 +29,7 @@ else:
 
 # pyConnectomist import
 from pyconnectomist.tractography.model import dwi_local_modeling
+from pyconnectomist.tractography.model import export_scalars_to_nifti
 from pyconnectomist.exceptions import ConnectomistBadFileError
 from pyconnectomist.exceptions import ConnectomistError
 
@@ -67,6 +68,7 @@ class ConnectomistDWIModel(unittest.TestCase):
             "sd_kernel_lower_fa": 0.65,
             "sd_kernel_upper_fa": 0.85,
             "sd_kernel_voxel_count": 300,
+            "rgbscale": 1.0,
             "path_connectomist": "/my/path/mock_connectomist"
         }
 
@@ -177,6 +179,68 @@ class ConnectomistDWIModel(unittest.TestCase):
             mock.call(os.path.join(self.kwargs["registered_dwi_dir"],
                       "dw_to_t1.trm"))],
             mock_path.isfile.call_args_list)
+
+
+class ConnectomistModelExport(unittest.TestCase):
+    """ Test the Connectomist 'Local modeling' tab Nifti export:
+    'pyconnectomist.tractography.model.export_scalars_to_nifti'
+    """
+    def setUp(self):
+        """ Define Function parameters.
+        """
+        self.kwargs = {
+            "model_dir": "/my/path/mock_modeldir",
+            "model": "qba",
+            "outdir": "/my/path/mock_outdir",
+            "gfafilename": "gfa",
+            "mdfilename": "md"
+        }
+
+    @mock.patch("pyconnectomist.tractography.model.os.mkdir")
+    def test_badfileerror_execution(self, mock_mkdir):
+        """ A wrong input -> raise ConnectomistBadFileError.
+        """
+        # Test execution
+        self.assertRaises(ConnectomistBadFileError,
+                          export_scalars_to_nifti, **self.kwargs)
+
+    @mock.patch("pyconnectomist.tractography.model.ptk_gis_to_nifti")
+    @mock.patch("pyconnectomist.tractography.model.os.path.isdir")
+    @mock.patch("pyconnectomist.tractography.model.os.path.isfile")
+    @mock.patch("pyconnectomist.tractography.model.os.mkdir")
+    def test_normal_execution(self, mock_mkdir, mock_isfile, mock_isdir,
+                              mock_conversion):
+        """ Test the normal behaviour of the function.
+        """
+        # Set the mocked functions returned values
+        mock_isfile.side_effect = [True, True]
+        mock_isdir.side_effect = [False]
+        mock_conversion.side_effect = lambda *x: x[-1]
+
+        # Test execution
+        outfiles = export_scalars_to_nifti(**self.kwargs)
+        expected_outfiles = (
+            os.path.join(self.kwargs["outdir"],
+                         self.kwargs["gfafilename"] + ".nii.gz"),
+            os.path.join(self.kwargs["outdir"],
+                         self.kwargs["mdfilename"] + ".nii.gz"))
+        expected_files = [
+            os.path.join(
+                self.kwargs["model_dir"],
+                "{0}_gfa.ima".format(self.kwargs["model"])),
+            os.path.join(
+                self.kwargs["model_dir"],
+                "{0}_mean_diffusivity.ima".format(self.kwargs["model"]))]
+        self.assertEqual(expected_outfiles, outfiles)
+        self.assertEqual([mock.call(self.kwargs["outdir"])],
+                         mock_isdir.call_args_list)
+        self.assertEqual([mock.call(self.kwargs["outdir"])],
+                         mock_mkdir.call_args_list)
+        self.assertEqual([mock.call(elem) for elem in expected_files],
+                         mock_isfile.call_args_list)
+        self.assertEqual([mock.call(expected_files[0], expected_outfiles[0]),
+                          mock.call(expected_files[1], expected_outfiles[1])],
+                         mock_conversion.call_args_list)
 
 
 if __name__ == "__main__":

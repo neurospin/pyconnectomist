@@ -16,6 +16,7 @@ fake return string.
 # System import
 import unittest
 import sys
+import os
 # COMPATIBILITY: since python 3.3 mock is included in unittest module
 python_version = sys.version_info
 if python_version[:2] <= (3, 3):
@@ -27,6 +28,7 @@ else:
 
 # pyConnectomist import
 from pyconnectomist.tractography.mask import tractography_mask
+from pyconnectomist.tractography.mask import export_mask_to_nifti
 from pyconnectomist.exceptions import ConnectomistBadFileError
 
 
@@ -97,6 +99,57 @@ class ConnectomistMask(unittest.TestCase):
             mock.call("nobias_{0}.nii.gz".format(self.kwargs["subject_id"])),
             mock.call("voronoi_{0}.nii.gz".format(self.kwargs["subject_id"]))],
             mock_path.isfile.call_args_list)
+
+
+class ConnectomistMaskExport(unittest.TestCase):
+    """ Test the Connectomist 'Tractography mask' tab Nifti export:
+    'pyconnectomist.tractography.mask.export_mask_to_nifti'
+    """
+    def setUp(self):
+        """ Define Function parameters.
+        """
+        self.kwargs = {
+            "mask_dir": "/my/path/mock_maskdir",
+            "outdir": "/my/path/mock_outdir",
+            "filename": "mask"
+        }
+
+    @mock.patch("pyconnectomist.tractography.mask.os.mkdir")
+    def test_badfileerror_execution(self, mock_mkdir):
+        """ A wrong input -> raise ConnectomistBadFileError.
+        """
+        # Test execution
+        self.assertRaises(ConnectomistBadFileError,
+                          export_mask_to_nifti, **self.kwargs)
+
+    @mock.patch("pyconnectomist.tractography.mask.ptk_gis_to_nifti")
+    @mock.patch("pyconnectomist.tractography.mask.os.path.isdir")
+    @mock.patch("pyconnectomist.tractography.mask.os.path.isfile")
+    @mock.patch("pyconnectomist.tractography.mask.os.mkdir")
+    def test_normal_execution(self, mock_mkdir, mock_isfile, mock_isdir,
+                              mock_conversion):
+        """ Test the normal behaviour of the function.
+        """
+        # Set the mocked functions returned values
+        mock_isfile.side_effect = [True]
+        mock_isdir.side_effect = [False]
+        mock_conversion.side_effect = lambda *x: x[-1]
+
+        # Test execution
+        outfile = export_mask_to_nifti(**self.kwargs)
+        expected_outfile = os.path.join(self.kwargs["outdir"],
+                                        self.kwargs["filename"] + ".nii.gz")
+        expected_files = [
+            os.path.join(self.kwargs["mask_dir"], "tractography_mask.ima")]
+        self.assertEqual(expected_outfile, outfile)
+        self.assertEqual([mock.call(self.kwargs["outdir"])],
+                         mock_isdir.call_args_list)
+        self.assertEqual([mock.call(self.kwargs["outdir"])],
+                         mock_mkdir.call_args_list)
+        self.assertEqual([mock.call(elem) for elem in expected_files],
+                         mock_isfile.call_args_list)
+        self.assertEqual([mock.call(expected_files[0], expected_outfile)],
+                         mock_conversion.call_args_list)
 
 
 if __name__ == "__main__":

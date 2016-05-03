@@ -29,6 +29,7 @@ else:
 
 # pyConnectomist import
 from pyconnectomist.clustering.labeling import fast_bundle_labeling
+from pyconnectomist.clustering.labeling import export_bundles_to_trk
 from pyconnectomist.exceptions import ConnectomistBadFileError
 from pyconnectomist.exceptions import ConnectomistError
 
@@ -150,6 +151,59 @@ class ConnectomistFastLabeling(unittest.TestCase):
             mock.call(self.kwargs["paths_bundle_map"][1]),
             mock.call(dwtot1file), mock.call(t1total)],
             mock_path.isfile.call_args_list)
+
+
+class ConnectomistLabelingExport(unittest.TestCase):
+    """ Test the Connectomist 'Fast bundle labeling' tab Nifti export:
+    'pyconnectomist.clustering.labeling.export_bundles_to_trk'
+    """
+    def setUp(self):
+        """ Define Function parameters.
+        """
+        self.kwargs = {
+            "labeling_dir": "/my/path/mock_labelingdir",
+            "outdir": "/my/path/mock_outdir"
+        }
+
+    @mock.patch("pyconnectomist.clustering.labeling.ptk_bundle_to_trk")
+    @mock.patch("pyconnectomist.clustering.labeling.os.path.isdir")
+    @mock.patch("pyconnectomist.clustering.labeling.glob.glob")
+    @mock.patch("pyconnectomist.clustering.labeling.os.mkdir")
+    @mock.patch("pyconnectomist.clustering.labeling.os.makedirs")
+    def test_normal_execution(self, mock_mkdirs, mock_mkdir, mock_glob,
+                              mock_isdir, mock_conversion):
+        """ Test the normal behaviour of the function.
+        """
+        # Set the mocked functions returned values
+        mock_isdir.return_value = False
+        mock_conversion.side_effect = lambda *x: x[-1]
+        mock_glob.return_value = [
+            os.path.join(self.kwargs["labeling_dir"], "bundleMapsReferential",
+                         "region1", "bundle1.bundlesdata"),
+            os.path.join(self.kwargs["labeling_dir"], "bundleMapsReferential",
+                         "region2", "bundle2.bundlesdata")]
+
+        # Test execution
+        bundles = export_bundles_to_trk(**self.kwargs)
+        bundlesdata = [item.replace("bundlesdata", "bundles")
+                       for item in mock_glob.return_value]
+        expected_bundles = [
+            os.path.join(self.kwargs["outdir"], "bundles", "region1",
+                         "bundle1.trk"),
+            os.path.join(self.kwargs["outdir"], "bundles", "region2",
+                         "bundle2.trk")]
+        self.assertEqual(expected_bundles, bundles)
+        self.assertEqual([
+            mock.call(self.kwargs["outdir"]),
+            mock.call(os.path.dirname(expected_bundles[0])),
+            mock.call(os.path.dirname(expected_bundles[1]))],
+            mock_isdir.call_args_list)
+        self.assertEqual([mock.call(self.kwargs["outdir"])],
+                         mock_mkdir.call_args_list)
+        self.assertEqual([
+            mock.call(bundlesdata[0], expected_bundles[0]),
+            mock.call(bundlesdata[1], expected_bundles[1])],
+            mock_conversion.call_args_list)
 
 
 if __name__ == "__main__":

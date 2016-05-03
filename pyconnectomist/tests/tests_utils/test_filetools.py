@@ -32,7 +32,54 @@ from pyconnectomist.utils.filetools import ptk_nifti_to_gis
 from pyconnectomist.utils.filetools import ptk_gis_to_nifti
 from pyconnectomist.utils.filetools import ptk_concatenate_volumes
 from pyconnectomist.utils.filetools import ptk_split_t2_and_diffusion
+from pyconnectomist.utils.filetools import ptk_bundle_to_trk
 from pyconnectomist.utils.filetools import exec_file
+
+
+class ConnectomistBundleToTrk(unittest.TestCase):
+    """ Test the Connectomist bundles to trackvis conversion:
+    'pyconnectomist.utils.filetools.ptk_bundle_to_trk'
+    """
+    def setUp(self):
+        """ Run before each test - the mock_popen will be available and in the
+        right state in every test<something> function.
+        """
+        # Mocking popen
+        self.popen_patcher = patch("pyconnectomist.wrappers.subprocess.Popen")
+        self.mock_popen = self.popen_patcher.start()
+        mock_process = mock.Mock()
+        attrs = {
+            "communicate.return_value": ("mock_OK", "mock_NONE"),
+            "returncode": 0
+        }
+        mock_process.configure_mock(**attrs)
+        self.mock_popen.return_value = mock_process
+
+    def tearDown(self):
+        """ Run after each test.
+        """
+        self.popen_patcher.stop()
+
+    def test_badfileerror_raise(self):
+        """ A wrong input -> raise ConnectomistBadFileError.
+        """
+        # Test execution
+        self.assertRaises(ConnectomistBadFileError, ptk_bundle_to_trk,
+                          "bundle.bundles", "trk")
+
+    @mock.patch("pyconnectomist.utils.filetools.os.path")
+    def test_normal_execution(self, mock_path):
+        """ Test the normal behaviour of the function.
+        """
+        # Set the mocked functions returned values
+        mock_path.isfile.side_effect = [True]
+
+        # Test execution
+        output_file = ptk_bundle_to_trk("bundle.bundles", "trk")
+        self.assertEqual(output_file, "trk.trk")
+        self.assertEqual([mock.call("bundle.bundles")],
+                         mock_path.isfile.call_args_list)
+        self.assertTrue(len(self.mock_popen.call_args_list) == 2)
 
 
 class ConnectomistNiftiToGis(unittest.TestCase):

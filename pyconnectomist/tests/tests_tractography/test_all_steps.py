@@ -67,6 +67,7 @@ class ConnectomistTractography(unittest.TestCase):
             "gibbs_temperature": 1.,
             "storing_increment": 10,
             "output_orientation_count": 500,
+            "rgbscale": 1.0,
             "path_connectomist": "/my/path/mock_connectomist"
         }
 
@@ -103,6 +104,10 @@ class ConnectomistTractography(unittest.TestCase):
         self.assertRaises(ConnectomistError, complete_tractography,
                           **self.kwargs)
 
+    @mock.patch("pyconnectomist.tractography.all_steps.export_bundles_to_trk")
+    @mock.patch("pyconnectomist.tractography.all_steps.export_mask_to_nifti")
+    @mock.patch("pyconnectomist.tractography.all_steps."
+                "export_scalars_to_nifti")
     @mock.patch("pyconnectomist.tractography.all_steps.fast_bundle_labeling")
     @mock.patch("pyconnectomist.tractography.all_steps.dwi_local_modeling")
     @mock.patch("pyconnectomist.tractography.all_steps.tractography_mask")
@@ -112,7 +117,8 @@ class ConnectomistTractography(unittest.TestCase):
     @mock.patch("os.mkdir")
     def test_normal_execution(self, mock_mkdir, mock_path, mock_glob,
                               mock_tract, mock_mask, mock_model,
-                              mock_labeling):
+                              mock_labeling, mock_escalars, mock_emask,
+                              mock_ebundles):
         """ Test the normal behaviour of the function.
         """
         # Set the mocked functions returned values
@@ -120,6 +126,15 @@ class ConnectomistTractography(unittest.TestCase):
                                   "/my/path/mock_bundle2"]
         mock_path.isdir.side_effect = [False, True, True, True]
         mock_path.join.side_effect = lambda *x: x[0] + "/" + x[1]
+        mock_emask.return_value = self.kwargs["outdir"] + "/" + "mask"
+        mock_escalars.return_value = [
+            self.kwargs["outdir"] + "/" + "gfa",
+            self.kwargs["outdir"] + "/" + "md"
+        ]
+        mock_ebundles.return_value = [
+            self.kwargs["outdir"] + "/" + "bundles" + "/" + "bundle1",
+            self.kwargs["outdir"] + "/" + "bundles" + "/" + "bundle2"
+        ]
 
         # Test execution
         output_files = complete_tractography(**self.kwargs)
@@ -155,6 +170,10 @@ class ConnectomistTractography(unittest.TestCase):
         self.assertEqual(len(mock_tract.call_args_list), 1)
         self.assertEqual(len(mock_mask.call_args_list), 1)
         self.assertEqual(len(mock_model.call_args_list), 1)
+        self.assertEqual(
+            output_files,
+            (mock_escalars.return_value[0], mock_escalars.return_value[1],
+             mock_emask.return_value, mock_ebundles.return_value))
 
 
 if __name__ == "__main__":
