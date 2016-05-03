@@ -204,4 +204,4 @@ class PtkWrapper(object):
             error_message = ["STDOUT", "----", self.stdout, "STDERR", "----",
                              self.stderr]
             error_message = "\n".join(error_message)
-            raise ConnectomistRuntimeError(algorithm, cmd, error_message)
+            raise ConnectomistRuntimeError("PTK", self.cmd, error_message)
