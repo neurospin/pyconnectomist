@@ -17,6 +17,7 @@ from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
 from pyconnectomist.exceptions import ConnectomistBadFileError
 from pyconnectomist.exceptions import ConnectomistError
 from pyconnectomist.wrappers import ConnectomistWrapper
+from pyconnectomist.utils.filetools import ptk_gis_to_nifti
 
 # Map ODF model to index used by Connectomist
 ODF_MODEL_MAP = {
@@ -57,6 +58,7 @@ def dwi_local_modeling(
         sd_kernel_lower_fa=0.65,
         sd_kernel_upper_fa=0.85,
         sd_kernel_voxel_count=300,
+        rgbscale=1.0,
         path_connectomist=DEFAULT_CONNECTOMIST_PATH):
     """ Diffusion model estimation.
 
@@ -98,6 +100,9 @@ def dwi_local_modeling(
         upper fractional anisotrpy threshold.
     sd_kernel_voxel_count: int (optional, default 300)
         kernel size in voxels.
+    rgbscale: float (optional, default 1)
+        a multiplicative factor used to vizualize the anisotropy map over
+        the t1 map.
     path_connectomist: str (optional)
         path to the Connectomist executable.
 
@@ -142,7 +147,7 @@ def dwi_local_modeling(
         "odfType": ODF_MODEL_MAP[model],
         "viewType": ODF_MODEL_MAP[model],
         "computeOdfVolume": 0,
-        "rgbScale": 1.0,
+        "rgbScale": rgbscale,
         "outputOrientationCount": 500,
         "outputWorkDirectory": outdir,
         "fileNameDw": dwifile,
@@ -203,3 +208,54 @@ def dwi_local_modeling(
     connprocess(algorithm, parameter_file, outdir)
 
     return outdir
+
+
+def export_scalars_to_nifti(
+        model_dir,
+        model,
+        outdir=None,
+        gfafilename="gfa",
+        mdfilename="md"):
+    """ After Connectomist has done the diffusion local modeling, convert the
+    result scalar maps to Nifti.
+
+    Parameters
+    ----------
+    model_dir: str
+        path to the Connectomist 'Local modeling' directory.
+    model: str (mandatory)
+        the name of the model to be estimated: 'dot', 'sd', 'sdt', 'aqbi',
+        'sa-qbi', 'dti'.
+    outdir: str (optional)
+        path to directory where to output:
+        <outdir>/<gfafilename>.nii.gz
+        <outdir>/<mdfilename>.nii.gz
+        By default <outdir> is <model_dir>.
+    gfafilename: str (optional)
+        to change generalize anisotropy output filename, by default 'gfa'.
+    mdfilename: str (optional)
+        to change mean diffusivity output filename, by default 'md'.
+
+    Returns
+    -------
+    gfa, md: str
+        the generalize fractional anisotropy and the mean diffusivity
+        nifti images.
+    """
+    # Step 1 - Set outdir path and check directory existence
+    if outdir is None:
+        outdir = model_dir
+    else:
+        if not os.path.isdir(outdir):  # If outdir does not exist, create it
+            os.mkdir(outdir)
+
+    # Step 2 - Convert to Nifti
+    gfa = os.path.join(model_dir, "{0}_gfa.ima".format(model))
+    md = os.path.join(model_dir, "{0}_mean_diffusivity.ima".format(model))
+    for path in (gfa, md):
+        if not os.path.isfile(path):
+            raise ConnectomistBadFileError(path)
+    gfa = ptk_gis_to_nifti(gfa, os.path.join(outdir, gfafilename + ".nii.gz"))
+    md = ptk_gis_to_nifti(md, os.path.join(outdir, mdfilename + ".nii.gz"))
+
+    return gfa, md

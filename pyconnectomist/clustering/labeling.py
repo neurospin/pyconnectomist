@@ -11,13 +11,14 @@ Wrapper to Connectomist's 'Fast bundle labeling' tab.
 
 # System import
 import os
+import glob
 
 # Clindmri import
 from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
 from pyconnectomist.exceptions import ConnectomistBadFileError
 from pyconnectomist.exceptions import ConnectomistError
 from pyconnectomist.wrappers import ConnectomistWrapper
-
+from pyconnectomist.utils.filetools import ptk_bundle_to_trk
 
 # Set for checking bundle names that can take values in a finite set
 BUNDLE_NAMES = frozenset([
@@ -142,7 +143,7 @@ def fast_bundle_labeling(
                     "'{0}' bundle name not supported (must be in {1}).".format(
                         bundle_name, BUNDLE_NAMES))
     else:
-        bundle_names = " ".join(BUNDLE_NAMES)
+        bundle_names = BUNDLE_NAMES
 
     # Get Connectomist transformations
     dwtot1file = os.path.join(registered_dwi_dir, "dw_to_t1.trm")
@@ -195,3 +196,48 @@ def fast_bundle_labeling(
     connprocess(algorithm, parameter_file, outdir)
 
     return outdir
+
+
+def export_bundles_to_trk(
+        labeling_dir,
+        outdir=None):
+    """ After Connectomist has done the fibers labeling, convert the result
+    to Trackvis format.
+
+    Parameters
+    ----------
+    labeling_dir: str
+        path to the Connectomist 'Labeling' directory.
+    outdir: str (optional)
+        path to directory where to output.
+        By default <outdir> is <labeling_dir>.
+
+    Returns
+    -------
+    bundles: list of str
+        path to the labeled fiber bundles Trackvis files.
+    """
+    # Step 1 - Set outdir path and check directory existence
+    if outdir is None:
+        outdir = labeling_dir
+    else:
+        if not os.path.isdir(outdir):  # If outdir does not exist, create it
+            os.mkdir(outdir)
+
+    # Step 2 - Convert to Trackvis
+    bundles = []
+    bundles = glob.glob(os.path.join(labeling_dir, "bundleMapsReferential",
+                                     "*", "*.bundlesdata"))
+    bundles = [item.replace(".bundlesdata", ".bundles") for item in bundles]
+    for index, path in enumerate(bundles):
+        basename = os.path.basename(path)
+        basename = basename.split(".")[0]
+        dirname = os.path.dirname(path)
+        region = dirname.split(os.path.sep)[-1]
+        outbasedir = os.path.join(outdir, "bundles", region)
+        if not os.path.isdir(outbasedir):
+            os.makedirs(outbasedir)
+        trk = os.path.join(outbasedir, basename + ".trk")
+        bundles[index] = ptk_bundle_to_trk(path, trk)
+
+    return bundles

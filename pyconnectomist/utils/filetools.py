@@ -40,6 +40,40 @@ def exec_file(path):
     return exec_dict
 
 
+def ptk_bundle_to_trk(bundle, trk):
+    """ Function that wraps the PtkDwiBundleOperator command line tool from
+    Connectomist.
+
+    Parameters
+    ----------
+    bundle: str
+        path to the input Connectomist Bundles file to be converted.
+    trk: str
+        path to the output Trackvis file.
+
+    Returns
+    -------
+    trk: str
+        path to the output Trackvis file.
+    """
+    # Check input existence
+    if not os.path.isfile(bundle):
+        raise ConnectomistBadFileError(bundle)
+
+    # Add extension if there is none
+    if not trk.endswith(".trk"):
+        trk += ".trk"
+
+    # Call command line tool
+    cmd = ["PtkDwiBundleOperator", "-i", bundle, "-o", trk, "-op", "fusion",
+           "-of", "trkbundlemap", "-verbose", "False",
+           "-verbosePluginLoading", "False"]
+    ptkprocess = PtkWrapper(cmd)
+    ptkprocess()
+
+    return trk
+
+
 def ptk_nifti_to_gis(nifti, gis):
     """ Function that wraps the PtkNifti2GisConverter command line tool from
     Connectomist.
@@ -65,7 +99,7 @@ def ptk_nifti_to_gis(nifti, gis):
         raise ConnectomistBadFileError(nifti)
 
     # Add extension if there is none
-    if not gis.endswith("ima"):
+    if not gis.endswith(".ima"):
         gis += ".ima"
 
     # Call command line tool

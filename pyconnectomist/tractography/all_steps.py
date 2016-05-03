@@ -17,8 +17,11 @@ import glob
 from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
 from pyconnectomist.exceptions import ConnectomistError
 from .model import dwi_local_modeling
+from .model import export_scalars_to_nifti
 from .mask import tractography_mask
+from .mask import export_mask_to_nifti
 from .tractography import tractography
+from pyconnectomist.clustering.labeling import export_bundles_to_trk
 from pyconnectomist.clustering.labeling import fast_bundle_labeling
 from pyconnectomist.preproc.all_steps import STEPS as PREPROC_STEPS
 
@@ -50,7 +53,7 @@ def complete_tractography(
         add_cerebelum=False,
         add_commissures=True,
         tracking_type="streamline_regularize_deterministic",
-        bundlemap="vtkbundlemap",
+        bundlemap="aimsbundlemap",
         min_fiber_length=5.,
         max_fiber_length=300.,
         aperture_angle=30.,
@@ -59,6 +62,7 @@ def complete_tractography(
         gibbs_temperature=1.,
         storing_increment=10,
         output_orientation_count=500,
+        rgbscale=1.0,
         path_connectomist=DEFAULT_CONNECTOMIST_PATH):
     """ Function that runs all preprocessing tabs from Connectomist.
 
@@ -78,7 +82,13 @@ def complete_tractography(
 
     7- The tractography algorithm.
 
-    8- Fast bundle labeling
+    8- Fast bundle labeling.
+
+    9 - Export diffusion scalars.
+
+    10 - Export tractography mask.
+
+    11 - Export bundels.
 
     Parameters
     ----------
@@ -123,7 +133,7 @@ def complete_tractography(
     tracking_type: str (optional)
         the tractography algorithm: 'streamline_regularize_deterministic',
         'streamline_deterministic' or 'streamline_probabilistic'
-    bundlemap: str (optional, default 'vtkbundlemap')
+    bundlemap: str (optional, default 'aimsbundlemap')
         the bundle format.
     min_fiber_length: float (optional, default 5)
         the length threshold in mm from which fiber are considered.
@@ -144,12 +154,21 @@ def complete_tractography(
     output_orientation_count: int (optional, default 500)
         the number of the point in the sphere, default is equivalent to a
         2 degs resolution.
+    rgbscale: float (optional, default 1)
+        a multiplicative factor used to vizualize the anisotropy map over
+        the t1 map.
     path_connectomist: str (optional)
         path to the Connectomist executable.
 
     Returns
     -------
-
+    gfa, md: str
+        some scalars computed from the diffusion local model, here the
+        generalized fractional anisotropy and the mean diffusivity.
+    mask: str
+        the tractography mask.
+    bundles: list of str
+        the labeled fiber bundles.
     """
     # Step 1 - Create the tractography output directory if not existing
     if not os.path.isdir(outdir):
@@ -194,6 +213,7 @@ def complete_tractography(
         sd_kernel_lower_fa=sd_kernel_lower_fa,
         sd_kernel_upper_fa=sd_kernel_upper_fa,
         sd_kernel_voxel_count=sd_kernel_voxel_count,
+        rgbscale=rgbscale,
         path_connectomist=path_connectomist)
 
     # Step 6 - Create the tractography mask
@@ -231,6 +251,8 @@ def complete_tractography(
     labeling_dir = os.path.join(outdir, STEPS[3])
     paths_bundle_map = glob.glob(
         os.path.join(tractography_dir, "*.bundlesdata"))
+    paths_bundle_map = [item.replace(".bundlesdata", ".bundles")
+                        for item in paths_bundle_map]
     fast_bundle_labeling(
         labeling_dir,
         registered_dwi_dir,
@@ -244,3 +266,15 @@ def complete_tractography(
         resample_fibers=True,
         remove_temporary_files=True,
         path_connectomist=path_connectomist)
+
+    # Step 9 - Export diffusion scalars
+    gfa, md = export_scalars_to_nifti(model_dir, model, outdir,
+                                      gfafilename="gfa", mdfilename="md")
+
+    # Step 10 - Export tractography mask
+    mask = export_mask_to_nifti(mask_dir, outdir, "mask")
+
+    # Step 11 - Export bundels
+    bundles = export_bundles_to_trk(labeling_dir, outdir)
+
+    return gfa, md, mask, bundles

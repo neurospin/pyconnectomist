@@ -16,6 +16,7 @@ import os
 from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
 from pyconnectomist.exceptions import ConnectomistBadFileError
 from pyconnectomist.wrappers import ConnectomistWrapper
+from pyconnectomist.utils.filetools import ptk_gis_to_nifti
 
 # Boolean map used by Connectomist
 BOOL_MAP = {
@@ -95,3 +96,42 @@ def tractography_mask(
     connprocess(algorithm, parameter_file, outdir)
 
     return outdir
+
+
+def export_mask_to_nifti(
+        mask_dir,
+        outdir=None,
+        filename="mask"):
+    """ After Connectomist has done the tractography mask, convert the result
+    to Nifti.
+
+    Parameters
+    ----------
+    mask_dir: str
+        path to the Connectomist 'Tractography mask' directory.
+    outdir: str (optional)
+        path to directory where to output:
+        <outdir>/<filename>.nii.gz
+        By default <outdir> is <mask_dir>.
+    filename: str (optional)
+        to change output filename, by default 'mask'.
+
+    Returns
+    -------
+    mask: str
+        the mask nifti image.
+    """
+    # Step 1 - Set outdir path and check directory existence
+    if outdir is None:
+        outdir = mask_dir
+    else:
+        if not os.path.isdir(outdir):  # If outdir does not exist, create it
+            os.mkdir(outdir)
+
+    # Step 2 - Convert to Nifti
+    mask = os.path.join(mask_dir, "tractography_mask.ima")
+    if not os.path.isfile(mask):
+        raise ConnectomistBadFileError(mask)
+    mask = ptk_gis_to_nifti(mask, os.path.join(outdir, "%s.nii.gz" % filename))
+
+    return mask
