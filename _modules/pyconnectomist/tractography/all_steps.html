@@ -1,0 +1,423 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+    <title>PYCONNECTOMIST &mdash; pyConnectomist</title>
+  <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../../_static/css/bootstrap.min.css" media="screen" />
+
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="pyConnectomist" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+  
+   
+       <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="../../../_static/js/bootstrap.min.js" type="text/javascript"></script>
+
+  <script src="../../../_static/js/angular.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    var app = angular.module("navApp", []);
+    app.controller('navCtrl', ['$scope', '$window', function($scope, $window) {
+      $scope.isActive = function (viewLocation) {
+        var rel = $window.location.pathname.split("/")
+        rel = rel[rel.length - 1]
+        rel = rel.split(".")[0]
+        var active = (viewLocation === rel);
+        return active;};
+    }]);
+  </script>
+
+  </head>
+  <body role="document"><nav class="navbar navbar-default navbar-static-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+        <img alt="Logo" src="../../../_static/pyconnectomist.png">
+        </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse" ng-controller="navCtrl" ng-app="navApp">
+      <ul class="nav navbar-nav">
+        <li ng-class="{ active: isActive('index') }"><a href="../../../index.html">Home</a></li>
+        <li ng-class="{ active: isActive('installation') }"><a href="../../../generated/installation.html">Installation</a></li>
+        <li ng-class="{ active: isActive('documentation') }"><a href="../../../generated/documentation.html">Documentation</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+	        <li><a href="../../../generated/pyconnectomist.html">Pyconnectomist</a></li>
+<li><a href="../../../generated/pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
+<li><a href="../../../generated/pyconnectomist.tractography.html">Pyconnectomist.tractography</a></li>
+<li><a href="../../../generated/pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
+<li><a href="../../../generated/pyconnectomist.clustering.html">Pyconnectomist.clustering</a></li>
+          </ul>
+        </li>
+        <li><a href="https://github.com/AGrigis/pysphinxdoc">PYSPHINXDOC</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<div class="content-wrapper">
+    <div class="sphinxsidebar">
+      <div class="sphinxsidebarwrapper">
+
+        <!-- info setup -->
+          <p class="doc-version">
+           This documentation is for pyconnectomist <strong>version 1.0.0</strong>
+          </p>
+        <p class="citing">
+          If you use the software, please do not esitate to 
+          <a &mdash; <a href="https://github.com/neurospin/pyconnectomist">
+          Report a Bug</a>.
+        </p>
+
+      <!-- toc tree -->
+      
+
+      </div>
+    </div>
+  
+
+  <div class="content">
+      
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyconnectomist.tractography.all_steps</h1><div class="highlight"><pre>
+<span></span><span class="c1">##########################################################################</span>
+<span class="c1"># NSAp - Copyright (C) CEA, 2013 - 2016</span>
+<span class="c1"># Distributed under the terms of the CeCILL-B license, as published by</span>
+<span class="c1"># the CEA-CNRS-INRIA. Refer to the LICENSE file or to</span>
+<span class="c1"># http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html for details.</span>
+<span class="c1">##########################################################################</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Function that runs all tractography tabs from Connectomist.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System import</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+
+<span class="c1"># Wrappers of Connectomist&#39;s tabs</span>
+<span class="kn">from</span> <span class="nn">pyconnectomist</span> <span class="kn">import</span> <span class="n">DEFAULT_CONNECTOMIST_PATH</span>
+<span class="kn">from</span> <span class="nn">pyconnectomist.exceptions</span> <span class="kn">import</span> <span class="n">ConnectomistError</span>
+<span class="kn">from</span> <span class="nn">.model</span> <span class="kn">import</span> <span class="n">dwi_local_modeling</span>
+<span class="kn">from</span> <span class="nn">.model</span> <span class="kn">import</span> <span class="n">export_scalars_to_nifti</span>
+<span class="kn">from</span> <span class="nn">.mask</span> <span class="kn">import</span> <span class="n">tractography_mask</span>
+<span class="kn">from</span> <span class="nn">.mask</span> <span class="kn">import</span> <span class="n">export_mask_to_nifti</span>
+<span class="kn">from</span> <span class="nn">.tractography</span> <span class="kn">import</span> <span class="n">tractography</span>
+<span class="kn">from</span> <span class="nn">pyconnectomist.clustering.labeling</span> <span class="kn">import</span> <span class="n">export_bundles_to_trk</span>
+<span class="kn">from</span> <span class="nn">pyconnectomist.clustering.labeling</span> <span class="kn">import</span> <span class="n">fast_bundle_labeling</span>
+<span class="kn">from</span> <span class="nn">pyconnectomist.preproc.all_steps</span> <span class="kn">import</span> <span class="n">STEPS</span> <span class="k">as</span> <span class="n">PREPROC_STEPS</span>
+
+
+<span class="c1"># Define steps</span>
+<span class="n">STEPS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;07-Local_modeling_{0}&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;08-Tractography_mask&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;09-Tractography_{0}&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;10-Fast_bundle_labeling&quot;</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="complete_tractography"><a class="viewcode-back" href="../../../generated/pyconnectomist.tractography.all_steps.html#pyconnectomist.tractography.all_steps.complete_tractography">[docs]</a><span class="k">def</span> <span class="nf">complete_tractography</span><span class="p">(</span>
+        <span class="n">outdir</span><span class="p">,</span>
+        <span class="n">dwi_preproc_dir</span><span class="p">,</span>
+        <span class="n">morphologist_dir</span><span class="p">,</span>
+        <span class="n">subject_id</span><span class="p">,</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;aqbi&quot;</span><span class="p">,</span>
+        <span class="n">order</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+        <span class="n">aqbi_laplacebeltrami_sharpefactor</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">regularization_lccurvefactor</span><span class="o">=</span><span class="mf">0.006</span><span class="p">,</span>
+        <span class="n">dti_estimator</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+        <span class="n">constrained_sd</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+        <span class="n">sd_kernel_type</span><span class="o">=</span><span class="s2">&quot;symmetric_tensor&quot;</span><span class="p">,</span>
+        <span class="n">sd_kernel_lower_fa</span><span class="o">=</span><span class="mf">0.65</span><span class="p">,</span>
+        <span class="n">sd_kernel_upper_fa</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span>
+        <span class="n">sd_kernel_voxel_count</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+        <span class="n">add_cerebelum</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+        <span class="n">add_commissures</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">tracking_type</span><span class="o">=</span><span class="s2">&quot;streamline_regularize_deterministic&quot;</span><span class="p">,</span>
+        <span class="n">bundlemap</span><span class="o">=</span><span class="s2">&quot;aimsbundlemap&quot;</span><span class="p">,</span>
+        <span class="n">min_fiber_length</span><span class="o">=</span><span class="mf">5.</span><span class="p">,</span>
+        <span class="n">max_fiber_length</span><span class="o">=</span><span class="mf">300.</span><span class="p">,</span>
+        <span class="n">aperture_angle</span><span class="o">=</span><span class="mf">30.</span><span class="p">,</span>
+        <span class="n">forward_step</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+        <span class="n">voxel_sampler_point_count</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">gibbs_temperature</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span>
+        <span class="n">storing_increment</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">output_orientation_count</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+        <span class="n">rgbscale</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">model_only</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+        <span class="n">path_connectomist</span><span class="o">=</span><span class="n">DEFAULT_CONNECTOMIST_PATH</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Function that runs all preprocessing tabs from Connectomist.</span>
+
+<span class="sd">    Steps:</span>
+
+<span class="sd">    1- Create the tractography output directory if not existing.</span>
+
+<span class="sd">    2- Detect the Connectomist registration folder.</span>
+
+<span class="sd">    3- Detect the Connectomist eddy motion correction folder.</span>
+
+<span class="sd">    4- Detect the Connectomist rough mask folder.</span>
+
+<span class="sd">    5- Compute the diffusion model.</span>
+
+<span class="sd">    6- Create the tractography mask.</span>
+
+<span class="sd">    7- The tractography algorithm.</span>
+
+<span class="sd">    8- Fast bundle labeling.</span>
+
+<span class="sd">    9 - Export diffusion scalars.</span>
+
+<span class="sd">    10 - Export tractography mask.</span>
+
+<span class="sd">    11 - Export bundels.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    outdir: str (mandatory)</span>
+<span class="sd">        path to folder where all the tractography will be done.</span>
+<span class="sd">    dwi_preproc_dir: str (mandatory)</span>
+<span class="sd">        path to folder where all the preprocessings have been done.</span>
+<span class="sd">    morphologist_dir: str</span>
+<span class="sd">        path to Morphologist directory.</span>
+<span class="sd">    subject_id: str (mandatory)</span>
+<span class="sd">        subject identifier.</span>
+<span class="sd">    model: str (optional, default &#39;aqbi&#39;)</span>
+<span class="sd">        the name of the model to be estimated: &#39;dot&#39;, &#39;sd&#39;, &#39;sdt&#39;, &#39;aqbi&#39;,</span>
+<span class="sd">        &#39;sa-qbi&#39;, &#39;dti&#39;.</span>
+<span class="sd">    order: int (optional, default 4)</span>
+<span class="sd">        the order of the desired model which is directly related to the</span>
+<span class="sd">        nulber of maxima that can be modeled considering the data SNR. For</span>
+<span class="sd">        &#39;dti&#39; model this parameter has no effect since it is by definition a</span>
+<span class="sd">        second order model</span>
+<span class="sd">    aqbi_laplacebeltrami_sharpefactor: float (optional default 0.0)</span>
+<span class="sd">        for &#39;aqbi&#39; and &#39;sa-aqbi&#39; sharpening factor.</span>
+<span class="sd">    regularization_lccurvefactor: float (optional default 0.006)</span>
+<span class="sd">        for &#39;sdt&#39;, &#39;aqbi&#39; and &#39;sa-aqbi&#39; regularization factor.</span>
+<span class="sd">    dti_estimator: str (optional default &#39;linear&#39;)</span>
+<span class="sd">        the secend order tensor fitting method (&#39;linear&#39; or &#39;positive&#39;).</span>
+<span class="sd">        The second method generates positive definite tensors.</span>
+<span class="sd">    constrained_sd: bool (optiona, default False)</span>
+<span class="sd">        If True us constrained spherical deconvolution.</span>
+<span class="sd">    sd_kernel_type: str (optional, default &#39;symmetric_tensor&#39;)</span>
+<span class="sd">        the spherical deconvolution kernel type: &#39;symmetric_tensor&#39; or</span>
+<span class="sd">        &#39;normal&#39;.</span>
+<span class="sd">    sd_kernel_lower_fa: float (optional, default 0.65)</span>
+<span class="sd">        lower fractional anisotrpy threshold.</span>
+<span class="sd">    sd_kernel_upper_fa: float (optional, default 0.85)</span>
+<span class="sd">        upper fractional anisotrpy threshold.</span>
+<span class="sd">    sd_kernel_voxel_count: int (optional, default 300)</span>
+<span class="sd">        kernel size in voxels.</span>
+<span class="sd">    add_cerebelum: bool (optional, default False)</span>
+<span class="sd">        if True add the cerebelum to the tractography mask.</span>
+<span class="sd">    add_commissures: bool (optional, default False)</span>
+<span class="sd">        if True add the commissures to the tractography mask.</span>
+<span class="sd">    tracking_type: str (optional)</span>
+<span class="sd">        the tractography algorithm: &#39;streamline_regularize_deterministic&#39;,</span>
+<span class="sd">        &#39;streamline_deterministic&#39; or &#39;streamline_probabilistic&#39;</span>
+<span class="sd">    bundlemap: str (optional, default &#39;aimsbundlemap&#39;)</span>
+<span class="sd">        the bundle format.</span>
+<span class="sd">    min_fiber_length: float (optional, default 5)</span>
+<span class="sd">        the length threshold in mm from which fiber are considered.</span>
+<span class="sd">    max_fiber_length: float (optional, default 300)</span>
+<span class="sd">        the length threshold in mm under which fiber are considered.</span>
+<span class="sd">    aperture_angle: float (optional, default 30)</span>
+<span class="sd">        the search angle in degrees: for the probabilistic tractography,</span>
+<span class="sd">        the default connectomist value is 90 degs.</span>
+<span class="sd">    forward_step: float (optional, default 0.2)</span>
+<span class="sd">        the propagation step in mm.</span>
+<span class="sd">    voxel_sampler_point_count: int (optional, default 1)</span>
+<span class="sd">        the number of seeds per voxel</span>
+<span class="sd">    gibbs_temperature: float (optional, default 1)</span>
+<span class="sd">        the temperature if the Gibb&#39;s sampler: only for the probabilistic</span>
+<span class="sd">        tractography.</span>
+<span class="sd">    storing_increment: int (optional, default 10)</span>
+<span class="sd">        undersample the fiber with the specified rate.</span>
+<span class="sd">    output_orientation_count: int (optional, default 500)</span>
+<span class="sd">        the number of the point in the sphere, default is equivalent to a</span>
+<span class="sd">        2 degs resolution.</span>
+<span class="sd">    rgbscale: float (optional, default 1)</span>
+<span class="sd">        a multiplicative factor used to vizualize the anisotropy map over</span>
+<span class="sd">        the t1 map.</span>
+<span class="sd">    model_only: bool (optional, default False)</span>
+<span class="sd">        if True estimate only the diffusion model, skip steps 6, 7, 8, 10 ,11.</span>
+<span class="sd">    path_connectomist: str (optional)</span>
+<span class="sd">        path to the Connectomist executable.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    gfa, md: str</span>
+<span class="sd">        some scalars computed from the diffusion local model, here the</span>
+<span class="sd">        generalized fractional anisotropy and the mean diffusivity.</span>
+<span class="sd">    mask: str</span>
+<span class="sd">        the tractography mask.</span>
+<span class="sd">    bundles: list of str</span>
+<span class="sd">        the labeled fiber bundles.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Step 1 - Create the tractography output directory if not existing</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">outdir</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span>
+
+    <span class="c1"># Step 2 - Detect the Connectomist registration folder</span>
+    <span class="n">registered_dwi_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dwi_preproc_dir</span><span class="p">,</span> <span class="n">PREPROC_STEPS</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">registered_dwi_dir</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ConnectomistError</span><span class="p">(</span>
+            <span class="s2">&quot;In &#39;{0}&#39; can&#39;t detect Connectomist registration &quot;</span>
+            <span class="s2">&quot;folder &#39;{1}&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dwi_preproc_dir</span><span class="p">,</span> <span class="n">PREPROC_STEPS</span><span class="p">[</span><span class="mi">5</span><span class="p">]))</span>
+
+    <span class="c1"># Step 3 - Detect the Connectomist eddy motion correction folder</span>
+    <span class="n">eddy_motion_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dwi_preproc_dir</span><span class="p">,</span> <span class="n">PREPROC_STEPS</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">eddy_motion_dir</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ConnectomistError</span><span class="p">(</span>
+            <span class="s2">&quot;In &#39;{0}&#39; can&#39;t detect Connectomist eddy motion correction &quot;</span>
+            <span class="s2">&quot;folder &#39;{1}&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dwi_preproc_dir</span><span class="p">,</span> <span class="n">PREPROC_STEPS</span><span class="p">[</span><span class="mi">4</span><span class="p">]))</span>
+
+    <span class="c1"># Step 4 - Detect the Connectomist rough mask folder</span>
+    <span class="n">rough_mask_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dwi_preproc_dir</span><span class="p">,</span> <span class="n">PREPROC_STEPS</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">rough_mask_dir</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ConnectomistError</span><span class="p">(</span>
+            <span class="s2">&quot;In &#39;{0}&#39; can&#39;t detect Connectomist rough mask &quot;</span>
+            <span class="s2">&quot;folder &#39;{1}&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dwi_preproc_dir</span><span class="p">,</span> <span class="n">PREPROC_STEPS</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+    <span class="c1"># Step 5 - Compute the diffusion model</span>
+    <span class="n">model_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">STEPS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
+    <span class="n">dwi_local_modeling</span><span class="p">(</span>
+        <span class="n">model_dir</span><span class="p">,</span>
+        <span class="n">registered_dwi_dir</span><span class="p">,</span>
+        <span class="n">eddy_motion_dir</span><span class="p">,</span>
+        <span class="n">rough_mask_dir</span><span class="p">,</span>
+        <span class="n">subject_id</span><span class="p">,</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+        <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
+        <span class="n">aqbi_laplacebeltrami_sharpefactor</span><span class="o">=</span><span class="n">aqbi_laplacebeltrami_sharpefactor</span><span class="p">,</span>
+        <span class="n">regularization_lccurvefactor</span><span class="o">=</span><span class="n">regularization_lccurvefactor</span><span class="p">,</span>
+        <span class="n">dti_estimator</span><span class="o">=</span><span class="n">dti_estimator</span><span class="p">,</span>
+        <span class="n">constrained_sd</span><span class="o">=</span><span class="n">constrained_sd</span><span class="p">,</span>
+        <span class="n">sd_kernel_type</span><span class="o">=</span><span class="n">sd_kernel_type</span><span class="p">,</span>
+        <span class="n">sd_kernel_lower_fa</span><span class="o">=</span><span class="n">sd_kernel_lower_fa</span><span class="p">,</span>
+        <span class="n">sd_kernel_upper_fa</span><span class="o">=</span><span class="n">sd_kernel_upper_fa</span><span class="p">,</span>
+        <span class="n">sd_kernel_voxel_count</span><span class="o">=</span><span class="n">sd_kernel_voxel_count</span><span class="p">,</span>
+        <span class="n">rgbscale</span><span class="o">=</span><span class="n">rgbscale</span><span class="p">,</span>
+        <span class="n">path_connectomist</span><span class="o">=</span><span class="n">path_connectomist</span><span class="p">)</span>
+
+    <span class="c1"># Step 6 - Create the tractography mask</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">model_only</span><span class="p">:</span>
+        <span class="n">mask_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">STEPS</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">tractography_mask</span><span class="p">(</span>
+            <span class="n">mask_dir</span><span class="p">,</span>
+            <span class="n">subject_id</span><span class="p">,</span>
+            <span class="n">morphologist_dir</span><span class="o">=</span><span class="n">morphologist_dir</span><span class="p">,</span>
+            <span class="n">add_cerebelum</span><span class="o">=</span><span class="n">add_cerebelum</span><span class="p">,</span>
+            <span class="n">add_commissures</span><span class="o">=</span><span class="n">add_commissures</span><span class="p">,</span>
+            <span class="n">path_connectomist</span><span class="o">=</span><span class="n">path_connectomist</span><span class="p">)</span>
+
+    <span class="c1"># Step 7 - The tractography algorithm</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">model_only</span><span class="p">:</span>
+        <span class="n">tractography_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">STEPS</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tracking_type</span><span class="p">))</span>
+        <span class="n">tractography</span><span class="p">(</span>
+            <span class="n">tractography_dir</span><span class="p">,</span>
+            <span class="n">subject_id</span><span class="p">,</span>
+            <span class="n">mask_dir</span><span class="p">,</span>
+            <span class="n">model</span><span class="p">,</span>
+            <span class="n">model_dir</span><span class="p">,</span>
+            <span class="n">registered_dwi_dir</span><span class="p">,</span>
+            <span class="n">tracking_type</span><span class="o">=</span><span class="n">tracking_type</span><span class="p">,</span>
+            <span class="n">bundlemap</span><span class="o">=</span><span class="n">bundlemap</span><span class="p">,</span>
+            <span class="n">min_fiber_length</span><span class="o">=</span><span class="n">min_fiber_length</span><span class="p">,</span>
+            <span class="n">max_fiber_length</span><span class="o">=</span><span class="n">max_fiber_length</span><span class="p">,</span>
+            <span class="n">aperture_angle</span><span class="o">=</span><span class="n">aperture_angle</span><span class="p">,</span>
+            <span class="n">forward_step</span><span class="o">=</span><span class="n">forward_step</span><span class="p">,</span>
+            <span class="n">voxel_sampler_point_count</span><span class="o">=</span><span class="n">voxel_sampler_point_count</span><span class="p">,</span>
+            <span class="n">gibbs_temperature</span><span class="o">=</span><span class="n">gibbs_temperature</span><span class="p">,</span>
+            <span class="n">storing_increment</span><span class="o">=</span><span class="n">storing_increment</span><span class="p">,</span>
+            <span class="n">output_orientation_count</span><span class="o">=</span><span class="n">output_orientation_count</span><span class="p">,</span>
+            <span class="n">path_connectomist</span><span class="o">=</span><span class="n">path_connectomist</span><span class="p">)</span>
+
+    <span class="c1"># Step 8 - Fast bundle labeling</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">model_only</span><span class="p">:</span>
+        <span class="n">labeling_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">STEPS</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="n">paths_bundle_map</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tractography_dir</span><span class="p">,</span> <span class="s2">&quot;*.bundlesdata&quot;</span><span class="p">))</span>
+        <span class="n">paths_bundle_map</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.bundlesdata&quot;</span><span class="p">,</span> <span class="s2">&quot;.bundles&quot;</span><span class="p">)</span>
+                            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">paths_bundle_map</span><span class="p">]</span>
+        <span class="n">fast_bundle_labeling</span><span class="p">(</span>
+            <span class="n">labeling_dir</span><span class="p">,</span>
+            <span class="n">registered_dwi_dir</span><span class="p">,</span>
+            <span class="n">morphologist_dir</span><span class="p">,</span>
+            <span class="n">subject_id</span><span class="p">,</span>
+            <span class="n">paths_bundle_map</span><span class="p">,</span>
+            <span class="n">atlas</span><span class="o">=</span><span class="s2">&quot;Guevara long bundle&quot;</span><span class="p">,</span>
+            <span class="n">custom_atlas_dir</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+            <span class="n">bundle_names</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+            <span class="n">nb_fibers_to_process_at_once</span><span class="o">=</span><span class="mi">50000</span><span class="p">,</span>
+            <span class="n">resample_fibers</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">remove_temporary_files</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">path_connectomist</span><span class="o">=</span><span class="n">path_connectomist</span><span class="p">)</span>
+
+    <span class="c1"># Step 9 - Export diffusion scalars</span>
+    <span class="n">gfa</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">export_scalars_to_nifti</span><span class="p">(</span><span class="n">model_dir</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">outdir</span><span class="p">,</span>
+                                      <span class="n">gfafilename</span><span class="o">=</span><span class="s2">&quot;gfa&quot;</span><span class="p">,</span> <span class="n">mdfilename</span><span class="o">=</span><span class="s2">&quot;md&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Step 10 - Export tractography mask</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">model_only</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">export_mask_to_nifti</span><span class="p">(</span><span class="n">mask_dir</span><span class="p">,</span> <span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Step 11 - Export bundels</span>
+    <span class="n">bundles</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">model_only</span><span class="p">:</span>
+        <span class="n">bundles</span> <span class="o">=</span> <span class="n">export_bundles_to_trk</span><span class="p">(</span><span class="n">labeling_dir</span><span class="p">,</span> <span class="n">outdir</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">gfa</span><span class="p">,</span> <span class="n">md</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">bundles</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer">
+    </div>
+  </div>
+  
+</div>
+
+<div class="footer">
+    &copy; 2016, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
+</div>
+  </body>
+</html>

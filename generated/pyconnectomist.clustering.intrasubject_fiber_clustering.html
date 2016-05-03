@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+    <title>PYCONNECTOMIST &mdash; pyConnectomist</title>
+  <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../_static/css/bootstrap.min.css" media="screen" />
+
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyConnectomist" href="../index.html" />
+  
+   
+       <script type="text/javascript" src="../_static/sidebar.js"></script>
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="../_static/js/bootstrap.min.js" type="text/javascript"></script>
+
+  <script src="../_static/js/angular.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    var app = angular.module("navApp", []);
+    app.controller('navCtrl', ['$scope', '$window', function($scope, $window) {
+      $scope.isActive = function (viewLocation) {
+        var rel = $window.location.pathname.split("/")
+        rel = rel[rel.length - 1]
+        rel = rel.split(".")[0]
+        var active = (viewLocation === rel);
+        return active;};
+    }]);
+  </script>
+
+  </head>
+  <body role="document"><nav class="navbar navbar-default navbar-static-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+        <img alt="Logo" src="../_static/pyconnectomist.png">
+        </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse" ng-controller="navCtrl" ng-app="navApp">
+      <ul class="nav navbar-nav">
+        <li ng-class="{ active: isActive('index') }"><a href="../index.html">Home</a></li>
+        <li ng-class="{ active: isActive('installation') }"><a href="installation.html">Installation</a></li>
+        <li ng-class="{ active: isActive('documentation') }"><a href="documentation.html">Documentation</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+	        <li><a href="pyconnectomist.html">Pyconnectomist</a></li>
+<li><a href="pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
+<li><a href="pyconnectomist.tractography.html">Pyconnectomist.tractography</a></li>
+<li><a href="pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
+<li><a href="pyconnectomist.clustering.html">Pyconnectomist.clustering</a></li>
+          </ul>
+        </li>
+        <li><a href="https://github.com/AGrigis/pysphinxdoc">PYSPHINXDOC</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<div class="content-wrapper">
+    <div class="sphinxsidebar">
+      <div class="sphinxsidebarwrapper">
+
+        <!-- info setup -->
+          <p class="doc-version">
+           This documentation is for pyconnectomist <strong>version 1.0.0</strong>
+          </p>
+        <p class="citing">
+          If you use the software, please do not esitate to 
+          <a &mdash; <a href="https://github.com/neurospin/pyconnectomist">
+          Report a Bug</a>.
+        </p>
+
+      <!-- toc tree -->
+      <ul class="simple">
+</ul>
+
+
+      </div>
+    </div>
+  
+
+  <div class="content">
+      
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <span class="target" id="module-pyconnectomist.clustering.intrasubject_fiber_clustering"></span><dl class="function">
+<dt id="pyconnectomist.clustering.intrasubject_fiber_clustering.intrasubject_fiber_clustering">
+<code class="descclassname">pyconnectomist.clustering.intrasubject_fiber_clustering.</code><code class="descname">intrasubject_fiber_clustering</code><span class="sig-paren">(</span><em>outdir</em>, <em>bundle_map_paths</em>, <em>unbiased_t1_path</em>, <em>voronoi_mask_path</em>, <em>dw_to_t1_trf_path</em>, <em>t1_to_tal_trf_path</em>, <em>t2_path</em>, <em>subject_id=None</em>, <em>subject_type='adult'</em>, <em>discard_corpus_callosum_fibers=False</em>, <em>segment_right_hemisphere=True</em>, <em>segment_left_hemisphere=True</em>, <em>segment_interhemispheric=True</em>, <em>segment_cerebellum=True</em>, <em>roi_mask_path=None</em>, <em>roi_labels=None</em>, <em>roi_names=None</em>, <em>min_fiber_length=20</em>, <em>max_fiber_length=200</em>, <em>voxel_sampler_point_count=13</em>, <em>percent_of_bundle_extraction_for_first_clustering=60</em>, <em>perform_a_second_clustering=True</em>, <em>percent_of_bundle_extraction_for_second_clustering=40</em>, <em>max_distance_for_fasicle_merging=10</em>, <em>length_groups='20 35 50 65 80 95 110 130 150 175 200'</em>, <em>nb_fibers_per_voxels=5</em>, <em>parcel_size=3</em>, <em>min_parcel_size=12</em>, <em>min_cluster_size=300</em>, <em>average_nb_of_cluster=40</em>, <em>average_cluster_size=2000</em>, <em>small_size_for_isolated_cluster=4</em>, <em>connectivity_matrix_threshold=1</em>, <em>min_nb_of_fibers_by_bundle_before_watershed=5</em>, <em>nb_of_fibers_per_voxel=1</em>, <em>min_nb_of_fibers_by_bundle_after_watershed=5</em>, <em>min_nb_of_fibers_by_bundle_in_output_bundle_file=10</em>, <em>centroid='mean_fiber'</em>, <em>remove_temporary_files=True</em>, <em>path_connectomist='/i2bm/local/Ubuntu-14.04-x86_64/ptk/bin/connectomist'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/clustering/intrasubject_fiber_clustering.html#intrasubject_fiber_clustering"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.clustering.intrasubject_fiber_clustering.intrasubject_fiber_clustering" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper to Connectomist&#8217;s &#8220;Fiber clustering&#8221; tab.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>outdir: str</strong></p>
+<blockquote>
+<div><p>Path to Connectomist output work directory.</p>
+</div></blockquote>
+<p><strong>bundle_map_paths: list of str</strong></p>
+<blockquote>
+<div><p>Paths to the bundle maps.</p>
+</div></blockquote>
+<p><strong>unbiased_t1_path: str</strong></p>
+<p><strong>voronoi_mask_path: str</strong></p>
+<p><strong>dw_to_t1_trf_path: str</strong></p>
+<p><strong>t1_to_tal_trf_path: str</strong></p>
+<p><strong>t2_path: str</strong></p>
+<p><strong>subject_id: str, optional</strong></p>
+<p><strong>subject_type: {&#8220;adult&#8221;, &#8220;child&#8221;}, optional</strong></p>
+<p><strong>discard_corpus_callosum_fibers: bool, optional</strong></p>
+<p><strong>segment_right_hemisphere: bool, optional</strong></p>
+<p><strong>segment_left_hemisphere: bool, optional</strong></p>
+<p><strong>segment_interhemispheric: bool, optional</strong></p>
+<p><strong>segment_cerebellum: bool, optional</strong></p>
+<p><strong>roi_mask_path: None or str, optional</strong></p>
+<p><strong>roi_labels: None or list of str, optional</strong></p>
+<p><strong>roi_names: None or list of str, optional</strong></p>
+<p><strong>min_fiber_length: int, optional</strong></p>
+<p><strong>max_fiber_length: int, optional</strong></p>
+<p><strong>voxel_sampler_point_count: int, optional</strong></p>
+<p><strong>percent_of_bundle_extraction_for_first_clustering: int, optional</strong></p>
+<p><strong>perform_a_second_clustering: bool, optional</strong></p>
+<p><strong>percent_of_bundle_extraction_for_second_clustering: int, optional</strong></p>
+<p><strong>max_distance_for_fasicle_merging: int, optional</strong></p>
+<p><strong>length_groups: str, optional</strong></p>
+<p><strong>nb_fibers_per_voxels: int, optional</strong></p>
+<p><strong>parcel_size: int, optional</strong></p>
+<p><strong>min_parcel_size: int, optional</strong></p>
+<p><strong>min_cluster_size: int, optional</strong></p>
+<p><strong>average_nb_of_cluster: int, optional</strong></p>
+<p><strong>average_cluster_size: int, optional</strong></p>
+<p><strong>small_size_for_isolated_cluster: int, optional</strong></p>
+<p><strong>connectivity_matrix_threshold: int, optional</strong></p>
+<p><strong>min_nb_of_fibers_by_bundle_before_watershed: int, optional</strong></p>
+<p><strong>nb_of_fibers_per_voxel: int, optional</strong></p>
+<p><strong>min_nb_of_fibers_by_bundle_after_watershed: int, optional</strong></p>
+<p><strong>min_nb_of_fibers_by_bundle_in_output_bundle_file: int, optional</strong></p>
+<p><strong>centroid: {&#8220;mean_fiber&#8221;, &#8220;closest_fiber&#8221;}</strong></p>
+<p><strong>remove_temporary_files: bool, optional</strong></p>
+<p><strong>path_connectomist: str, optional</strong></p>
+<blockquote>
+<div><p>Path to the Connectomist executable.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">outdir: str</p>
+<blockquote class="last">
+<div><p>path to Connectomist&#8217;s output directory.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer">
+    </div>
+  </div>
+  
+</div>
+
+<div class="footer">
+    &copy; 2016, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
+</div>
+  </body>
+</html>

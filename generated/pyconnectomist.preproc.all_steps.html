@@ -1,0 +1,262 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+    <title>PYCONNECTOMIST &mdash; pyConnectomist</title>
+  <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../_static/css/bootstrap.min.css" media="screen" />
+
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyConnectomist" href="../index.html" />
+  
+   
+       <script type="text/javascript" src="../_static/sidebar.js"></script>
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="../_static/js/bootstrap.min.js" type="text/javascript"></script>
+
+  <script src="../_static/js/angular.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    var app = angular.module("navApp", []);
+    app.controller('navCtrl', ['$scope', '$window', function($scope, $window) {
+      $scope.isActive = function (viewLocation) {
+        var rel = $window.location.pathname.split("/")
+        rel = rel[rel.length - 1]
+        rel = rel.split(".")[0]
+        var active = (viewLocation === rel);
+        return active;};
+    }]);
+  </script>
+
+  </head>
+  <body role="document"><nav class="navbar navbar-default navbar-static-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+        <img alt="Logo" src="../_static/pyconnectomist.png">
+        </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse" ng-controller="navCtrl" ng-app="navApp">
+      <ul class="nav navbar-nav">
+        <li ng-class="{ active: isActive('index') }"><a href="../index.html">Home</a></li>
+        <li ng-class="{ active: isActive('installation') }"><a href="installation.html">Installation</a></li>
+        <li ng-class="{ active: isActive('documentation') }"><a href="documentation.html">Documentation</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+	        <li><a href="pyconnectomist.html">Pyconnectomist</a></li>
+<li><a href="pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
+<li><a href="pyconnectomist.tractography.html">Pyconnectomist.tractography</a></li>
+<li><a href="pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
+<li><a href="pyconnectomist.clustering.html">Pyconnectomist.clustering</a></li>
+          </ul>
+        </li>
+        <li><a href="https://github.com/AGrigis/pysphinxdoc">PYSPHINXDOC</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<div class="content-wrapper">
+    <div class="sphinxsidebar">
+      <div class="sphinxsidebarwrapper">
+
+        <!-- info setup -->
+          <p class="doc-version">
+           This documentation is for pyconnectomist <strong>version 1.0.0</strong>
+          </p>
+        <p class="citing">
+          If you use the software, please do not esitate to 
+          <a &mdash; <a href="https://github.com/neurospin/pyconnectomist">
+          Report a Bug</a>.
+        </p>
+
+      <!-- toc tree -->
+      <ul class="simple">
+</ul>
+
+
+      </div>
+    </div>
+  
+
+  <div class="content">
+      
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <span class="target" id="module-pyconnectomist.preproc.all_steps"></span><p>Function that runs all preprocessing tabs from Connectomist.</p>
+<dl class="function">
+<dt id="pyconnectomist.preproc.all_steps.complete_preprocessing">
+<code class="descclassname">pyconnectomist.preproc.all_steps.</code><code class="descname">complete_preprocessing</code><span class="sig-paren">(</span><em>outdir</em>, <em>subject_id</em>, <em>dwi</em>, <em>bval</em>, <em>bvec</em>, <em>manufacturer</em>, <em>delta_TE</em>, <em>partial_fourier_factor</em>, <em>parallel_acceleration_factor</em>, <em>b0_magnitude</em>, <em>b0_phase=None</em>, <em>invertX=True</em>, <em>invertY=False</em>, <em>invertZ=False</em>, <em>negative_sign=False</em>, <em>echo_spacing=None</em>, <em>EPI_factor=None</em>, <em>b0_field=3.0</em>, <em>water_fat_shift=4.68</em>, <em>delete_steps=False</em>, <em>morphologist_dir=None</em>, <em>path_connectomist='/i2bm/local/Ubuntu-14.04-x86_64/ptk/bin/connectomist'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/preproc/all_steps.html#complete_preprocessing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.preproc.all_steps.complete_preprocessing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function that runs all preprocessing tabs from Connectomist.</p>
+<p>Steps:</p>
+<p>1- Create the preprocessing output directory if not existing.</p>
+<p>2- Import files to Connectomist and choose q-space model.</p>
+<p>3- Create a brain mask.</p>
+<p>4- Detect and correct outlying diffusion slices.</p>
+<p>5- Susceptibility correction.</p>
+<p>6- Eddy current and motion correction.</p>
+<p>7- Export result as a Nifti with a .bval and a .bvec.</p>
+<p>8- Export outliers.</p>
+<p>9- Registration t1 - dwi.</p>
+<p>10- Delete intermediate files and directories if requested.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>outdir: str (mandatory)</strong></p>
+<blockquote>
+<div><p>path to folder where all the preprocessing will be done.</p>
+</div></blockquote>
+<p><strong>subject_id: str (mandatory)</strong></p>
+<blockquote>
+<div><p>subject identifier.</p>
+</div></blockquote>
+<p><strong>dwi: str (mandatory)</strong></p>
+<blockquote>
+<div><p>path to input Nifti DW data.</p>
+</div></blockquote>
+<p><strong>bval: str (mandatory)</strong></p>
+<blockquote>
+<div><p>path to Nifti&#8217;s associated .bval file.</p>
+</div></blockquote>
+<p><strong>bvec: str (mandatory)</strong></p>
+<blockquote>
+<div><p>path to Nifti&#8217;s associated .bval file.</p>
+</div></blockquote>
+<p><strong>manufacturer: str (mandatory)</strong></p>
+<blockquote>
+<div><p>manufacturer name (e.g. &#8220;Siemens&#8221;, &#8220;GE&#8221;...).</p>
+</div></blockquote>
+<p><strong>delta_TE: float (mandatory)</strong></p>
+<blockquote>
+<div><p>difference in msec between the 2 echoes in B0 magnitude map
+acquisition.</p>
+</div></blockquote>
+<p><strong>partial_fourier_factor: float (mandatory)</strong></p>
+<blockquote>
+<div><p>percentage of k-space plane acquired (]0;1]).</p>
+</div></blockquote>
+<p><strong>parallel_acceleration_factor: int (mandatory)</strong></p>
+<blockquote>
+<div><p>nb of parallel acquisition in k-space plane.</p>
+</div></blockquote>
+<p><strong>b0_magnitude: str (mandatory)</strong></p>
+<blockquote>
+<div><p>path to B0 magnitude map, also contains phase for GE.</p>
+</div></blockquote>
+<p><strong>b0_phase: str (optional, default None)</strong></p>
+<blockquote>
+<div><p>not for GE, path to B0 phase map.</p>
+</div></blockquote>
+<p><strong>invertX: bool (optional, default True)</strong></p>
+<blockquote>
+<div><p>if True invert x-axis in diffusion model.</p>
+</div></blockquote>
+<p><strong>invertY: bool (optional, default False)</strong></p>
+<blockquote>
+<div><p>same as invertX but for y-axis.</p>
+</div></blockquote>
+<p><strong>invertZ: bool (optional, default False)</strong></p>
+<blockquote>
+<div><p>same as invertX but for z-axis.</p>
+</div></blockquote>
+<p><strong>negative_sign: bool (optional, default False)</strong></p>
+<blockquote>
+<div><p>if True invert direction of unwarping in usceptibility-distortion
+correction.</p>
+</div></blockquote>
+<p><strong>echo_spacing: float (optional, default None)</strong></p>
+<blockquote>
+<div><p>not for Philips, acquisition time in ms between 2 centers of 2
+consecutively acquired lines in k-space.</p>
+</div></blockquote>
+<p><strong>EPI_factor: int (optional, default None)</strong></p>
+<blockquote>
+<div><p>nb of echoes after one RF pulse, i.e. echo train length.</p>
+</div></blockquote>
+<p><strong>b0_field: float (optional, default 3.0)</strong></p>
+<blockquote>
+<div><p>Philips only, B0 field intensity, by default 3.0.</p>
+</div></blockquote>
+<p><strong>water_fat_shift: float (optional, default 4.68)</strong></p>
+<blockquote>
+<div><p>Philips only, default 4.68 pixels.</p>
+</div></blockquote>
+<p><strong>delete_steps: bool (optional, default False)</strong></p>
+<blockquote>
+<div><p>if True remove all intermediate files and directories at the end of
+preprocessing, to keep only 4 files: preprocessed Nifti + bval + bvec
++ outliers.py</p>
+</div></blockquote>
+<p><strong>morphologist_dir: str (optional, default None)</strong></p>
+<blockquote>
+<div><p>the path to the morphologist processings.</p>
+</div></blockquote>
+<p><strong>path_connectomist: str (optional)</strong></p>
+<blockquote>
+<div><p>path to the Connectomist executable.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">preproc_dwi, preproc_bval, preproc_bvec: str</p>
+<blockquote>
+<div><p>paths to output diffusion Nifti files.</p>
+</div></blockquote>
+<p>preproc_outliers: str</p>
+<blockquote class="last">
+<div><p>path to the outliers detection summary.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer">
+    </div>
+  </div>
+  
+</div>
+
+<div class="footer">
+    &copy; 2016, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
+</div>
+  </body>
+</html>

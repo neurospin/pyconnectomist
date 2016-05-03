@@ -1,0 +1,34 @@
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+:orphan:
+
+Documentation of *pyconnectomist.utils*
+========================================
+
+
+Utility functions wrapped from the Connectomist package.
+
+
+.. raw:: html
+
+    <br/>    <!-- Block section -->
+    <table border='1' class='docutils' style='width:100%'>
+    <colgroup><col width='25%'/><col width='75%'/></colgroup>
+    <tbody valign='top'>
+    <tr class='row-odd'>
+    <td><a class='reference internal' href='pyconnectomist.utils.filetools.html'><em>pyconnectomist.utils.filetools</em></a></td>
+    <td>
+        <p>Utility functions wrapped from the Connectomist package to convert, compress,
+    split, concatenate data files.</p>
+    </td>
+    </tr>
+    <tr class='row-even'>
+    <td><a class='reference internal' href='pyconnectomist.utils.dwitools.html'><em>pyconnectomist.utils.dwitools</em></a></td>
+    <td>
+        <p>Utility Python functions to load diffusion metadata.</p>
+    </td>
+    </tr>
+    </tbody>
+
+
+    </table>

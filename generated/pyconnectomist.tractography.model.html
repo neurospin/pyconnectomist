@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+    <title>PYCONNECTOMIST &mdash; pyConnectomist</title>
+  <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../_static/css/bootstrap.min.css" media="screen" />
+
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyConnectomist" href="../index.html" />
+  
+   
+       <script type="text/javascript" src="../_static/sidebar.js"></script>
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="../_static/js/bootstrap.min.js" type="text/javascript"></script>
+
+  <script src="../_static/js/angular.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    var app = angular.module("navApp", []);
+    app.controller('navCtrl', ['$scope', '$window', function($scope, $window) {
+      $scope.isActive = function (viewLocation) {
+        var rel = $window.location.pathname.split("/")
+        rel = rel[rel.length - 1]
+        rel = rel.split(".")[0]
+        var active = (viewLocation === rel);
+        return active;};
+    }]);
+  </script>
+
+  </head>
+  <body role="document"><nav class="navbar navbar-default navbar-static-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+        <img alt="Logo" src="../_static/pyconnectomist.png">
+        </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse" ng-controller="navCtrl" ng-app="navApp">
+      <ul class="nav navbar-nav">
+        <li ng-class="{ active: isActive('index') }"><a href="../index.html">Home</a></li>
+        <li ng-class="{ active: isActive('installation') }"><a href="installation.html">Installation</a></li>
+        <li ng-class="{ active: isActive('documentation') }"><a href="documentation.html">Documentation</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+	        <li><a href="pyconnectomist.html">Pyconnectomist</a></li>
+<li><a href="pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
+<li><a href="pyconnectomist.tractography.html">Pyconnectomist.tractography</a></li>
+<li><a href="pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
+<li><a href="pyconnectomist.clustering.html">Pyconnectomist.clustering</a></li>
+          </ul>
+        </li>
+        <li><a href="https://github.com/AGrigis/pysphinxdoc">PYSPHINXDOC</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<div class="content-wrapper">
+    <div class="sphinxsidebar">
+      <div class="sphinxsidebarwrapper">
+
+        <!-- info setup -->
+          <p class="doc-version">
+           This documentation is for pyconnectomist <strong>version 1.0.0</strong>
+          </p>
+        <p class="citing">
+          If you use the software, please do not esitate to 
+          <a &mdash; <a href="https://github.com/neurospin/pyconnectomist">
+          Report a Bug</a>.
+        </p>
+
+      <!-- toc tree -->
+      <ul class="simple">
+</ul>
+
+
+      </div>
+    </div>
+  
+
+  <div class="content">
+      
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <span class="target" id="module-pyconnectomist.tractography.model"></span><p>Wrapper to Connectomist&#8217;s &#8216;Local modeling&#8217; tab.</p>
+<dl class="function">
+<dt id="pyconnectomist.tractography.model.dwi_local_modeling">
+<code class="descclassname">pyconnectomist.tractography.model.</code><code class="descname">dwi_local_modeling</code><span class="sig-paren">(</span><em>outdir</em>, <em>registered_dwi_dir</em>, <em>eddy_motion_dir</em>, <em>rough_mask_dir</em>, <em>subject_id</em>, <em>model='aqbi'</em>, <em>order=4</em>, <em>aqbi_laplacebeltrami_sharpefactor=0.0</em>, <em>regularization_lccurvefactor=0.006</em>, <em>dti_estimator='linear'</em>, <em>constrained_sd=False</em>, <em>sd_kernel_type='symmetric_tensor'</em>, <em>sd_kernel_lower_fa=0.65</em>, <em>sd_kernel_upper_fa=0.85</em>, <em>sd_kernel_voxel_count=300</em>, <em>rgbscale=1.0</em>, <em>path_connectomist='/i2bm/local/Ubuntu-14.04-x86_64/ptk/bin/connectomist'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/tractography/model.html#dwi_local_modeling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.tractography.model.dwi_local_modeling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Diffusion model estimation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>outdir: str</strong></p>
+<blockquote>
+<div><p>path to Connectomist output work directory.</p>
+</div></blockquote>
+<p><strong>registered_dwi_dir: str</strong></p>
+<blockquote>
+<div><p>path to Connectomist register DWI directory.</p>
+</div></blockquote>
+<p><strong>eddy_motion_dir: str</strong></p>
+<blockquote>
+<div><p>path to Connectomist eddy motion correction directory.</p>
+</div></blockquote>
+<p><strong>rough_mask_dir: str</strong></p>
+<blockquote>
+<div><p>path to Connectomist rough mask directory.</p>
+</div></blockquote>
+<p><strong>subject_id: str</strong></p>
+<blockquote>
+<div><p>the subject code in study.</p>
+</div></blockquote>
+<p><strong>model: str (optional, default &#8216;aqbi&#8217;)</strong></p>
+<blockquote>
+<div><p>the name of the model to be estimated: &#8216;dot&#8217;, &#8216;sd&#8217;, &#8216;sdt&#8217;, &#8216;aqbi&#8217;,
+&#8216;sa-qbi&#8217;, &#8216;dti&#8217;.</p>
+</div></blockquote>
+<p><strong>order: int (optional, default 4)</strong></p>
+<blockquote>
+<div><p>the order of the desired model which is directly related to the
+nulber of maxima that can be modeled considering the data SNR. For
+&#8216;dti&#8217; model this parameter has no effect since it is by definition a
+second order model</p>
+</div></blockquote>
+<p><strong>aqbi_laplacebeltrami_sharpefactor: float (optional default 0.0)</strong></p>
+<blockquote>
+<div><p>for &#8216;aqbi&#8217; and &#8216;sa-aqbi&#8217; sharpening factor.</p>
+</div></blockquote>
+<p><strong>regularization_lccurvefactor: float (optional default 0.006)</strong></p>
+<blockquote>
+<div><p>for &#8216;sdt&#8217;, &#8216;aqbi&#8217; and &#8216;sa-aqbi&#8217; regularization factor.</p>
+</div></blockquote>
+<p><strong>dti_estimator: str (optional default &#8216;linear&#8217;)</strong></p>
+<blockquote>
+<div><p>the secend order tensor fitting method: &#8216;linear&#8217; or &#8216;positive&#8217;.
+The seconf method generates positive definite tensors.</p>
+</div></blockquote>
+<p><strong>constrained_sd: bool (optiona, default False)</strong></p>
+<blockquote>
+<div><p>If True us constrained spherical deconvolution.</p>
+</div></blockquote>
+<p><strong>sd_kernel_type: str (optional, default &#8216;symmetric_tensor&#8217;)</strong></p>
+<blockquote>
+<div><p>the spherical deconvolution kernel type: &#8216;symmetric_tensor&#8217; or
+&#8216;normal&#8217;.</p>
+</div></blockquote>
+<p><strong>sd_kernel_lower_fa: float (optional, default 0.65)</strong></p>
+<blockquote>
+<div><p>lower fractional anisotrpy threshold.</p>
+</div></blockquote>
+<p><strong>sd_kernel_upper_fa: float (optional, default 0.85)</strong></p>
+<blockquote>
+<div><p>upper fractional anisotrpy threshold.</p>
+</div></blockquote>
+<p><strong>sd_kernel_voxel_count: int (optional, default 300)</strong></p>
+<blockquote>
+<div><p>kernel size in voxels.</p>
+</div></blockquote>
+<p><strong>rgbscale: float (optional, default 1)</strong></p>
+<blockquote>
+<div><p>a multiplicative factor used to vizualize the anisotropy map over
+the t1 map.</p>
+</div></blockquote>
+<p><strong>path_connectomist: str (optional)</strong></p>
+<blockquote>
+<div><p>path to the Connectomist executable.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">outdir: str</p>
+<blockquote class="last">
+<div><p>path to Connectomist&#8217;s output directory.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyconnectomist.tractography.model.export_scalars_to_nifti">
+<code class="descclassname">pyconnectomist.tractography.model.</code><code class="descname">export_scalars_to_nifti</code><span class="sig-paren">(</span><em>model_dir</em>, <em>model</em>, <em>outdir=None</em>, <em>gfafilename='gfa'</em>, <em>mdfilename='md'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/tractography/model.html#export_scalars_to_nifti"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.tractography.model.export_scalars_to_nifti" title="Permalink to this definition">¶</a></dt>
+<dd><p>After Connectomist has done the diffusion local modeling, convert the
+result scalar maps to Nifti.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>model_dir: str</strong></p>
+<blockquote>
+<div><p>path to the Connectomist &#8216;Local modeling&#8217; directory.</p>
+</div></blockquote>
+<p><strong>model: str (mandatory)</strong></p>
+<blockquote>
+<div><p>the name of the model to be estimated: &#8216;dot&#8217;, &#8216;sd&#8217;, &#8216;sdt&#8217;, &#8216;aqbi&#8217;,
+&#8216;sa-qbi&#8217;, &#8216;dti&#8217;.</p>
+</div></blockquote>
+<p><strong>outdir: str (optional)</strong></p>
+<blockquote>
+<div><p>path to directory where to output:
+&lt;outdir&gt;/&lt;gfafilename&gt;.nii.gz
+&lt;outdir&gt;/&lt;mdfilename&gt;.nii.gz
+By default &lt;outdir&gt; is &lt;model_dir&gt;.</p>
+</div></blockquote>
+<p><strong>gfafilename: str (optional)</strong></p>
+<blockquote>
+<div><p>to change generalize anisotropy output filename, by default &#8216;gfa&#8217;.</p>
+</div></blockquote>
+<p><strong>mdfilename: str (optional)</strong></p>
+<blockquote>
+<div><p>to change mean diffusivity output filename, by default &#8216;md&#8217;.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">gfa, md: str</p>
+<blockquote class="last">
+<div><p>the generalize fractional anisotropy and the mean diffusivity
+nifti images.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer">
+    </div>
+  </div>
+  
+</div>
+
+<div class="footer">
+    &copy; 2016, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
+</div>
+  </body>
+</html>

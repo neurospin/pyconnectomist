@@ -1,0 +1,346 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+    <title>PYCONNECTOMIST &mdash; pyConnectomist</title>
+  <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../_static/css/bootstrap.min.css" media="screen" />
+
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="pyConnectomist" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+  
+   
+       <script type="text/javascript" src="../../_static/sidebar.js"></script>
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="../../_static/js/bootstrap.min.js" type="text/javascript"></script>
+
+  <script src="../../_static/js/angular.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    var app = angular.module("navApp", []);
+    app.controller('navCtrl', ['$scope', '$window', function($scope, $window) {
+      $scope.isActive = function (viewLocation) {
+        var rel = $window.location.pathname.split("/")
+        rel = rel[rel.length - 1]
+        rel = rel.split(".")[0]
+        var active = (viewLocation === rel);
+        return active;};
+    }]);
+  </script>
+
+  </head>
+  <body role="document"><nav class="navbar navbar-default navbar-static-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+        <img alt="Logo" src="../../_static/pyconnectomist.png">
+        </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse" ng-controller="navCtrl" ng-app="navApp">
+      <ul class="nav navbar-nav">
+        <li ng-class="{ active: isActive('index') }"><a href="../../index.html">Home</a></li>
+        <li ng-class="{ active: isActive('installation') }"><a href="../../generated/installation.html">Installation</a></li>
+        <li ng-class="{ active: isActive('documentation') }"><a href="../../generated/documentation.html">Documentation</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+	        <li><a href="../../generated/pyconnectomist.html">Pyconnectomist</a></li>
+<li><a href="../../generated/pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
+<li><a href="../../generated/pyconnectomist.tractography.html">Pyconnectomist.tractography</a></li>
+<li><a href="../../generated/pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
+<li><a href="../../generated/pyconnectomist.clustering.html">Pyconnectomist.clustering</a></li>
+          </ul>
+        </li>
+        <li><a href="https://github.com/AGrigis/pysphinxdoc">PYSPHINXDOC</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<div class="content-wrapper">
+    <div class="sphinxsidebar">
+      <div class="sphinxsidebarwrapper">
+
+        <!-- info setup -->
+          <p class="doc-version">
+           This documentation is for pyconnectomist <strong>version 1.0.0</strong>
+          </p>
+        <p class="citing">
+          If you use the software, please do not esitate to 
+          <a &mdash; <a href="https://github.com/neurospin/pyconnectomist">
+          Report a Bug</a>.
+        </p>
+
+      <!-- toc tree -->
+      
+
+      </div>
+    </div>
+  
+
+  <div class="content">
+      
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyconnectomist.wrappers</h1><div class="highlight"><pre>
+<span></span><span class="c1">###############################################################</span>
+<span class="c1"># NSAp - Copyright (C) CEA, 2015 - 2016</span>
+<span class="c1"># Distributed under the terms of the CeCILL-B license, as published by</span>
+<span class="c1"># the CEA-CNRS-INRIA. Refer to the LICENSE file or to</span>
+<span class="c1"># http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html for details.</span>
+<span class="c1">##########################################################################</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Common wrappers from Connectomist package.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System import</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">pprint</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+
+<span class="c1"># Clindmri import</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">DEFAULT_CONNECTOMIST_PATH</span>
+<span class="kn">from</span> <span class="nn">.info</span> <span class="kn">import</span> <span class="n">PTK_RELEASE</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">ConnectomistError</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">ConnectomistConfigurationError</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">ConnectomistRuntimeError</span>
+
+
+<div class="viewcode-block" id="ConnectomistWrapper"><a class="viewcode-back" href="../../generated/pyconnectomist.wrappers.html#pyconnectomist.wrappers.ConnectomistWrapper">[docs]</a><span class="k">class</span> <span class="nc">ConnectomistWrapper</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Parent class for the wrapping of Connectomist functions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_connectomist</span><span class="o">=</span><span class="n">DEFAULT_CONNECTOMIST_PATH</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Initialize the ConnectomistWrapper class by setting properly the</span>
+<span class="sd">        environment and checking that the Connectomist software is installed.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path_connectomist: str (optional)</span>
+<span class="sd">            path to the Connectomist executable.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ConnectomistConfigurationError: If Connectomist is not configured.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Class parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_connectomist</span> <span class="o">=</span> <span class="n">path_connectomist</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">environment</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span>
+
+        <span class="c1"># Check Connectomist can be configured</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connectomist_version_check</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_connectomist</span><span class="p">)</span>
+
+        <span class="c1"># Check Connectomist has been configured so the command can be found</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> --help&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_connectomist</span><span class="p">)</span>
+        <span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
+            <span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">env</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="p">,</span>
+            <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+            <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exitcode</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">returncode</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exitcode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ConnectomistConfigurationError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_connectomist</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">algorithm</span><span class="p">,</span> <span class="n">parameter_file</span><span class="p">,</span> <span class="n">outdir</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Run the Connectomist &#39;algorithm&#39; (tab in UI).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        algorithm: str</span>
+<span class="sd">            name of Connectomist&#39;s tab in ui.</span>
+<span class="sd">        paramter_file: str</span>
+<span class="sd">            path to the parameter file for the tab in ui: executable python</span>
+<span class="sd">            file to set the connectomist tab input parameters.</span>
+<span class="sd">        outdir: str</span>
+<span class="sd">            path to directory where the algorithm outputs.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ConnectomistError: If Connectomist call failed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Command to be run.</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> -p </span><span class="si">%s</span><span class="s2"> -f </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_connectomist</span><span class="p">,</span> <span class="n">algorithm</span><span class="p">,</span>
+                                  <span class="n">parameter_file</span><span class="p">)</span>
+
+        <span class="c1"># Run the command.</span>
+        <span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
+            <span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">env</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="p">,</span>
+            <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+            <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exitcode</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">returncode</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exitcode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">error_message</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;STDOUT&quot;</span><span class="p">,</span> <span class="s2">&quot;----&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="s2">&quot;STDERR&quot;</span><span class="p">,</span> <span class="s2">&quot;----&quot;</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">stderr</span><span class="p">]</span>
+            <span class="n">error_message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">ConnectomistRuntimeError</span><span class="p">(</span><span class="n">algorithm</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">error_message</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="ConnectomistWrapper.create_parameter_file"><a class="viewcode-back" href="../../generated/pyconnectomist.wrappers.html#pyconnectomist.wrappers.ConnectomistWrapper.create_parameter_file">[docs]</a>    <span class="k">def</span> <span class="nf">create_parameter_file</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">algorithm</span><span class="p">,</span> <span class="n">parameters_dict</span><span class="p">,</span> <span class="n">outdir</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Writes the &#39;.py&#39; file Connectomist uses when working in command</span>
+<span class="sd">        line.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        algorithm: str</span>
+<span class="sd">            name of Connectomist&#39;s tab.</span>
+<span class="sd">        parameters_dict: dict</span>
+<span class="sd">            parameter values for the tab.</span>
+<span class="sd">        outdir: str</span>
+<span class="sd">            path to directory where to write the parameter file.</span>
+<span class="sd">            If not existing the directory is created.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        parameter_file: str</span>
+<span class="sd">            path to the created parameter file for the tab in ui: executable</span>
+<span class="sd">            python file to set the connectomist tab input parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If not existing create outdir</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">outdir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span>
+
+        <span class="c1"># Write the parameter file</span>
+        <span class="n">parameter_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.py&quot;</span> <span class="o">%</span> <span class="n">algorithm</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">parameter_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;algorithmName = &#39;</span><span class="si">%s</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">algorithm</span><span class="p">)</span>
+            <span class="c1"># Pretty text to write, without the first &quot;{&quot;</span>
+            <span class="n">pretty_dict</span> <span class="o">=</span> <span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">parameters_dict</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;parameterValues = {</span><span class="se">\n</span><span class="s2"> &quot;</span> <span class="o">+</span> <span class="n">pretty_dict</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">parameter_file</span></div>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_connectomist_version_check</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">path_connectomist</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Check that a tested Connectomist version is installed.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        version: str</span>
+<span class="sd">            the configured PTK version.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If a configuration file is passed</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path_connectomist</span><span class="p">):</span>
+
+            <span class="c1"># Check PTK version</span>
+            <span class="n">version_regex</span> <span class="o">=</span> <span class="s2">&quot;PTK_RELEASE=.*</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_connectomist</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">open_file</span><span class="p">:</span>
+                <span class="n">match_object</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">version_regex</span><span class="p">,</span> <span class="n">open_file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">match_object</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">message</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Can&#39;t detect &#39;PTK_RELEASE&#39; version from &quot;</span>
+                               <span class="s2">&quot;configuration file &#39;{0}&#39;. You have not &quot;</span>
+                               <span class="s2">&quot;provided a valid configuration file.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                   <span class="n">path_connectomist</span><span class="p">))</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">version</span> <span class="o">=</span> <span class="n">match_object</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">version</span> <span class="o">!=</span> <span class="n">PTK_RELEASE</span><span class="p">:</span>
+                        <span class="n">message</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Installed &#39;{0}&#39; version of Connectomist &quot;</span>
+                                   <span class="s2">&quot;not tested. Currently supported version &quot;</span>
+                                   <span class="s2">&quot;is &#39;{1}&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">version</span><span class="p">,</span> <span class="n">PTK_RELEASE</span><span class="p">))</span>
+                        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">version</span>
+
+        <span class="c1"># Configuration file is not a file</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;&#39;{0}&#39; is not a valid file, can&#39;t configure &quot;</span>
+                       <span class="s2">&quot;Connectomist.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path_connectomist</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PtkWrapper"><a class="viewcode-back" href="../../generated/pyconnectomist.wrappers.html#pyconnectomist.wrappers.PtkWrapper">[docs]</a><span class="k">class</span> <span class="nc">PtkWrapper</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Parent class for the wrapping of Connectomist Ptk functions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Initialize the PtkWrapper class</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cmd: list of str (mandatory)</span>
+<span class="sd">            the Morphologist command to execute.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Class parameter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmd</span> <span class="o">=</span> <span class="n">cmd</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">environment</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span>
+
+        <span class="c1"># Check Connectomist Ptk has been configured so the command can b</span>
+        <span class="c1"># found</span>
+        <span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;which&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmd</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+            <span class="n">env</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="p">,</span>
+            <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+            <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exitcode</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">returncode</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exitcode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ConnectomistConfigurationError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmd</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Run the Connectomist Ptk command.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Execute the command</span>
+        <span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cmd</span><span class="p">,</span>
+            <span class="n">env</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="p">,</span>
+            <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+            <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exitcode</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">returncode</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exitcode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">error_message</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;STDOUT&quot;</span><span class="p">,</span> <span class="s2">&quot;----&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="s2">&quot;STDERR&quot;</span><span class="p">,</span> <span class="s2">&quot;----&quot;</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">stderr</span><span class="p">]</span>
+            <span class="n">error_message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">ConnectomistRuntimeError</span><span class="p">(</span><span class="s2">&quot;PTK&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmd</span><span class="p">,</span> <span class="n">error_message</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer">
+    </div>
+  </div>
+  
+</div>
+
+<div class="footer">
+    &copy; 2016, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
+</div>
+  </body>
+</html>

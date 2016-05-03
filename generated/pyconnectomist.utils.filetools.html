@@ -1,0 +1,364 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+    <title>PYCONNECTOMIST &mdash; pyConnectomist</title>
+  <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../_static/css/bootstrap.min.css" media="screen" />
+
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyConnectomist" href="../index.html" />
+  
+   
+       <script type="text/javascript" src="../_static/sidebar.js"></script>
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="../_static/js/bootstrap.min.js" type="text/javascript"></script>
+
+  <script src="../_static/js/angular.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    var app = angular.module("navApp", []);
+    app.controller('navCtrl', ['$scope', '$window', function($scope, $window) {
+      $scope.isActive = function (viewLocation) {
+        var rel = $window.location.pathname.split("/")
+        rel = rel[rel.length - 1]
+        rel = rel.split(".")[0]
+        var active = (viewLocation === rel);
+        return active;};
+    }]);
+  </script>
+
+  </head>
+  <body role="document"><nav class="navbar navbar-default navbar-static-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+        <img alt="Logo" src="../_static/pyconnectomist.png">
+        </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse" ng-controller="navCtrl" ng-app="navApp">
+      <ul class="nav navbar-nav">
+        <li ng-class="{ active: isActive('index') }"><a href="../index.html">Home</a></li>
+        <li ng-class="{ active: isActive('installation') }"><a href="installation.html">Installation</a></li>
+        <li ng-class="{ active: isActive('documentation') }"><a href="documentation.html">Documentation</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+	        <li><a href="pyconnectomist.html">Pyconnectomist</a></li>
+<li><a href="pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
+<li><a href="pyconnectomist.tractography.html">Pyconnectomist.tractography</a></li>
+<li><a href="pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
+<li><a href="pyconnectomist.clustering.html">Pyconnectomist.clustering</a></li>
+          </ul>
+        </li>
+        <li><a href="https://github.com/AGrigis/pysphinxdoc">PYSPHINXDOC</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<div class="content-wrapper">
+    <div class="sphinxsidebar">
+      <div class="sphinxsidebarwrapper">
+
+        <!-- info setup -->
+          <p class="doc-version">
+           This documentation is for pyconnectomist <strong>version 1.0.0</strong>
+          </p>
+        <p class="citing">
+          If you use the software, please do not esitate to 
+          <a &mdash; <a href="https://github.com/neurospin/pyconnectomist">
+          Report a Bug</a>.
+        </p>
+
+      <!-- toc tree -->
+      <ul class="simple">
+</ul>
+
+
+      </div>
+    </div>
+  
+
+  <div class="content">
+      
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <span class="target" id="module-pyconnectomist.utils.filetools"></span><p>Utility functions wrapped from the Connectomist package to convert, compress,
+split, concatenate data files.</p>
+<dl class="function">
+<dt id="pyconnectomist.utils.filetools.exec_file">
+<code class="descclassname">pyconnectomist.utils.filetools.</code><code class="descname">exec_file</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/utils/filetools.html#exec_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.utils.filetools.exec_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a text file that defines a Python dict.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>path: str</strong></p>
+<blockquote>
+<div><p>the path to a text file containing a Python dict.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">exec_dict: dict</p>
+<blockquote class="last">
+<div><p>the file content as a Python dictionary.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyconnectomist.utils.filetools.gz_compress">
+<code class="descclassname">pyconnectomist.utils.filetools.</code><code class="descname">gz_compress</code><span class="sig-paren">(</span><em>file_to_compress</em>, <em>clean=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/utils/filetools.html#gz_compress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.utils.filetools.gz_compress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compress a file with gzip, the output path is the same but with
+&#8221;.gz&#8221; extension.</p>
+<p>The function raises ConnectomistBadFileError if the input file does not
+exist or if the output compressed file is not created.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>file_to_compress: str</strong></p>
+<blockquote>
+<div><p>the file to compress.</p>
+</div></blockquote>
+<p><strong>clean: bool (optional, default True)</strong></p>
+<blockquote>
+<div><p>If &#8216;clean&#8217; is True, the input file is deleted, to keep only the
+compressed version.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">gz_file: str</p>
+<blockquote class="last">
+<div><p>the compressed output file.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyconnectomist.utils.filetools.ptk_bundle_to_trk">
+<code class="descclassname">pyconnectomist.utils.filetools.</code><code class="descname">ptk_bundle_to_trk</code><span class="sig-paren">(</span><em>bundle</em>, <em>trk</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/utils/filetools.html#ptk_bundle_to_trk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.utils.filetools.ptk_bundle_to_trk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function that wraps the PtkDwiBundleOperator command line tool from
+Connectomist.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>bundle: str</strong></p>
+<blockquote>
+<div><p>path to the input Connectomist Bundles file to be converted.</p>
+</div></blockquote>
+<p><strong>trk: str</strong></p>
+<blockquote>
+<div><p>path to the output Trackvis file.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">trk: str</p>
+<blockquote class="last">
+<div><p>path to the output Trackvis file.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyconnectomist.utils.filetools.ptk_concatenate_volumes">
+<code class="descclassname">pyconnectomist.utils.filetools.</code><code class="descname">ptk_concatenate_volumes</code><span class="sig-paren">(</span><em>path_inputs</em>, <em>path_output</em>, <em>axis='t'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/utils/filetools.html#ptk_concatenate_volumes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.utils.filetools.ptk_concatenate_volumes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function that wraps the PtkCat command line tool from Connectomist,
+with only the basic arguments. It allows concatenating volumes. In
+particular to concatenante T2 and DW volumes in one file at the end of
+the preprocessing.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>path_inputs: list of str</strong></p>
+<blockquote>
+<div><p>paths to input volumes.</p>
+</div></blockquote>
+<p><strong>path_output: str</strong></p>
+<blockquote>
+<div><p>path to output volume.</p>
+</div></blockquote>
+<p><strong>axis: str (optional, default &#8216;t&#8217;)</strong></p>
+<blockquote>
+<div><p>axis along which the concatenation is done.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">path_output: str</p>
+<blockquote>
+<div><p>path to output gis volume.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>ConnectomistRuntimeError: If call to PtkCat failed.</strong></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyconnectomist.utils.filetools.ptk_gis_to_nifti">
+<code class="descclassname">pyconnectomist.utils.filetools.</code><code class="descname">ptk_gis_to_nifti</code><span class="sig-paren">(</span><em>gis</em>, <em>nifti</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/utils/filetools.html#ptk_gis_to_nifti"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.utils.filetools.ptk_gis_to_nifti" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function that wraps the PtkGis2NiftiConverter command line tool from
+Connectomist.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>gis: str</strong></p>
+<blockquote>
+<div><p>path to the Gis .ima file.</p>
+</div></blockquote>
+<p><strong>nifti: str</strong></p>
+<blockquote>
+<div><p>path to the output Nifti file.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">nifti: str</p>
+<blockquote>
+<div><p>path to output file.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>ConnectomistRuntimeError: If call to PtkGis2NiftiConverter failed.</strong></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyconnectomist.utils.filetools.ptk_nifti_to_gis">
+<code class="descclassname">pyconnectomist.utils.filetools.</code><code class="descname">ptk_nifti_to_gis</code><span class="sig-paren">(</span><em>nifti</em>, <em>gis</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/utils/filetools.html#ptk_nifti_to_gis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.utils.filetools.ptk_nifti_to_gis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function that wraps the PtkNifti2GisConverter command line tool from
+Connectomist.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>nifti: str</strong></p>
+<blockquote>
+<div><p>path to the input Nifti file to be converted.</p>
+</div></blockquote>
+<p><strong>gis: str</strong></p>
+<blockquote>
+<div><p>path without extension to the 3 output GIS files.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">gis: str</p>
+<blockquote>
+<div><p>path to the generated Gis file.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>ConnectomistRuntimeError: If call to PtkNifti2GisConverter failed.</strong></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyconnectomist.utils.filetools.ptk_split_t2_and_diffusion">
+<code class="descclassname">pyconnectomist.utils.filetools.</code><code class="descname">ptk_split_t2_and_diffusion</code><span class="sig-paren">(</span><em>t2_dw_input</em>, <em>t2_output</em>, <em>dw_output</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/utils/filetools.html#ptk_split_t2_and_diffusion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.utils.filetools.ptk_split_t2_and_diffusion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function meant to split a Gis file containing a T2 volume (first
+volume) and diffusion-weigthed volumes (the other volumes) in 2 Gis files.
+The separation is done using the PtkSubVolume command line tool from
+Connectomist.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>t2_dw_input: str</strong></p>
+<blockquote>
+<div><p>path to input volume.</p>
+</div></blockquote>
+<p><strong>t2_output: str</strong></p>
+<blockquote>
+<div><p>path to output T2 volume.</p>
+</div></blockquote>
+<p><strong>dw_output: str</strong></p>
+<blockquote>
+<div><p>path to output diffusion-weighted volumes.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">t2_output: str</p>
+<blockquote>
+<div><p>the t2 diffusion Gis volume.</p>
+</div></blockquote>
+<p>dw_output: str</p>
+<blockquote>
+<div><p>the diffusion weighted Gis volume.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>ConnectomistRuntimeError: If call to PtkSubVolume failed.</strong></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer">
+    </div>
+  </div>
+  
+</div>
+
+<div class="footer">
+    &copy; 2016, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
+</div>
+  </body>
+</html>

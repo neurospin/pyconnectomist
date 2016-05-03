@@ -1,0 +1,45 @@
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+:orphan:
+
+Documentation of *pyconnectomist*
+==================================
+
+
+Package to wrap the Connectomist software and simplify scripting calls.
+In the root location of the module are implemented:
+
+    * the Connectomist's dedicated exceptions.
+    * the Connectomist's wrappers.
+    * the supported manufacturers.
+
+
+.. raw:: html
+
+    <br/>    <!-- Block section -->
+    <table border='1' class='docutils' style='width:100%'>
+    <colgroup><col width='25%'/><col width='75%'/></colgroup>
+    <tbody valign='top'>
+    <tr class='row-odd'>
+    <td><a class='reference internal' href='pyconnectomist.exceptions.html'><em>pyconnectomist.exceptions</em></a></td>
+    <td>
+        <p>Definition of the package exceptions.</p>
+    </td>
+    </tr>
+    <tr class='row-even'>
+    <td><a class='reference internal' href='pyconnectomist.manufacturers.html'><em>pyconnectomist.manufacturers</em></a></td>
+    <td>
+        <p>The module defines the MANUFACTURERS dict that maps the names used by the
+    package API to the IDs used by the Connectomist software.</p>
+    </td>
+    </tr>
+    <tr class='row-odd'>
+    <td><a class='reference internal' href='pyconnectomist.wrappers.html'><em>pyconnectomist.wrappers</em></a></td>
+    <td>
+        <p>Common wrappers from Connectomist package.</p>
+    </td>
+    </tr>
+    </tbody>
+
+
+    </table>

@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+    <title>PYCONNECTOMIST &mdash; pyConnectomist</title>
+  <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../../_static/css/bootstrap.min.css" media="screen" />
+
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="pyConnectomist" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+  
+   
+       <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="../../../_static/js/bootstrap.min.js" type="text/javascript"></script>
+
+  <script src="../../../_static/js/angular.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    var app = angular.module("navApp", []);
+    app.controller('navCtrl', ['$scope', '$window', function($scope, $window) {
+      $scope.isActive = function (viewLocation) {
+        var rel = $window.location.pathname.split("/")
+        rel = rel[rel.length - 1]
+        rel = rel.split(".")[0]
+        var active = (viewLocation === rel);
+        return active;};
+    }]);
+  </script>
+
+  </head>
+  <body role="document"><nav class="navbar navbar-default navbar-static-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+        <img alt="Logo" src="../../../_static/pyconnectomist.png">
+        </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse" ng-controller="navCtrl" ng-app="navApp">
+      <ul class="nav navbar-nav">
+        <li ng-class="{ active: isActive('index') }"><a href="../../../index.html">Home</a></li>
+        <li ng-class="{ active: isActive('installation') }"><a href="../../../generated/installation.html">Installation</a></li>
+        <li ng-class="{ active: isActive('documentation') }"><a href="../../../generated/documentation.html">Documentation</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+	        <li><a href="../../../generated/pyconnectomist.html">Pyconnectomist</a></li>
+<li><a href="../../../generated/pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
+<li><a href="../../../generated/pyconnectomist.tractography.html">Pyconnectomist.tractography</a></li>
+<li><a href="../../../generated/pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
+<li><a href="../../../generated/pyconnectomist.clustering.html">Pyconnectomist.clustering</a></li>
+          </ul>
+        </li>
+        <li><a href="https://github.com/AGrigis/pysphinxdoc">PYSPHINXDOC</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<div class="content-wrapper">
+    <div class="sphinxsidebar">
+      <div class="sphinxsidebarwrapper">
+
+        <!-- info setup -->
+          <p class="doc-version">
+           This documentation is for pyconnectomist <strong>version 1.0.0</strong>
+          </p>
+        <p class="citing">
+          If you use the software, please do not esitate to 
+          <a &mdash; <a href="https://github.com/neurospin/pyconnectomist">
+          Report a Bug</a>.
+        </p>
+
+      <!-- toc tree -->
+      
+
+      </div>
+    </div>
+  
+
+  <div class="content">
+      
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyconnectomist.utils.dwitools</h1><div class="highlight"><pre>
+<span></span><span class="c1">##########################################################################</span>
+<span class="c1"># NSAp - Copyright (C) CEA, 2013</span>
+<span class="c1"># Distributed under the terms of the CeCILL-B license, as published by</span>
+<span class="c1"># the CEA-CNRS-INRIA. Refer to the LICENSE file or to</span>
+<span class="c1"># http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html</span>
+<span class="c1"># for details.</span>
+<span class="c1">##########################################################################</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Utility Python functions to load diffusion metadata.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System import</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="read_bvals_bvecs"><a class="viewcode-back" href="../../../generated/pyconnectomist.utils.dwitools.html#pyconnectomist.utils.dwitools.read_bvals_bvecs">[docs]</a><span class="k">def</span> <span class="nf">read_bvals_bvecs</span><span class="p">(</span><span class="n">bvals_path</span><span class="p">,</span> <span class="n">bvecs_path</span><span class="p">,</span> <span class="n">min_bval</span><span class="o">=</span><span class="mf">100.</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Read b-values and associated b-vectors.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bvals_path: str</span>
+<span class="sd">        path to the diffusion b-values file.</span>
+<span class="sd">    bvecs_path: str</span>
+<span class="sd">        path to the diffusion b-vectors file.</span>
+<span class="sd">    min_bval: float, optional</span>
+<span class="sd">        if a b-value under this threshold is detected raise an ValueError.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bvals: array (N, )</span>
+<span class="sd">        array containing the diffusion b-values.</span>
+<span class="sd">    bvecs: array (N, 3)</span>
+<span class="sd">        array containing the diffusion b-vectors.</span>
+<span class="sd">    nb_shells: int</span>
+<span class="sd">        the number of shells.</span>
+<span class="sd">    nb_nodiff: int</span>
+<span class="sd">        the number of no diffusion weighted images.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError: if the b-values or the corresponding b-vectors have not</span>
+<span class="sd">        matching sizes this exception is raised.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Read .bval &amp; .bvecs files</span>
+    <span class="n">bvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">bvals_path</span><span class="p">)</span>
+    <span class="n">bvecs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">bvecs_path</span><span class="p">)</span>
+
+    <span class="c1"># Check consistency between bvals and associated bvecs</span>
+    <span class="k">if</span> <span class="n">bvecs</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;b-vectors file should be saved as a two dimensional &quot;</span>
+                         <span class="s2">&quot;array: &#39;{0}&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bvecs_path</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">bvals</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;b-values file should be saved as a one dimensional &quot;</span>
+                         <span class="s2">&quot;array: &#39;{0}&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bvals_path</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">bvecs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">bvecs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="n">bvecs</span> <span class="o">=</span> <span class="n">bvecs</span><span class="o">.</span><span class="n">T</span>
+    <span class="k">if</span> <span class="n">bvals</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">bvecs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;b-values and b-vectors shapes do not correspond.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Infer nb of T2 and nb of shells.</span>
+    <span class="n">nb_nodiff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">bvals</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># nb of volumes where bvalue=0</span>
+    <span class="n">bvals_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">bvals</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span>    <span class="c1"># set of non-zero bvalues</span>
+    <span class="n">nb_shells</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bvals_set</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">min</span><span class="p">(</span><span class="n">bvals_set</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">min_bval</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Small b-values detected (&lt;{0}) in &#39;{1}&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">min_bval</span><span class="p">,</span> <span class="n">bvals_path</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">bvals</span><span class="p">,</span> <span class="n">bvecs</span><span class="p">,</span> <span class="n">nb_shells</span><span class="p">,</span> <span class="n">nb_nodiff</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer">
+    </div>
+  </div>
+  
+</div>
+
+<div class="footer">
+    &copy; 2016, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
+</div>
+  </body>
+</html>

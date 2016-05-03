@@ -1,0 +1,376 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+    <title>PYCONNECTOMIST &mdash; pyConnectomist</title>
+  <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../../_static/css/bootstrap.min.css" media="screen" />
+
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="pyConnectomist" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+  
+   
+       <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="../../../_static/js/bootstrap.min.js" type="text/javascript"></script>
+
+  <script src="../../../_static/js/angular.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    var app = angular.module("navApp", []);
+    app.controller('navCtrl', ['$scope', '$window', function($scope, $window) {
+      $scope.isActive = function (viewLocation) {
+        var rel = $window.location.pathname.split("/")
+        rel = rel[rel.length - 1]
+        rel = rel.split(".")[0]
+        var active = (viewLocation === rel);
+        return active;};
+    }]);
+  </script>
+
+  </head>
+  <body role="document"><nav class="navbar navbar-default navbar-static-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+        <img alt="Logo" src="../../../_static/pyconnectomist.png">
+        </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse" ng-controller="navCtrl" ng-app="navApp">
+      <ul class="nav navbar-nav">
+        <li ng-class="{ active: isActive('index') }"><a href="../../../index.html">Home</a></li>
+        <li ng-class="{ active: isActive('installation') }"><a href="../../../generated/installation.html">Installation</a></li>
+        <li ng-class="{ active: isActive('documentation') }"><a href="../../../generated/documentation.html">Documentation</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+	        <li><a href="../../../generated/pyconnectomist.html">Pyconnectomist</a></li>
+<li><a href="../../../generated/pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
+<li><a href="../../../generated/pyconnectomist.tractography.html">Pyconnectomist.tractography</a></li>
+<li><a href="../../../generated/pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
+<li><a href="../../../generated/pyconnectomist.clustering.html">Pyconnectomist.clustering</a></li>
+          </ul>
+        </li>
+        <li><a href="https://github.com/AGrigis/pysphinxdoc">PYSPHINXDOC</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<div class="content-wrapper">
+    <div class="sphinxsidebar">
+      <div class="sphinxsidebarwrapper">
+
+        <!-- info setup -->
+          <p class="doc-version">
+           This documentation is for pyconnectomist <strong>version 1.0.0</strong>
+          </p>
+        <p class="citing">
+          If you use the software, please do not esitate to 
+          <a &mdash; <a href="https://github.com/neurospin/pyconnectomist">
+          Report a Bug</a>.
+        </p>
+
+      <!-- toc tree -->
+      
+
+      </div>
+    </div>
+  
+
+  <div class="content">
+      
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyconnectomist.preproc.eddy</h1><div class="highlight"><pre>
+<span></span><span class="c1">##########################################################################</span>
+<span class="c1"># NSAp - Copyright (C) CEA, 2013 - 2016</span>
+<span class="c1"># Distributed under the terms of the CeCILL-B license, as published by</span>
+<span class="c1"># the CEA-CNRS-INRIA. Refer to the LICENSE file or to</span>
+<span class="c1"># http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html for details.</span>
+<span class="c1">##########################################################################</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Wrapper to Connectomist&#39;s &#39;Eddy current &amp; motion&#39; tab.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># System import</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="c1"># pyConnectomist import</span>
+<span class="kn">from</span> <span class="nn">pyconnectomist</span> <span class="kn">import</span> <span class="n">DEFAULT_CONNECTOMIST_PATH</span>
+<span class="kn">from</span> <span class="nn">pyconnectomist.exceptions</span> <span class="kn">import</span> <span class="n">ConnectomistBadFileError</span>
+<span class="kn">from</span> <span class="nn">pyconnectomist.wrappers</span> <span class="kn">import</span> <span class="n">ConnectomistWrapper</span>
+<span class="kn">from</span> <span class="nn">pyconnectomist.utils.filetools</span> <span class="kn">import</span> <span class="n">ptk_gis_to_nifti</span>
+<span class="kn">from</span> <span class="nn">pyconnectomist.utils.filetools</span> <span class="kn">import</span> <span class="n">ptk_concatenate_volumes</span>
+<span class="kn">from</span> <span class="nn">pyconnectomist.utils.filetools</span> <span class="kn">import</span> <span class="n">exec_file</span>
+
+
+<div class="viewcode-block" id="eddy_and_motion_correction"><a class="viewcode-back" href="../../../generated/pyconnectomist.preproc.eddy.html#pyconnectomist.preproc.eddy.eddy_and_motion_correction">[docs]</a><span class="k">def</span> <span class="nf">eddy_and_motion_correction</span><span class="p">(</span>
+        <span class="n">outdir</span><span class="p">,</span>
+        <span class="n">raw_dwi_dir</span><span class="p">,</span>
+        <span class="n">rough_mask_dir</span><span class="p">,</span>
+        <span class="n">corrected_dir</span><span class="p">,</span>
+        <span class="n">subject_id</span><span class="p">,</span>
+        <span class="n">path_connectomist</span><span class="o">=</span><span class="n">DEFAULT_CONNECTOMIST_PATH</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Wrapper to Connectomist&#39;s &#39;Eddy current &amp; motion&#39; tab.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    outdir: str</span>
+<span class="sd">        path to Connectomist output work directory.</span>
+<span class="sd">    raw_dwi_dir: str</span>
+<span class="sd">        path to Connectomist Raw DWI directory.</span>
+<span class="sd">    rough_mask_dir: str</span>
+<span class="sd">        path to Connectomist Rough Mask directory.</span>
+<span class="sd">    corrected_dir: str</span>
+<span class="sd">        path to Connectomist Susceptibility or Outlier directory.</span>
+<span class="sd">        Depending whether you make Eddy Current correction before</span>
+<span class="sd">        or after susceptibility correction.</span>
+<span class="sd">    subject_id: str</span>
+<span class="sd">        the subject code in study.</span>
+<span class="sd">    path_connectomist: str (optional)</span>
+<span class="sd">        path to the Connectomist executable.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    outdir: str</span>
+<span class="sd">        path to Connectomist&#39;s output directory.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Dict with all parameters for connectomist</span>
+    <span class="n">algorithm</span> <span class="o">=</span> <span class="s2">&quot;DWI-Eddy-Current-And-Motion-Correction&quot;</span>
+    <span class="n">parameters_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="c1"># ---------------------------------------------------------------------</span>
+        <span class="c1"># Used parameters</span>
+        <span class="s2">&quot;rawDwiDirectory&quot;</span><span class="p">:</span>          <span class="n">raw_dwi_dir</span><span class="p">,</span>
+        <span class="s2">&quot;roughMaskDirectory&quot;</span><span class="p">:</span>    <span class="n">rough_mask_dir</span><span class="p">,</span>
+        <span class="s2">&quot;correctedDwiDirectory&quot;</span><span class="p">:</span>  <span class="n">corrected_dir</span><span class="p">,</span>
+        <span class="s2">&quot;outputWorkDirectory&quot;</span><span class="p">:</span>           <span class="n">outdir</span><span class="p">,</span>
+        <span class="s2">&quot;eddyCurrentCorrection&quot;</span><span class="p">:</span>              <span class="mi">2</span><span class="p">,</span>
+        <span class="s2">&quot;motionCorrection&quot;</span><span class="p">:</span>                   <span class="mi">1</span><span class="p">,</span>
+        <span class="c1"># ---------------------------------------------------------------------</span>
+        <span class="c1"># Parameters not used/handled by the code</span>
+        <span class="s2">&quot;_subjectName&quot;</span><span class="p">:</span> <span class="n">subject_id</span><span class="p">,</span>
+        <span class="s2">&quot;fileNameMotionTransform&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;eddyCurrentCorrectionOptions&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;optimizerParametersTranslationY&quot;</span><span class="p">:</span>  <span class="mi">2</span><span class="p">,</span>
+            <span class="s2">&quot;optimizerParametersTranslationX&quot;</span><span class="p">:</span>  <span class="mi">2</span><span class="p">,</span>
+            <span class="s2">&quot;optimizerParametersTranslationZ&quot;</span><span class="p">:</span>  <span class="mi">2</span><span class="p">,</span>
+            <span class="s2">&quot;maximumTestGradient&quot;</span><span class="p">:</span>         <span class="mf">1000.0</span><span class="p">,</span>
+            <span class="s2">&quot;subSamplingMaximumSizes&quot;</span><span class="p">:</span>       <span class="s2">&quot;64&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;optimizerName&quot;</span><span class="p">:</span>                    <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;optimizerParametersShearingYZ&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+            <span class="s2">&quot;initialParametersTranslationZ&quot;</span><span class="p">:</span>    <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;optimizerParametersShearingXZ&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+            <span class="s2">&quot;initialParametersRotationX&quot;</span><span class="p">:</span>       <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;initialParametersRotationY&quot;</span><span class="p">:</span>       <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;initialParametersRotationZ&quot;</span><span class="p">:</span>       <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;maximumIterationCount&quot;</span><span class="p">:</span>         <span class="mi">1000</span><span class="p">,</span>
+            <span class="s2">&quot;registrationResamplingOrder&quot;</span><span class="p">:</span>      <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;optimizerParametersShearingXY&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+            <span class="s2">&quot;optimizerParametersRotationX&quot;</span><span class="p">:</span>     <span class="mi">2</span><span class="p">,</span>
+            <span class="s2">&quot;optimizerParametersRotationZ&quot;</span><span class="p">:</span>     <span class="mi">2</span><span class="p">,</span>
+            <span class="s2">&quot;optimizerParametersScalingZ&quot;</span><span class="p">:</span>   <span class="mf">0.01</span><span class="p">,</span>
+            <span class="s2">&quot;optimizerParametersScalingY&quot;</span><span class="p">:</span>   <span class="mf">0.01</span><span class="p">,</span>
+            <span class="s2">&quot;backgroundResamplingLevel&quot;</span><span class="p">:</span>        <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;initialParametersShearingXZ&quot;</span><span class="p">:</span>    <span class="mf">0.0</span><span class="p">,</span>
+            <span class="s2">&quot;initialParametersShearingXY&quot;</span><span class="p">:</span>    <span class="mf">0.0</span><span class="p">,</span>
+            <span class="s2">&quot;outputResamplingOrder&quot;</span><span class="p">:</span>            <span class="mi">3</span><span class="p">,</span>
+            <span class="s2">&quot;optimizerParametersScalingX&quot;</span><span class="p">:</span>   <span class="mf">0.01</span><span class="p">,</span>
+            <span class="s2">&quot;lowerThreshold&quot;</span><span class="p">:</span>                 <span class="mf">0.0</span><span class="p">,</span>
+            <span class="s2">&quot;stoppingCriterionError&quot;</span><span class="p">:</span>        <span class="mf">0.01</span><span class="p">,</span>
+            <span class="s2">&quot;maximumTolerance&quot;</span><span class="p">:</span>              <span class="mf">0.01</span><span class="p">,</span>
+            <span class="s2">&quot;levelCount&quot;</span><span class="p">:</span>                      <span class="mi">32</span><span class="p">,</span>
+            <span class="s2">&quot;initialParametersTranslationX&quot;</span><span class="p">:</span>    <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;initialParametersTranslationY&quot;</span><span class="p">:</span>    <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;optimizerParametersRotationY&quot;</span><span class="p">:</span>     <span class="mi">2</span><span class="p">,</span>
+            <span class="s2">&quot;stepSize&quot;</span><span class="p">:</span>                       <span class="mf">0.1</span><span class="p">,</span>
+            <span class="s2">&quot;initialParametersShearingYZ&quot;</span><span class="p">:</span>    <span class="mf">0.0</span><span class="p">,</span>
+            <span class="s2">&quot;similarityMeasureName&quot;</span><span class="p">:</span>            <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;applySmoothing&quot;</span><span class="p">:</span>                   <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;initialParametersScalingX&quot;</span><span class="p">:</span>      <span class="mf">1.0</span><span class="p">,</span>
+            <span class="s2">&quot;initialParametersScalingY&quot;</span><span class="p">:</span>      <span class="mf">1.0</span><span class="p">,</span>
+            <span class="s2">&quot;initialParametersScalingZ&quot;</span><span class="p">:</span>      <span class="mf">1.0</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;motionCorrectionOptions&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;subSamplingMaximumSizes&quot;</span><span class="p">:</span>       <span class="s2">&quot;64&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;optimizerParametersTranslationX&quot;</span><span class="p">:</span>  <span class="mi">2</span><span class="p">,</span>
+            <span class="s2">&quot;stoppingCriterionError&quot;</span><span class="p">:</span>        <span class="mf">0.01</span><span class="p">,</span>
+            <span class="s2">&quot;stepSize&quot;</span><span class="p">:</span>                       <span class="mf">0.1</span><span class="p">,</span>
+            <span class="s2">&quot;optimizerParametersTranslationY&quot;</span><span class="p">:</span>  <span class="mi">2</span><span class="p">,</span>
+            <span class="s2">&quot;optimizerName&quot;</span><span class="p">:</span>                    <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;optimizerParametersTranslationZ&quot;</span><span class="p">:</span>  <span class="mi">2</span><span class="p">,</span>
+            <span class="s2">&quot;maximumTestGradient&quot;</span><span class="p">:</span>         <span class="mf">1000.0</span><span class="p">,</span>
+            <span class="s2">&quot;initialParametersRotationX&quot;</span><span class="p">:</span>       <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;initialParametersRotationY&quot;</span><span class="p">:</span>       <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;initialParametersRotationZ&quot;</span><span class="p">:</span>       <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;maximumIterationCount&quot;</span><span class="p">:</span>         <span class="mi">1000</span><span class="p">,</span>
+            <span class="s2">&quot;applySmoothing&quot;</span><span class="p">:</span>                   <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;optimizerParametersRotationX&quot;</span><span class="p">:</span>     <span class="mi">2</span><span class="p">,</span>
+            <span class="s2">&quot;optimizerParametersRotationZ&quot;</span><span class="p">:</span>     <span class="mi">2</span><span class="p">,</span>
+            <span class="s2">&quot;backgroundResamplingLevel&quot;</span><span class="p">:</span>        <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;outputResamplingOrder&quot;</span><span class="p">:</span>            <span class="mi">3</span><span class="p">,</span>
+            <span class="s2">&quot;lowerThreshold&quot;</span><span class="p">:</span>                 <span class="mf">0.0</span><span class="p">,</span>
+            <span class="s2">&quot;maximumTolerance&quot;</span><span class="p">:</span>              <span class="mf">0.01</span><span class="p">,</span>
+            <span class="s2">&quot;initialParametersTranslationZ&quot;</span><span class="p">:</span>    <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;levelCount&quot;</span><span class="p">:</span>                      <span class="mi">32</span><span class="p">,</span>
+            <span class="s2">&quot;initialParametersTranslationX&quot;</span><span class="p">:</span>    <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;initialParametersTranslationY&quot;</span><span class="p">:</span>    <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;registrationResamplingOrder&quot;</span><span class="p">:</span>      <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;similarityMeasureName&quot;</span><span class="p">:</span>            <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;optimizerParametersRotationY&quot;</span><span class="p">:</span>     <span class="mi">2</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Call with Connectomist</span>
+    <span class="n">connprocess</span> <span class="o">=</span> <span class="n">ConnectomistWrapper</span><span class="p">(</span><span class="n">path_connectomist</span><span class="p">)</span>
+    <span class="n">parameter_file</span> <span class="o">=</span> <span class="n">ConnectomistWrapper</span><span class="o">.</span><span class="n">create_parameter_file</span><span class="p">(</span>
+        <span class="n">algorithm</span><span class="p">,</span> <span class="n">parameters_dict</span><span class="p">,</span> <span class="n">outdir</span><span class="p">)</span>
+    <span class="n">connprocess</span><span class="p">(</span><span class="n">algorithm</span><span class="p">,</span> <span class="n">parameter_file</span><span class="p">,</span> <span class="n">outdir</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">outdir</span></div>
+
+
+<div class="viewcode-block" id="export_eddy_motion_results_to_nifti"><a class="viewcode-back" href="../../../generated/pyconnectomist.preproc.eddy.html#pyconnectomist.preproc.eddy.export_eddy_motion_results_to_nifti">[docs]</a><span class="k">def</span> <span class="nf">export_eddy_motion_results_to_nifti</span><span class="p">(</span>
+        <span class="n">eddy_motion_dir</span><span class="p">,</span>
+        <span class="n">outdir</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+        <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;dwi&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; After Connectomist has done Eddy current and motion correction, convert</span>
+<span class="sd">    the result to Nifti with bval/bvec files (bvec with corrrected directions).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    eddy_motion_dir: str</span>
+<span class="sd">        path to the Connectomist &quot;Eddy current and motion&quot; directory.</span>
+<span class="sd">    outdir: str (optional)</span>
+<span class="sd">        path to directory where to output:</span>
+<span class="sd">        &lt;outdir&gt;/&lt;filename&gt;.nii.gz</span>
+<span class="sd">        &lt;outdir&gt;/&lt;filename&gt;.bval</span>
+<span class="sd">        &lt;outdir&gt;/&lt;filename&gt;.bvec</span>
+<span class="sd">        By default &lt;outdir&gt; is &lt;eddy_motion_dir&gt;.</span>
+<span class="sd">    filename: str (optional)</span>
+<span class="sd">        to change output filenames, by default &quot;dwi&quot;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dwi, bval, bvec: str</span>
+<span class="sd">        the diffusion nifti image with associated bval and bvec files.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Step 0 - Set outdir path and check directory existence</span>
+    <span class="k">if</span> <span class="n">outdir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">outdir</span> <span class="o">=</span> <span class="n">eddy_motion_dir</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">outdir</span><span class="p">):</span>  <span class="c1"># If outdir does not exist, create it</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span>
+
+    <span class="c1"># Step 1 - Concatenate preprocessed T2 and preprocessed DW volumes</span>
+    <span class="c1"># Set input and output paths (Gis files) without extension (.ima)</span>
+    <span class="n">t2</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">eddy_motion_dir</span><span class="p">,</span> <span class="s2">&quot;t2_wo_eddy_current_and_motion.ima&quot;</span><span class="p">)</span>
+    <span class="n">dw</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">eddy_motion_dir</span><span class="p">,</span> <span class="s2">&quot;dw_wo_eddy_current_and_motion.ima&quot;</span><span class="p">)</span>
+    <span class="n">t2_dw</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">eddy_motion_dir</span><span class="p">,</span> <span class="s2">&quot;t2_dw_wo_eddy_current_and_motion.ima&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check existence of input files</span>
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="p">(</span><span class="n">t2</span><span class="p">,</span> <span class="n">dw</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ConnectomistBadFileError</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="c1"># Apply concatenation: result is a Gis file</span>
+    <span class="n">ptk_concatenate_volumes</span><span class="p">([</span><span class="n">t2</span><span class="p">,</span> <span class="n">dw</span><span class="p">],</span> <span class="n">t2_dw</span><span class="p">)</span>
+
+    <span class="c1"># Step 2 - Convert to Nifti</span>
+    <span class="n">dwi</span> <span class="o">=</span> <span class="n">ptk_gis_to_nifti</span><span class="p">(</span><span class="n">t2_dw</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.nii.gz&quot;</span> <span class="o">%</span> <span class="n">filename</span><span class="p">))</span>
+
+    <span class="c1"># Step 3 - Create .bval and .bvec (with corrected directions)</span>
+    <span class="c1"># The new directions of gradients (modified by the Eddy current and motion</span>
+    <span class="c1"># correction) are found in the .ima.minf (Gis format) file associated to</span>
+    <span class="c1"># diffusion weighted data.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># The .ima.minf is a text file that defines a python dict</span>
+        <span class="n">path_minf</span> <span class="o">=</span> <span class="n">dw</span> <span class="o">+</span> <span class="s2">&quot;.minf&quot;</span>
+        <span class="n">exec_dict</span> <span class="o">=</span> <span class="n">exec_file</span><span class="p">(</span><span class="n">path_minf</span><span class="p">)</span>
+
+        <span class="c1"># Verify dict structure by checking 2 keys.</span>
+        <span class="k">if</span> <span class="s2">&quot;bvalues&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exec_dict</span><span class="p">[</span><span class="s2">&quot;attributes&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span>
+        <span class="k">if</span> <span class="s2">&quot;diffusion_gradient_orientations&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exec_dict</span><span class="p">[</span><span class="s2">&quot;attributes&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ConnectomistBadFileError</span><span class="p">(</span><span class="n">path_minf</span><span class="p">)</span>
+
+    <span class="c1"># Get bvalues and create .bval file</span>
+    <span class="n">bvalues</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">exec_dict</span><span class="p">[</span><span class="s2">&quot;attributes&quot;</span><span class="p">][</span><span class="s2">&quot;bvalues&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+
+    <span class="c1"># Add 0 in bvalues for b=0 associated to T2</span>
+    <span class="n">bvalues</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(([</span><span class="mi">0</span><span class="p">],</span> <span class="n">bvalues</span><span class="p">))</span>
+
+    <span class="c1"># Create &quot;dwi.bval&quot;</span>
+    <span class="n">bval</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.bval&quot;</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">bval</span><span class="p">,</span> <span class="n">bvalues</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Get gradient directions to create .bvec file</span>
+    <span class="n">directions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="n">exec_dict</span><span class="p">[</span><span class="s2">&quot;attributes&quot;</span><span class="p">][</span><span class="s2">&quot;diffusion_gradient_orientations&quot;</span><span class="p">])</span>
+
+    <span class="c1"># Normalize vectors</span>
+    <span class="n">magnitudes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">directions</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">vector</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">directions</span><span class="p">):</span>
+        <span class="n">directions</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">directions</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/</span> <span class="n">magnitudes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="c1"># Add null vector for direction corresponding to bvalue=0 volume</span>
+    <span class="n">directions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">directions</span><span class="p">))</span>
+
+    <span class="c1"># Create &quot;dwi.bvec&quot;</span>
+    <span class="n">bvec</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.bvec&quot;</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">bvec</span><span class="p">,</span> <span class="n">directions</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%.10f</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">dwi</span><span class="p">,</span> <span class="n">bval</span><span class="p">,</span> <span class="n">bvec</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer">
+    </div>
+  </div>
+  
+</div>
+
+<div class="footer">
+    &copy; 2016, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
+</div>
+  </body>
+</html>

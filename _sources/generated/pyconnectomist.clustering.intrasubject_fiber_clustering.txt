@@ -1,0 +1,6 @@
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+:orphan:
+
+.. automodule:: pyconnectomist.clustering.intrasubject_fiber_clustering
+

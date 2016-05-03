@@ -1,0 +1,49 @@
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+:orphan:
+
+Documentation of *pyconnectomist.tractography*
+===============================================
+
+
+Each tractography step (i.e. one Connectomist tab) can be run through the use
+of a dedicated function of the package.
+
+All the tractography steps can be done at once calling the
+'complete_tractography' function.
+
+
+.. raw:: html
+
+    <br/>    <!-- Block section -->
+    <table border='1' class='docutils' style='width:100%'>
+    <colgroup><col width='25%'/><col width='75%'/></colgroup>
+    <tbody valign='top'>
+    <tr class='row-odd'>
+    <td><a class='reference internal' href='pyconnectomist.tractography.mask.html'><em>pyconnectomist.tractography.mask</em></a></td>
+    <td>
+        <p>Wrapper to Connectomist's 'Tractography mask' tab.</p>
+    </td>
+    </tr>
+    <tr class='row-even'>
+    <td><a class='reference internal' href='pyconnectomist.tractography.all_steps.html'><em>pyconnectomist.tractography.all_steps</em></a></td>
+    <td>
+        <p>Function that runs all tractography tabs from Connectomist.</p>
+    </td>
+    </tr>
+    <tr class='row-odd'>
+    <td><a class='reference internal' href='pyconnectomist.tractography.tractography.html'><em>pyconnectomist.tractography.tractography</em></a></td>
+    <td>
+        <p>Wrapper to Connectomist's 'Tractography' tab.</p>
+    </td>
+    </tr>
+    <tr class='row-even'>
+    <td><a class='reference internal' href='pyconnectomist.tractography.model.html'><em>pyconnectomist.tractography.model</em></a></td>
+    <td>
+        <p>Wrapper to Connectomist's 'Local modeling' tab.</p>
+    </td>
+    </tr>
+    </tbody>
+
+
+    </table>

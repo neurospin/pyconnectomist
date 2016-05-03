@@ -1,0 +1,68 @@
+.. AUTO-GENERATED FILE -- DO NOT EDIT!
+
+Documentation of PYCONNECTOMIST
+================================
+
+.. raw:: html
+
+    <!-- Block section -->
+
+    <div class='container-fluid'>
+
+    <div class='row'>
+
+    <div class='col-md-4'>
+    <h3><a href='pyconnectomist.html'>
+    pyconnectomist
+    </a></h3>
+    <blockquote>
+        <p>Package to wrap the Connectomist software and simplify scripting calls.
+    In the root location of the module are implemented:</p>
+    <blockquote>
+    <ul class="simple">
+    <li>the Connectomist's dedicated exceptions.</li>
+    <li>the Connectomist's wrappers.</li>
+    <li>the supported manufacturers.</li>
+    </ul>
+    </blockquote>    </blockquote>
+    </div>
+    <div class='col-md-4'>
+    <h3><a href='pyconnectomist.preproc.html'>
+    pyconnectomist.preproc
+    </a></h3>
+    <blockquote>
+        <p>Each preprocessing step (i.e. one Connectomist tab) can be run through the use
+    of a dedicated function of the package.</p>
+    <p>All the preprocessing steps can be done at once calling the
+    complete_preprocessing function.</p>    </blockquote>
+    </div>
+    <div class='col-md-4'>
+    <h3><a href='pyconnectomist.tractography.html'>
+    pyconnectomist.tractography
+    </a></h3>
+    <blockquote>
+        <p>Each tractography step (i.e. one Connectomist tab) can be run through the use
+    of a dedicated function of the package.</p>
+    <p>All the tractography steps can be done at once calling the
+    'complete_tractography' function.</p>    </blockquote>
+    </div>
+    <div class='col-md-4'>
+    <h3><a href='pyconnectomist.utils.html'>
+    pyconnectomist.utils
+    </a></h3>
+    <blockquote>
+        <p>Utility functions wrapped from the Connectomist package.</p>    </blockquote>
+    </div>
+    <div class='col-md-4'>
+    <h3><a href='pyconnectomist.clustering.html'>
+    pyconnectomist.clustering
+    </a></h3>
+    <blockquote>
+        <p>Each labeling/clustering step (i.e. one Connectomist tab) can be run through
+    the use of a dedicated function of the package.</p>
+    <p>All the labelings steps can be done at once calling the
+    'complete_labeling' function.</p>    </blockquote>
+    </div>
+
+    </div>
+    </div>

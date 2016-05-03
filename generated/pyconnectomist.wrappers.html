@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+    <title>PYCONNECTOMIST &mdash; pyConnectomist</title>
+  <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../_static/css/bootstrap.min.css" media="screen" />
+
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyConnectomist" href="../index.html" />
+  
+   
+       <script type="text/javascript" src="../_static/sidebar.js"></script>
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="../_static/js/bootstrap.min.js" type="text/javascript"></script>
+
+  <script src="../_static/js/angular.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    var app = angular.module("navApp", []);
+    app.controller('navCtrl', ['$scope', '$window', function($scope, $window) {
+      $scope.isActive = function (viewLocation) {
+        var rel = $window.location.pathname.split("/")
+        rel = rel[rel.length - 1]
+        rel = rel.split(".")[0]
+        var active = (viewLocation === rel);
+        return active;};
+    }]);
+  </script>
+
+  </head>
+  <body role="document"><nav class="navbar navbar-default navbar-static-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+        <img alt="Logo" src="../_static/pyconnectomist.png">
+        </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse" ng-controller="navCtrl" ng-app="navApp">
+      <ul class="nav navbar-nav">
+        <li ng-class="{ active: isActive('index') }"><a href="../index.html">Home</a></li>
+        <li ng-class="{ active: isActive('installation') }"><a href="installation.html">Installation</a></li>
+        <li ng-class="{ active: isActive('documentation') }"><a href="documentation.html">Documentation</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+	        <li><a href="pyconnectomist.html">Pyconnectomist</a></li>
+<li><a href="pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
+<li><a href="pyconnectomist.tractography.html">Pyconnectomist.tractography</a></li>
+<li><a href="pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
+<li><a href="pyconnectomist.clustering.html">Pyconnectomist.clustering</a></li>
+          </ul>
+        </li>
+        <li><a href="https://github.com/AGrigis/pysphinxdoc">PYSPHINXDOC</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<div class="content-wrapper">
+    <div class="sphinxsidebar">
+      <div class="sphinxsidebarwrapper">
+
+        <!-- info setup -->
+          <p class="doc-version">
+           This documentation is for pyconnectomist <strong>version 1.0.0</strong>
+          </p>
+        <p class="citing">
+          If you use the software, please do not esitate to 
+          <a &mdash; <a href="https://github.com/neurospin/pyconnectomist">
+          Report a Bug</a>.
+        </p>
+
+      <!-- toc tree -->
+      <ul class="simple">
+</ul>
+
+
+      </div>
+    </div>
+  
+
+  <div class="content">
+      
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <span class="target" id="module-pyconnectomist.wrappers"></span><p>Common wrappers from Connectomist package.</p>
+<dl class="class">
+<dt id="pyconnectomist.wrappers.ConnectomistWrapper">
+<em class="property">class </em><code class="descclassname">pyconnectomist.wrappers.</code><code class="descname">ConnectomistWrapper</code><span class="sig-paren">(</span><em>path_connectomist='/i2bm/local/Ubuntu-14.04-x86_64/ptk/bin/connectomist'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/wrappers.html#ConnectomistWrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.wrappers.ConnectomistWrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parent class for the wrapping of Connectomist functions.</p>
+<dl class="classmethod">
+<dt id="pyconnectomist.wrappers.ConnectomistWrapper.create_parameter_file">
+<em class="property">classmethod </em><code class="descname">create_parameter_file</code><span class="sig-paren">(</span><em>algorithm</em>, <em>parameters_dict</em>, <em>outdir</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/wrappers.html#ConnectomistWrapper.create_parameter_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.wrappers.ConnectomistWrapper.create_parameter_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes the &#8216;.py&#8217; file Connectomist uses when working in command
+line.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>algorithm: str</strong></p>
+<blockquote>
+<div><p>name of Connectomist&#8217;s tab.</p>
+</div></blockquote>
+<p><strong>parameters_dict: dict</strong></p>
+<blockquote>
+<div><p>parameter values for the tab.</p>
+</div></blockquote>
+<p><strong>outdir: str</strong></p>
+<blockquote>
+<div><p>path to directory where to write the parameter file.
+If not existing the directory is created.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">parameter_file: str</p>
+<blockquote class="last">
+<div><p>path to the created parameter file for the tab in ui: executable
+python file to set the connectomist tab input parameters.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyconnectomist.wrappers.PtkWrapper">
+<em class="property">class </em><code class="descclassname">pyconnectomist.wrappers.</code><code class="descname">PtkWrapper</code><span class="sig-paren">(</span><em>cmd</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/wrappers.html#PtkWrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.wrappers.PtkWrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parent class for the wrapping of Connectomist Ptk functions.</p>
+</dd></dl>
+
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer">
+    </div>
+  </div>
+  
+</div>
+
+<div class="footer">
+    &copy; 2016, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
+</div>
+  </body>
+</html>
