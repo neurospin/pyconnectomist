@@ -23,7 +23,7 @@ pkgdata = {
 scripts = [
     "pyconnectomist/scripts/pyconnectomist_preproc",
     "pyconnectomist/scripts/pyconnectomist_tractography",
-    "pyconnectomist/scripts/pyconnectomist_labeling"
+    "pyconnectomist/scripts/pyconnectomist_dtifit"
 ]
 
 setup(

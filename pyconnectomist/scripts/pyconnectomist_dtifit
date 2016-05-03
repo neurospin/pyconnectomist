@@ -21,12 +21,6 @@ try:
                      names=["complete_tractography"])
     bredala.register("pyconnectomist.tractography.model",
                      names=["dwi_local_modeling", "export_scalars_to_nifti"])
-    bredala.register("pyconnectomist.tractography.mask",
-                     names=["tractography_mask", "export_mask_to_nifti"])
-    bredala.register("pyconnectomist.tractography.tractography",
-                     names=["tractography"])
-    bredala.register("pyconnectomist.clustering.labeling",
-                     names=["fast_bundle_labeling", "export_bundles_to_trk"])
     bredala.register("pyconnectomist.wrappers",
                      names=["ConnectomistWrapper.__call__"])
 except:
@@ -44,29 +38,24 @@ __hopla__ = ["tool", "version", "config", "inputs", "outputs",
 
 # Script documentation
 doc = """
-Connectomist tractography
-~~~~~~~~~~~~~~~~~~~~~~~~~
+Connectomist DTI fit
+~~~~~~~~~~~~~~~~~~~~
 
-Function that runs all the Connectomist tractography tabs.
-Generates results in '<outdir>/<subjectid>/tract'.
+Function that runs all the Connectomist 'Local modeling' tab to estimate a DTI
+model from the preprocessed diffusion data.
+Generates results in '<outdir>/<subjectid>/dtifit'.
 
 Steps:
 
-1- Create the tractography output directory if not existing.
-2- Detect the Connectomist registration folder.
-3- Detect the Connectomist eddy motion correction folder.
-4- Detect the Connectomist rough mask folder.
-5- Compute the diffusion model.
-6- Create the tractography mask.
-7- The tractography algorithm.
-8- Fast bundle labeling.
-9 - Export diffusion scalars.
-10 - Export tractography mask.
-11 - Export bundels.
+1- Create the model output directory if not existing.
+2- Detect the Connectomist eddy motion correction folder.
+3- Detect the Connectomist rough mask folder.
+4- Compute the second order tensor diffusion model.
+5 - Export diffusion scalars.
 
 Command:
 
-python $HOME/git/pyconnectomist/pyconnectomist/scripts/pyconnectomist_tractography \
+python $HOME/git/pyconnectomist/pyconnectomist/scripts/pyconnectomist_dtifit \
     -v 2 \
     -o /tmp/pyconnectomist \
     -g /neurospin/senior/nsap/data/V0/morphologist \
@@ -129,13 +118,13 @@ and clean it if requested.
 tool = "Connectomist tract"
 config = args.connectomistconfig or DEFAULT_CONNECTOMIST_PATH
 if args.verbose > 0:
-    print("[info] Start Connectomist tractography...")
+    print("[info] Start Connectomist DTI fit...")
     print("[info] Directory: {0}.".format(args.outdir))
     print("[info] Subject: {0}.".format(args.subjectid))
     print("[info] Preproc: {0}.".format(args.preprocdir))
 outdir = args.outdir
 subjectid = args.subjectid
-subjdir = os.path.join(args.outdir, subjectid, "tract")
+subjdir = os.path.join(args.outdir, subjectid, "dtifit")
 preprocdir = args.preprocdir
 morphologistdir = args.morphologistdir
 if preprocdir is None:
@@ -151,38 +140,17 @@ inputs = [preprocdir]
 outputs = []
 
 """
-Connectomist tractography: all steps
+Connectomist tractography: DTI fit only
 """
-gfa, md, mask, bundles = complete_tractography(
+gfa, md, _, _ = complete_tractography(
     subjdir,
     preprocdir,
     morphologistdir,
     subjectid,
-    model="aqbi",
-    order=4,
-    aqbi_laplacebeltrami_sharpefactor=0.0,
-    regularization_lccurvefactor=0.006,
-    dti_estimator="linear",
-    constrained_sd=False,
-    sd_kernel_type="symmetric_tensor",
-    sd_kernel_lower_fa=0.65,
-    sd_kernel_upper_fa=0.85,
-    sd_kernel_voxel_count=300,
-    add_cerebelum=True,
-    add_commissures=True,
-    tracking_type="streamline_regularize_deterministic",
-    bundlemap="aimsbundlemap",
-    min_fiber_length=5.,
-    max_fiber_length=300.,
-    aperture_angle=30.,
-    forward_step=0.2,
-    voxel_sampler_point_count=1, #8,
-    gibbs_temperature=1.,
-    storing_increment=10,
-    output_orientation_count=500,
-    rgbscale=3.0,
-    model_only=False,
+    model="dti",
+    rgbscale=1.0,
+    model_only=True,
     path_connectomist=config)
-outputs = [gfa, md, mask, bundles]
+outputs = [gfa, md]
 if args.verbose > 1:
     print("[result] In folder: {0}.".format(subjdir))

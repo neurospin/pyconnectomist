@@ -63,6 +63,7 @@ def complete_tractography(
         storing_increment=10,
         output_orientation_count=500,
         rgbscale=1.0,
+        model_only=False,
         path_connectomist=DEFAULT_CONNECTOMIST_PATH):
     """ Function that runs all preprocessing tabs from Connectomist.
 
@@ -157,6 +158,8 @@ def complete_tractography(
     rgbscale: float (optional, default 1)
         a multiplicative factor used to vizualize the anisotropy map over
         the t1 map.
+    model_only: bool (optional, default False)
+        if True estimate only the diffusion model, skip steps 6, 7, 8, 10 ,11.
     path_connectomist: str (optional)
         path to the Connectomist executable.
 
@@ -217,64 +220,71 @@ def complete_tractography(
         path_connectomist=path_connectomist)
 
     # Step 6 - Create the tractography mask
-    mask_dir = os.path.join(outdir, STEPS[1])
-    tractography_mask(
-        mask_dir,
-        subject_id,
-        morphologist_dir=morphologist_dir,
-        add_cerebelum=add_cerebelum,
-        add_commissures=add_commissures,
-        path_connectomist=path_connectomist)
+    if not model_only:
+        mask_dir = os.path.join(outdir, STEPS[1])
+        tractography_mask(
+            mask_dir,
+            subject_id,
+            morphologist_dir=morphologist_dir,
+            add_cerebelum=add_cerebelum,
+            add_commissures=add_commissures,
+            path_connectomist=path_connectomist)
 
     # Step 7 - The tractography algorithm
-    tractography_dir = os.path.join(outdir, STEPS[2].format(tracking_type))
-    tractography(
-        tractography_dir,
-        subject_id,
-        mask_dir,
-        model,
-        model_dir,
-        registered_dwi_dir,
-        tracking_type=tracking_type,
-        bundlemap=bundlemap,
-        min_fiber_length=min_fiber_length,
-        max_fiber_length=max_fiber_length,
-        aperture_angle=aperture_angle,
-        forward_step=forward_step,
-        voxel_sampler_point_count=voxel_sampler_point_count,
-        gibbs_temperature=gibbs_temperature,
-        storing_increment=storing_increment,
-        output_orientation_count=output_orientation_count,
-        path_connectomist=path_connectomist)
+    if not model_only:
+        tractography_dir = os.path.join(outdir, STEPS[2].format(tracking_type))
+        tractography(
+            tractography_dir,
+            subject_id,
+            mask_dir,
+            model,
+            model_dir,
+            registered_dwi_dir,
+            tracking_type=tracking_type,
+            bundlemap=bundlemap,
+            min_fiber_length=min_fiber_length,
+            max_fiber_length=max_fiber_length,
+            aperture_angle=aperture_angle,
+            forward_step=forward_step,
+            voxel_sampler_point_count=voxel_sampler_point_count,
+            gibbs_temperature=gibbs_temperature,
+            storing_increment=storing_increment,
+            output_orientation_count=output_orientation_count,
+            path_connectomist=path_connectomist)
 
     # Step 8 - Fast bundle labeling
-    labeling_dir = os.path.join(outdir, STEPS[3])
-    paths_bundle_map = glob.glob(
-        os.path.join(tractography_dir, "*.bundlesdata"))
-    paths_bundle_map = [item.replace(".bundlesdata", ".bundles")
-                        for item in paths_bundle_map]
-    fast_bundle_labeling(
-        labeling_dir,
-        registered_dwi_dir,
-        morphologist_dir,
-        subject_id,
-        paths_bundle_map,
-        atlas="Guevara long bundle",
-        custom_atlas_dir=None,
-        bundle_names=None,
-        nb_fibers_to_process_at_once=50000,
-        resample_fibers=True,
-        remove_temporary_files=True,
-        path_connectomist=path_connectomist)
+    if not model_only:
+        labeling_dir = os.path.join(outdir, STEPS[3])
+        paths_bundle_map = glob.glob(
+            os.path.join(tractography_dir, "*.bundlesdata"))
+        paths_bundle_map = [item.replace(".bundlesdata", ".bundles")
+                            for item in paths_bundle_map]
+        fast_bundle_labeling(
+            labeling_dir,
+            registered_dwi_dir,
+            morphologist_dir,
+            subject_id,
+            paths_bundle_map,
+            atlas="Guevara long bundle",
+            custom_atlas_dir=None,
+            bundle_names=None,
+            nb_fibers_to_process_at_once=50000,
+            resample_fibers=True,
+            remove_temporary_files=True,
+            path_connectomist=path_connectomist)
 
     # Step 9 - Export diffusion scalars
     gfa, md = export_scalars_to_nifti(model_dir, model, outdir,
                                       gfafilename="gfa", mdfilename="md")
 
     # Step 10 - Export tractography mask
-    mask = export_mask_to_nifti(mask_dir, outdir, "mask")
+    mask = None
+    if not model_only:
+        mask = export_mask_to_nifti(mask_dir, outdir, "mask")
 
     # Step 11 - Export bundels
-    bundles = export_bundles_to_trk(labeling_dir, outdir)
+    bundles = None
+    if not model_only:
+        bundles = export_bundles_to_trk(labeling_dir, outdir)
 
     return gfa, md, mask, bundles
