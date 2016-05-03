@@ -32,17 +32,25 @@ CLASSIFIERS = ["Development Status :: 5 - Production/Stable",
                "Topic :: Utilities"]
 
 # Project descriptions
-description = "pyConnectomist"
+description = """
+[pyConnectomist]
+This package provides common scripts:
+
+* pyconnectomist_preproc: preprocess a diffusion sequence.
+* pyconnectomist_tractography: compute a determinist tractography and detect
+  bundles using an atlas.  
+* pyconnectomist_dtifit: estimate a DTI model from the preprocessed diffusion
+  data.
+"""
 long_description = """
 ======================
 pyConnectomist
 ======================
 
-[pyconnectomist] Python wrappers for Connectomist.
-
-Package to wrap the Connectomist software and simplify scripting calls.
-Each preprocessing, tractography and labeling step (i.e. one Connectomist tab)
-can be run through the use of a dedicated function of the package.
+Python wrappers for Connectomist: wrap the Connectomist software and simplify
+scripting calls. Each preprocessing, tractography and labeling step (i.e. one
+Connectomist tab) can be run through the use of a dedicated function of the
+package.
 """
 
 # Main setup parameters
