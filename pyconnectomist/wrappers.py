@@ -133,6 +133,11 @@ class ConnectomistWrapper(object):
     @classmethod
     def _connectomist_version_check(cls, path_connectomist):
         """ Check that a tested Connectomist version is installed.
+
+        Returns
+        -------
+        version: str
+            the configured PTK version.
         """
         # If a configuration file is passed
         if os.path.isfile(path_connectomist):
@@ -154,6 +159,7 @@ class ConnectomistWrapper(object):
                                    "not tested. Currently supported version "
                                    "is '{1}'.".format(version, PTK_RELEASE))
                         warnings.warn(message)
+                    return version
 
         # Configuration file is not a file
         else:

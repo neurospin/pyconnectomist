@@ -35,11 +35,12 @@ except:
 # Clindmri import
 from pyconnectomist import __version__ as version
 from pyconnectomist.tractography import complete_tractography
+from pyconnectomist.wrappers import ConnectomistWrapper
 from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
 
 
 # Parameters to keep trace
-__hopla__ = ["tool", "version", "config", "inputs", "outputs",
+__hopla__ = ["tool", "tool_version", "version", "config", "inputs", "outputs",
              "outdir", "subjectid", "preprocdir", "morphologistdir"]
 
 # Script documentation
@@ -128,6 +129,7 @@ and clean it if requested.
 """
 tool = "Connectomist tract"
 config = args.connectomistconfig or DEFAULT_CONNECTOMIST_PATH
+tool_version = ConnectomistWrapper._connectomist_version_check(config)
 if args.verbose > 0:
     print("[info] Start Connectomist tractography...")
     print("[info] Directory: {0}.".format(args.outdir))

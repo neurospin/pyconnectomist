@@ -41,11 +41,12 @@ except:
 from pyconnectomist import __version__ as version
 from pyconnectomist.preproc import complete_preprocessing
 from pyconnectomist.manufacturers import MANUFACTURERS
+from pyconnectomist.wrappers import ConnectomistWrapper
 from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
 
 
 # Parameters to keep trace
-__hopla__ = ["tool", "version", "config", "inputs", "outputs",
+__hopla__ = ["tool", "tool_version", "version", "config", "inputs", "outputs",
              "outdir", "subjectid", "subjdir", "dwi", "bvec", "bval",
              "manufacturer", "delta_te", "partial_fourier_factor",
              "parallel_acceleration_factor", "b0_magnitude", "b0_phase",
@@ -206,6 +207,7 @@ and clean it if requested.
 """
 tool = "Connectomist preproc"
 config = args.connectomistconfig or DEFAULT_CONNECTOMIST_PATH
+tool_version = ConnectomistWrapper._connectomist_version_check(config)
 if args.verbose > 0:
     print("[info] Start Connectomist preproc...")
     print("[info] Directory: {0}.".format(args.outdir))
