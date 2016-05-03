@@ -115,7 +115,8 @@ def is_directory(dirarg):
     return dirarg
 
 
-parser = argparse.ArgumentParser(description=doc)
+parser = argparse.ArgumentParser(description=doc,
+                                 formatter_class=argparse.RawTextHelpFormatter)
 parser.add_argument(
     "-v", "--verbose", dest="verbose", type=int, choices=[0, 1, 2], default=0,
     help="increase the verbosity level: 0 silent, [1, 2] verbose.")

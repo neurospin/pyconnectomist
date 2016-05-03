@@ -20,13 +20,13 @@ try:
     bredala.register("pyconnectomist.tractography",
                      names=["complete_tractography"])
     bredala.register("pyconnectomist.tractography.model",
-                     names=["dwi_local_modeling"])
+                     names=["dwi_local_modeling", "export_scalars_to_nifti"])
     bredala.register("pyconnectomist.tractography.mask",
-                     names=["tractography_mask"])
+                     names=["tractography_mask", "export_mask_to_nifti"])
     bredala.register("pyconnectomist.tractography.tractography",
                      names=["tractography"])
     bredala.register("pyconnectomist.clustering.labeling",
-                     names=["fast_bundle_labeling"])
+                     names=["fast_bundle_labeling", "export_bundles_to_trk"])
     bredala.register("pyconnectomist.wrappers",
                      names=["ConnectomistWrapper.__call__"])
 except:
@@ -54,9 +54,15 @@ Steps:
 
 1- Create the tractography output directory if not existing.
 2- Detect the Connectomist registration folder.
-3- Compute the diffusion model.
-4- Create the tractography mask.
-5- The tractography algorithm.
+3- Detect the Connectomist eddy motion correction folder.
+4- Detect the Connectomist rough mask folder.
+5- Compute the diffusion model.
+6- Create the tractography mask.
+7- The tractography algorithm.
+8- Fast bundle labeling.
+9 - Export diffusion scalars.
+10 - Export tractography mask.
+11 - Export bundels.
 
 Command:
 
@@ -87,7 +93,8 @@ def is_directory(dirarg):
     return dirarg
 
 
-parser = argparse.ArgumentParser(description=doc)
+parser = argparse.ArgumentParser(description=doc,
+                                 formatter_class=argparse.RawTextHelpFormatter)
 parser.add_argument(
     "-v", "--verbose", dest="verbose", type=int, choices=[0, 1, 2], default=0,
     help="increase the verbosity level: 0 silent, [1, 2] verbose.")
@@ -146,7 +153,7 @@ outputs = []
 """
 Connectomist tractography: all steps
 """
-complete_tractography(
+gfa, md, mask, bundles = complete_tractography(
     subjdir,
     preprocdir,
     morphologistdir,
@@ -164,7 +171,7 @@ complete_tractography(
     add_cerebelum=True,
     add_commissures=True,
     tracking_type="streamline_regularize_deterministic",
-    bundlemap="trkbundlemap",
+    bundlemap="aimsbundlemap",
     min_fiber_length=5.,
     max_fiber_length=300.,
     aperture_angle=30.,
@@ -173,7 +180,8 @@ complete_tractography(
     gibbs_temperature=1.,
     storing_increment=10,
     output_orientation_count=500,
+    rgbscale=3.0,
     path_connectomist=config)
-outputs = []
+outputs = [gfa, md, mask, bundles]
 if args.verbose > 1:
     print("[result] In folder: {0}.".format(subjdir))
