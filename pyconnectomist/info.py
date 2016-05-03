@@ -38,7 +38,7 @@ This package provides common scripts:
 
 * pyconnectomist_preproc: preprocess a diffusion sequence.
 * pyconnectomist_tractography: compute a determinist tractography and detect
-  bundles using an atlas.  
+  bundles using an atlas.
 * pyconnectomist_dtifit: estimate a DTI model from the preprocessed diffusion
   data.
 """
