@@ -49,6 +49,8 @@ class ConnectomistPreproc(unittest.TestCase):
             "parallel_acceleration_factor": 2,
             "b0_magnitude": "/my/path/mock_b0_magnitude",
             "b0_phase": "/my/path/mock_b0_phase",
+            "phase_axis": "y",
+            "slice_axis": "x",
             "path_connectomist": "/my/path/mock_connectomist",
             "invertX": True,
             "invertY": False,

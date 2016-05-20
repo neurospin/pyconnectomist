@@ -25,6 +25,13 @@ from pyconnectomist.wrappers import ConnectomistWrapper
 from pyconnectomist.utils.dwitools import read_bvals_bvecs
 from pyconnectomist.utils.filetools import ptk_nifti_to_gis
 
+# Define axis mapping
+AXIS = {
+    "x": 0,
+    "y": 1,
+    "z": 2
+}
+
 
 def gather_and_format_input_files(
         outdir,
@@ -123,6 +130,8 @@ def data_import_and_qspace_sampling(
         invertZ=False,
         b0_magnitude=None,
         b0_phase=None,
+        phase_axis="y",
+        slice_axis="z",
         path_connectomist=DEFAULT_CONNECTOMIST_PATH):
     """ Wrapper to Connectomist's 'DWI & Q-space' tab.
 
@@ -150,6 +159,10 @@ def data_import_and_qspace_sampling(
     b0_phase: str (optional, default None)
         path to phase fieldmap (if fieldmap-based correction of susceptibility
         distortions is to be used).
+    phase_axis: str (optional, default 'y')
+        the acquistion phase axis 'x', 'y' or 'z'.
+    slice_axis: str (optional, default 'z')
+        the acquistion slice axis 'x', 'y' or 'z'.
     path_connectomist: str (optional)
         path to the Connectomist executable.
 
@@ -158,6 +171,11 @@ def data_import_and_qspace_sampling(
     outdir: str
         path to Connectomist's output directory.
     """
+    # Check input parameters
+    for axis in (phase_axis, phase_axis):
+        if axis not in AXIS:
+            raise ValueError("Invalid axis '{0}'.".format(axis))
+
     # Create the Connectomist's import data directory
     dwi, bval, bvec, b0_magnitude, b0_phase = gather_and_format_input_files(
         outdir,
@@ -174,11 +192,10 @@ def data_import_and_qspace_sampling(
 
         # ---------------------------------------------------------------------
         # Field: "Diffusion weighted-images"
-        "fileNameDwi":        dwi,  # "DW data"
-        # TODO: add the following two parameters to function arguments.
-        "sliceAxis":            2,  # "Slice axis", default "Z-axis"
-        "phaseAxis":            1,  # "Phase axis", default "Y-axis"
-        "manufacturer":      None,
+        "fileNameDwi":  dwi,  # "DW data"
+        "sliceAxis":    AXIS[slice_axis],  # "Slice axis", default "Z-axis"
+        "phaseAxis":    AXIS[phase_axis],  # "Phase axis", default "Y-axis"
+        "manufacturer": None,
 
         # Subfield: "Advanced parameters"
         "flipAlongX":           0,  # "Flip data along x"

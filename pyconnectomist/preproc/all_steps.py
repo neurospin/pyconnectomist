@@ -47,6 +47,8 @@ def complete_preprocessing(
         parallel_acceleration_factor,
         b0_magnitude,
         b0_phase=None,
+        phase_axis="y",
+        slice_axis="z",
         invertX=True,
         invertY=False,
         invertZ=False,
@@ -107,6 +109,10 @@ def complete_preprocessing(
         path to B0 magnitude map, also contains phase for GE.
     b0_phase: str (optional, default None)
         not for GE, path to B0 phase map.
+    phase_axis: str (optional, default 'y')
+        the acquistion phase axis 'x', 'y' or 'z'.
+    slice_axis: str (optional, default 'z')
+        the acquistion slice axis 'x', 'y' or 'z'.
     invertX: bool (optional, default True)
         if True invert x-axis in diffusion model.
     invertY: bool (optional, default False)
@@ -160,6 +166,8 @@ def complete_preprocessing(
         invertZ,
         b0_magnitude,
         b0_phase,
+        phase_axis,
+        slice_axis,
         path_connectomist=path_connectomist)
 
     # Step 3 - Create a brain mask

@@ -165,6 +165,12 @@ parser.add_argument(
     "-p", "--b0_phase", dest="b0_phase", metavar="FILE",
     help="the path to the B0 phase map (not for GE).", type=is_file)
 parser.add_argument(
+    "-h", "--phase_axis", dest="phase_axis", choices=["x", "y", "z"],
+     default="y", help="the acquistion phase axis.")
+parser.add_argument(
+    "-j", "--slice_axis", dest="slice_axis", choices=["x", "y", "z"],
+    default="z", help="the acquistion slice axis.")
+parser.add_argument(
     "-x", "--invertx", dest="invertx", action="store_true",
     help="if activated, invert the x-axis in diffusion model.")
 parser.add_argument(
@@ -229,6 +235,8 @@ partial_fourier_factor = args.partial_fourier_factor
 parallel_acceleration_factor = args.parallel_acceleration_factor
 b0_magnitude = args.b0_magnitude
 b0_phase = args.b0_phase
+phase_axis = args.phase_axis
+slice_axis = args.slice_axis
 invertx = args.invertx
 inverty = args.inverty
 invertz = args.invertz
@@ -263,6 +271,8 @@ returned_values = complete_preprocessing(
     parallel_acceleration_factor,
     b0_magnitude,
     b0_phase=b0_phase,
+    phase_axis=phase_axis,
+    slice_axis=slice_axis,
     invertX=invertx,
     invertY=inverty,
     invertZ=invertz,

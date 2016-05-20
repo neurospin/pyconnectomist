@@ -65,6 +65,8 @@ class ConnectomistQspace(unittest.TestCase):
             "invertY": False,
             "invertZ": False,
             "manufacturer": "Siemens",
+            "phase_axis": "y",
+            "slice_axis": "x",
             "subject_id": "Lola"
         }
         self.bvecs = numpy.array([[0, 0, 0], [0, 0, 0], [1, 0, 0], [0, 1, 0]])
@@ -74,6 +76,15 @@ class ConnectomistQspace(unittest.TestCase):
         """ Run after each test.
         """
         self.popen_patcher.stop()
+
+    def test_badaxis_raise(self):
+        """ A wrong slice or phase axis -> raise ValueError.
+        """
+        # Test execution
+        wrong_kwargs = copy.copy(self.kwargs)
+        wrong_kwargs["phase_axis"] = "WRONG"
+        self.assertRaises(ValueError,
+                          data_import_and_qspace_sampling, **wrong_kwargs)
 
     def test_badfileerror_raise(self):
         """ A wrong input -> raise ConnectomistBadFileError.
