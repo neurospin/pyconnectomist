@@ -175,6 +175,7 @@ def data_import_and_qspace_sampling(
         # ---------------------------------------------------------------------
         # Field: "Diffusion weighted-images"
         "fileNameDwi":        dwi,  # "DW data"
+        # TODO: add the following two parameters to function arguments.
         "sliceAxis":            2,  # "Slice axis", default "Z-axis"
         "phaseAxis":            1,  # "Phase axis", default "Y-axis"
         "manufacturer":      None,
@@ -200,7 +201,7 @@ def data_import_and_qspace_sampling(
         # ---------------------------------------------------------------------
         # Field: "Q-space sampling"
         "qSpaceSamplingType":     4,  # default "spherical single-shell custom"
-        "qSpaceChoice5BValue": 1300,
+        "qSpaceChoice5BValue": None,
         "qSpaceChoice5OrientationFileNames": bvec,
 
         # Apparently Connectomist uses 2 as True, and 0 as False.
@@ -257,6 +258,8 @@ def data_import_and_qspace_sampling(
     if nb_shells == 1:
         # Spherical single-shell custom
         parameters_dict["qSpaceSamplingType"] = 4
+        bvals_set = set(bvals) - {0}
+        parameters_dict["qSpaceChoice5BValue"] = bvals_set.pop()
     else:
         raise ConnectomistError(
             "'{0}' shell model(s) not handled yet: path to .bval file: "
