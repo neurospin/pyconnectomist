@@ -47,12 +47,13 @@ from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
 
 # Parameters to keep trace
 __hopla__ = ["tool", "tool_version", "version", "config", "inputs", "outputs",
-             "outdir", "subjectid", "subjdir", "dwi", "bvec", "bval",
+             "outdir", "subjectid", "subjdir", "dwis", "bvecs", "bvals",
              "manufacturer", "delta_te", "partial_fourier_factor",
              "parallel_acceleration_factor", "b0_magnitude", "b0_phase",
              "b0_magnitude", "invertx", "inverty", "invertz", "negative_sign",
              "echo_spacing", "epi_factor", "b0_field", "water_fat_shift",
-             "delete_steps", "morphologist_dir"]
+             "delete_steps", "morphologist_dir", "noise_threshold",
+             "dilatation_radius"]
 
 # Script documentation
 doc = """
@@ -134,13 +135,13 @@ parser.add_argument(
     "-s", "--subjectid", dest="subjectid", required=True,
     help="the subject identifier.")
 parser.add_argument(
-    "-i", "--dwifile", dest="dwifile", metavar="FILE", required=True,
-    help="the subject diffusion image to be processed.", type=is_file)
+    "-i", "--dwifiles", dest="dwifiles", metavar="FILE", nargs="+",
+    help="the subject diffusion images to be processed.", type=is_file)
 parser.add_argument(
-    "-r", "--bvecfile", dest="bvecfile", metavar="FILE", required=True,
+    "-r", "--bvecfiles", dest="bvecfiles", metavar="FILE", nargs="+",
     help="the subject diffusion b-vectors to be processed.", type=is_file)
 parser.add_argument(
-    "-b", "--bvalfile", dest="bvalfile", metavar="FILE", required=True,
+    "-b", "--bvalfiles", dest="bvalfiles", metavar="FILE", nargs="+",
     help="the subject diffusion b-values to be processed.", type=is_file)
 parser.add_argument(
     "-m", "--manufacturer", dest="manufacturer", choices=MANUFACTURERS.keys(),
@@ -165,7 +166,7 @@ parser.add_argument(
     "-p", "--b0_phase", dest="b0_phase", metavar="FILE",
     help="the path to the B0 phase map (not for GE).", type=is_file)
 parser.add_argument(
-    "-h", "--phase_axis", dest="phase_axis", choices=["x", "y", "z"],
+    "-ph", "--phase_axis", dest="phase_axis", choices=["x", "y", "z"],
      default="y", help="the acquistion phase axis.")
 parser.add_argument(
     "-j", "--slice_axis", dest="slice_axis", choices=["x", "y", "z"],
@@ -204,6 +205,15 @@ parser.add_argument(
     "-g", "--morphologist_dir", dest="morphologist_dir", required=True,
     metavar="PATH", type=is_directory,
     help="the path to the morphologist processings home directory.")
+parser.add_argument(
+    "-nt", "--noise_threshold", dest="noise_threshold", type=float,
+    default=2.0,
+    help=("the noise threshold percentage used to compute the rough histogram "
+          "based mask."))
+parser.add_argument(
+    "-dr", "--dilatation_radius", dest="dilatation_radius", type=float,
+    default=4.0,
+    help="the dilatation radius in mm used to compute the rough mask.")       
 args = parser.parse_args()
 
 
@@ -218,17 +228,17 @@ if args.verbose > 0:
     print("[info] Start Connectomist preproc...")
     print("[info] Directory: {0}.".format(args.outdir))
     print("[info] Subject: {0}.".format(args.subjectid))
-    print("[info] DWI: {0}.".format(args.dwifile))
-    print("[info] BVEC: {0}.".format(args.bvecfile))
-    print("[info] BVAL: {0}.".format(args.bvalfile))
+    print("[info] DWIS: {0}.".format(args.dwifiles))
+    print("[info] BVECS: {0}.".format(args.bvecfiles))
+    print("[info] BVALS: {0}.".format(args.bvalfiles))
     print("[info] Magnitude: {0}.".format(args.b0_magnitude))
     print("[info] Phase: {0}.".format(args.b0_phase))
 outdir = args.outdir
 subjectid = args.subjectid
 subjdir = os.path.join(args.outdir, subjectid, "preproc")
-dwi = args.dwifile
-bvec = args.bvecfile
-bval = args.bvalfile
+dwis = args.dwifiles
+bvecs = args.bvecfiles
+bvals = args.bvalfiles
 manufacturer = args.manufacturer
 delta_te = args.delta_te
 partial_fourier_factor = args.partial_fourier_factor
@@ -247,7 +257,9 @@ b0_field = args.b0_field
 water_fat_shift = args.water_fat_shift
 delete_steps = args.delete_steps
 morphologist_dir = args.morphologist_dir
-inputs = [dwi, bvec, bval]
+noise_threshold = args.noise_threshold
+dilatation_radius = args.dilatation_radius
+inputs = dwis + bvecs + bvals
 outputs = []
 if not os.path.isdir(subjdir):
     os.makedirs(subjdir)
@@ -262,9 +274,9 @@ Connectomist preproc: all steps
 returned_values = complete_preprocessing(
     subjdir,
     subjectid,
-    dwi,
-    bval,
-    bvec,
+    dwis,
+    bvals,
+    bvecs,
     manufacturer,
     delta_te,
     partial_fourier_factor,
@@ -283,6 +295,8 @@ returned_values = complete_preprocessing(
     water_fat_shift=water_fat_shift,
     delete_steps=delete_steps,
     morphologist_dir=morphologist_dir,
+    noise_threshold=noise_threshold,
+    dilatation_radius=dilatation_radius,
     path_connectomist=config)
 preproc_dwi, preproc_bval, preproc_bvec, preproc_outliers = returned_values
 outputs = [preproc_dwi, preproc_bval, preproc_bvec, preproc_outliers]

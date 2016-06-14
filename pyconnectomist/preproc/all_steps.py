@@ -38,9 +38,9 @@ STEPS = [
 def complete_preprocessing(
         outdir,
         subject_id,
-        dwi,
-        bval,
-        bvec,
+        dwis,
+        bvals,
+        bvecs,
         manufacturer,
         delta_TE,
         partial_fourier_factor,
@@ -59,6 +59,8 @@ def complete_preprocessing(
         water_fat_shift=4.68,
         delete_steps=False,
         morphologist_dir=None,
+        noise_threshold=2.0,
+        dilatation_radius=4.0,
         path_connectomist=DEFAULT_CONNECTOMIST_PATH):
     """ Function that runs all preprocessing tabs from Connectomist.
 
@@ -90,12 +92,12 @@ def complete_preprocessing(
         path to folder where all the preprocessing will be done.
     subject_id: str (mandatory)
         subject identifier.
-    dwi: str (mandatory)
-        path to input Nifti DW data.
-    bval: str (mandatory)
-        path to Nifti's associated .bval file.
-    bvec: str (mandatory)
-        path to Nifti's associated .bval file.
+    dwis: list of str (mandatory)
+        path to input Nifti DW datasets.
+    bvals: list of str (mandatory)
+        path to Nifti's associated .bval files.
+    bvecs: list of str (mandatory)
+        path to Nifti's associated .bval files.
     manufacturer: str (mandatory)
         manufacturer name (e.g. "Siemens", "GE"...).
     delta_TE: float (mandatory)
@@ -137,6 +139,11 @@ def complete_preprocessing(
         + outliers.py
     morphologist_dir: str (optional, default None)
         the path to the morphologist processings.
+    noise_threshold: float (optional, default 2.0)
+        the noise threshold percentage used to compute the rough histogram
+        based mask.
+    dilatation_radius: float (optional, default 4.0)
+        the dilatation radius in mm used to compute the rough mask.
     path_connectomist: str (optional)
         path to the Connectomist executable.
 
@@ -157,9 +164,9 @@ def complete_preprocessing(
     data_import_and_qspace_sampling(
         raw_dwi_dir,
         subject_id,
-        dwi,
-        bval,
-        bvec,
+        dwis,
+        bvals,
+        bvecs,
         manufacturer,
         invertX,
         invertY,
@@ -176,6 +183,8 @@ def complete_preprocessing(
         rough_mask_dir,
         raw_dwi_dir,
         subject_id,
+        noise_threshold=noise_threshold,
+        dilatation_radius=dilatation_radius,
         path_connectomist=path_connectomist)
 
     # Step 4 - Detect and correct outlying diffusion slices

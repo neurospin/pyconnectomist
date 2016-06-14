@@ -50,7 +50,9 @@ class ConnectomistMask(unittest.TestCase):
         self.kwargs = {
             "outdir": "/my/path/mock_outdir",
             "raw_dwi_dir": "/my/path/mock_rawdwidir",
-            "subject_id": "Lola"
+            "subject_id": "Lola",
+            "noise_threshold": 2.0,
+            "dilatation_radius": 4.0
         }
 
     def tearDown(self):

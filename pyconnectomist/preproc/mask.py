@@ -18,6 +18,8 @@ def rough_mask_extraction(
         outdir,
         raw_dwi_dir,
         subject_id,
+        noise_threshold=2.0,
+        dilatation_radius=4.0,
         path_connectomist=DEFAULT_CONNECTOMIST_PATH):
     """ Wrapper to Connectomist's 'Rough mask' tab.
 
@@ -29,6 +31,10 @@ def rough_mask_extraction(
         path to Connectomist Raw DWI folder.
     subject_id: str
         the subject code in study.
+    noise_threshold: float (optional, default 2.0)
+        the noise threshold percentage.
+    dilatation_radius: float (optional, default 4.0)
+        the dilatation radius in mm.
     path_connectomist: str (optional)
         path to the Connectomist executable.
 
@@ -43,7 +49,7 @@ def rough_mask_extraction(
         # ---------------------------------------------------------------------
         # Used parameters
         "outputWorkDirectory":      outdir,
-        "rawDwiDirectory":     raw_dwi_dir,
+        "rawDwiDirectory":          raw_dwi_dir,
         # ---------------------------------------------------------------------
         # Parameters not used/handled by the code
         "_subjectName": subject_id,
@@ -89,10 +95,10 @@ def rough_mask_extraction(
             "subSamplingMaximumSizes":                    "64",
             "transform3DType":                               0
         },
-        "maskClosingRadius":        0.0,
-        "maskDilationRadius":       4.0,
-        "morphologistBrainMask":     "",
-        "noiseThresholdPercentage": 2.0,
+        "maskClosingRadius":          0.0,
+        "maskDilationRadius":         dilatation_radius,
+        "morphologistBrainMask":      "",
+        "noiseThresholdPercentage":   noise_threshold,
         "strategyRoughMaskFromT1":    0,
         "strategyRoughMaskFromT2":    1
     }

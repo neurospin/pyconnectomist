@@ -35,9 +35,9 @@ AXIS = {
 
 def gather_and_format_input_files(
         outdir,
-        dwi,
-        bval,
-        bvec,
+        dwis,
+        bvals,
+        bvecs,
         b0_magnitude=None,
         b0_phase=None):
     """ Gather all files needed to start the preprocessing in the right format
@@ -47,12 +47,12 @@ def gather_and_format_input_files(
     ----------
     outdir: str
         path to directory where to gather all files.
-    dwi: str
-        path to input Nifti file to be preprocessed.
-    bval: str
-        path to .bval file associated to Nifti.
-    bvec: str
-        path to .bvec file associated to Nifti.
+    dwis: str
+        path to input Nifti files to be preprocessed.
+    bvals: str
+        path to .bval files associated to Nifti.
+    bvecs: str
+        path to .bvec files associated to Nifti.
     b0_magnitude: str (optional, default None)
         path to B0 magnitude map, may also contain phase.
         Required only if you want to make fieldmap-based
@@ -65,10 +65,10 @@ def gather_and_format_input_files(
     Returns
     -------
     raw_dwi_dir:
-        Connectomist's import data directory with file in Gis format.
+        Connectomist's import data directory with files in Gis format.
     """
     # Check that files exist
-    files = [dwi, bval, bvec]
+    files = dwis + bvals + bvecs
     if b0_magnitude is not None:
         files.append(b0_magnitude)
     if b0_phase is not None:
@@ -97,14 +97,28 @@ def gather_and_format_input_files(
             magnitude.to_filename(b0_magnitude)
             phase.to_filename(b0_phase)
 
-    # Convert Nifti to Gis
-    dwi = ptk_nifti_to_gis(dwi, os.path.join(outdir, "dwi.ima"))
+    # Go through all DWI data that must be converted
+    copied_dwis = []
+    copied_bvals = []
+    copied_bvecs = []
+    nb_of_sequences = len(dwis)
+    for index, (dwi, bval, bvec) in enumerate(zip(dwis, bvals, bvecs)):
 
-    # Copy bval and bvec files, with homogeneous names
-    bval_copy = os.path.join(outdir, "dwi.bval")
-    bvec_copy = os.path.join(outdir, "dwi.bvec")
-    shutil.copyfile(bval, bval_copy)
-    shutil.copyfile(bvec, bvec_copy)
+        # One sequence name special case
+        if nb_of_sequences == 1:
+            index = ""
+
+        # Convert Nifti to Gis
+        copied_dwis.append(ptk_nifti_to_gis(
+            dwi, os.path.join(outdir, "dwi{0}.ima".format(index))))
+
+        # Copy bval and bvec files, with homogeneous names
+        bval_copy = os.path.join(outdir, "dwi{0}.bval".format(index))
+        bvec_copy = os.path.join(outdir, "dwi{0}.bvec".format(index))
+        shutil.copyfile(bval, bval_copy)
+        shutil.copyfile(bvec, bvec_copy)
+        copied_bvals.append(bval_copy)
+        copied_bvecs.append(bvec_copy)
 
     # Convert and rename B0 map(s) if they are given
     if b0_magnitude is not None:
@@ -115,15 +129,15 @@ def gather_and_format_input_files(
         b0_phase = ptk_nifti_to_gis(
             b0_phase, os.path.join(outdir, "b0_phase.ima"))
 
-    return dwi, bval_copy, bvec_copy, b0_magnitude, b0_phase
+    return copied_dwis, copied_bvals, copied_bvecs, b0_magnitude, b0_phase
 
 
 def data_import_and_qspace_sampling(
         outdir,
         subject_id,
-        dwi,
-        bval,
-        bvec,
+        dwis,
+        bvals,
+        bvecs,
         manufacturer,
         invertX=True,
         invertY=False,
@@ -141,12 +155,12 @@ def data_import_and_qspace_sampling(
         path to Connectomist's output directory.
     subject_id: str
         the subject code in study.
-    dwi: str
-        path to Nifti diffusion-weighted data.
-    bvec: str
-        path to .bval file associated to the Nifti.
-    bval: str
-        path to .bvec file associated to the Nifti.
+    dwis: list of str
+        path to Nifti diffusion-weighted datasets.
+    bvals: list of str
+        path to .bval files associated to the Nifti.
+    bvecs: list of str
+        path to .bvec files associated to the Nifti.
     manufacturer: str
         name of the manufacturer (e.g. "Siemens", "GE", "Philips" or "Bruker").
     invertX: bool (optional, default True)
@@ -175,13 +189,16 @@ def data_import_and_qspace_sampling(
     for axis in (phase_axis, phase_axis):
         if axis not in AXIS:
             raise ValueError("Invalid axis '{0}'.".format(axis))
+    if len(set(map(len, (dwis, bvecs, bvals)))) != 1:
+        raise ValueError("The DWIs, BVECs and BVALs must have the same number "
+                         "of elements.")
 
     # Create the Connectomist's import data directory
-    dwi, bval, bvec, b0_magnitude, b0_phase = gather_and_format_input_files(
+    dwis, bvals, bvecs, b0_magnitude, b0_phase = gather_and_format_input_files(
         outdir,
-        dwi,
-        bval,
-        bvec,
+        dwis,
+        bvals,
+        bvecs,
         b0_magnitude,
         b0_phase)
 
@@ -192,7 +209,7 @@ def data_import_and_qspace_sampling(
 
         # ---------------------------------------------------------------------
         # Field: "Diffusion weighted-images"
-        "fileNameDwi":  dwi,  # "DW data"
+        "fileNameDwi":  ";".join(dwis),  # "DW data"
         "sliceAxis":    AXIS[slice_axis],  # "Slice axis", default "Z-axis"
         "phaseAxis":    AXIS[phase_axis],  # "Phase axis", default "Y-axis"
         "manufacturer": None,
@@ -217,9 +234,9 @@ def data_import_and_qspace_sampling(
         "qSpaceTransform_zz": 1.0,
         # ---------------------------------------------------------------------
         # Field: "Q-space sampling"
-        "qSpaceSamplingType":     4,  # default "spherical single-shell custom"
+        "qSpaceSamplingType": 4,  # default "spherical single-shell custom"
         "qSpaceChoice5BValue": None,
-        "qSpaceChoice5OrientationFileNames": bvec,
+        "qSpaceChoice5OrientationFileNames": ";".join(bvecs),
 
         # Apparently Connectomist uses 2 as True, and 0 as False.
         "invertXAxis": 2 if invertX else 0,
@@ -268,19 +285,19 @@ def data_import_and_qspace_sampling(
     parameters_dict["manufacturer"] = MANUFACTURERS[manufacturer]
 
     # Read bvals and bvecs
-    bvals, bvecs, nb_shells, nb_nodiff = read_bvals_bvecs(bval, bvec)
+    bvalues, bvectors, nb_shells, nb_nodiff = read_bvals_bvecs(bvals, bvecs)
 
     # Update Connectomist step description
     parameters_dict["numberOfT2"] = nb_nodiff
     if nb_shells == 1:
         # Spherical single-shell custom
         parameters_dict["qSpaceSamplingType"] = 4
-        bvals_set = set(bvals) - {0}
+        bvals_set = set(bvalues) - {0}
         parameters_dict["qSpaceChoice5BValue"] = bvals_set.pop()
     else:
         raise ConnectomistError(
-            "'{0}' shell model(s) not handled yet: path to .bval file: "
-            "'{1}'".format(nb_shells, bval))
+            "'{0}' shell model(s) not handled yet: path to .bval files: "
+            "'{1}'".format(nb_shells, bvals))
 
     # Call with Connectomist
     process = ConnectomistWrapper(path_connectomist)
@@ -288,15 +305,17 @@ def data_import_and_qspace_sampling(
         algorithm, parameters_dict, outdir)
     process(algorithm, parameter_file, outdir)
 
-    # When there are multiple t2 (nodif) volumes, Connectomist merges them
+    # When there are multiple volume or when there are multiple t2 (nodif)
+    # volumes, Connectomist merges them
     # rewrite bvec, bval file accordingly (remove extra T2 values)
     if nb_nodiff > 1:
-        dw_indexes = np.where(bvals != 0)[0]
-        new_bvals = np.concatenate(([0], bvals[dw_indexes]))
+        bval = os.path.join(outdir, "dwi.bval")
+        dw_indexes = np.where(bvalues != 0)[0]
+        new_bvals = np.concatenate(([0], bvalues[dw_indexes]))
         np.savetxt(bval, new_bvals)
-
-        new_bvecs = np.concatenate(([[0], [0], [0]], bvecs.T[:, dw_indexes]),
-                                   axis=1)
+        bvec = os.path.join(outdir, "dwi.bvec")
+        new_bvecs = np.concatenate(
+            ([[0], [0], [0]], bvectors.T[:, dw_indexes]), axis=1)
         np.savetxt(bvec, new_bvecs)
 
     return outdir

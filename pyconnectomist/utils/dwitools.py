@@ -23,10 +23,10 @@ def read_bvals_bvecs(bvals_path, bvecs_path, min_bval=100.):
 
     Parameters
     ----------
-    bvals_path: str
-        path to the diffusion b-values file.
-    bvecs_path: str
-        path to the diffusion b-vectors file.
+    bvals_path: str or list of str
+        path to the diffusion b-values file(s).
+    bvecs_path: str or list of str
+        path to the diffusion b-vectors file(s).
     min_bval: float, optional
         if a b-value under this threshold is detected raise an ValueError.
 
@@ -46,9 +46,25 @@ def read_bvals_bvecs(bvals_path, bvecs_path, min_bval=100.):
     ValueError: if the b-values or the corresponding b-vectors have not
         matching sizes this exception is raised.
     """
+    # Format input path
+    if not isinstance(bvals_path, list):
+        bvals_path = [bvals_path]
+    if not isinstance(bvecs_path, list):
+        bvecs_path = [bvecs_path]
+
     # Read .bval & .bvecs files
-    bvals = np.loadtxt(bvals_path)
-    bvecs = np.loadtxt(bvecs_path)
+    bvals = None
+    bvecs = None
+    for bvalfile, bvecfile in zip(bvals_path, bvecs_path):
+        if bvals is None:
+            bvals = np.loadtxt(bvalfile)
+        else:
+            bvals = np.concatenate((bvals, np.loadtxt(bvalfile)))
+        if bvecs is None:
+            bvecs = np.loadtxt(bvecfile)
+        else:
+            axis = bvecs.shape.index(max(bvecs.shape))
+            bvecs = np.concatenate((bvecs, np.loadtxt(bvecfile)), axis=axis)
 
     # Check consistency between bvals and associated bvecs
     if bvecs.ndim != 2:

@@ -14,3 +14,4 @@ complete_preprocessing function.
 """
 
 from .all_steps import complete_preprocessing
+from .all_steps import STEPS

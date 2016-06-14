@@ -14,3 +14,4 @@ All the tractography steps can be done at once calling the
 """
 
 from .all_steps import complete_tractography
+from .all_steps import STEPS

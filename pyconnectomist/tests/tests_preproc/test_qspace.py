@@ -53,9 +53,9 @@ class ConnectomistQspace(unittest.TestCase):
         mock_process.configure_mock(**attrs)
         self.mock_popen.return_value = mock_process
         self.kwargs = {
-            "dwi": "/my/path/mock_dwi.nii.gz",
-            "bval": "/my/path/mock_dwi.bval",
-            "bvec": "/my/path/mock_dwi.bvec",
+            "dwis": ["/my/path/mock_dwi.nii.gz"],
+            "bvals": ["/my/path/mock_dwi.bval"],
+            "bvecs": ["/my/path/mock_dwi.bvec"],
             "outdir": "/my/path/mock_outdir",
             "subject_id": "Lola",
             "b0_magnitude": "/my/path/mock_b0_magnitude",
@@ -93,6 +93,15 @@ class ConnectomistQspace(unittest.TestCase):
         self.assertRaises(ConnectomistBadFileError,
                           data_import_and_qspace_sampling, **self.kwargs)
 
+    def test_badinputlength_raise(self):
+        """ A wrong input length -> raise ValueError.
+        """
+        # Test execution
+        wrong_kwargs = copy.copy(self.kwargs)
+        wrong_kwargs["bvals"] = []
+        self.assertRaises(ValueError,
+                          data_import_and_qspace_sampling, **wrong_kwargs)
+
     @mock.patch("pyconnectomist.preproc.qspace.ptk_nifti_to_gis")
     @mock.patch("os.path")
     @mock.patch("shutil.copyfile")
@@ -104,6 +113,7 @@ class ConnectomistQspace(unittest.TestCase):
         # Set the mocked functions returned values
         mock_path.isfile.side_effect = [True] * 5 + [False]
         mock_conversion.side_effect = lambda *x: x[-1]
+        mock_path.join.side_effect = lambda *x: x[0] + "/" + x[1]
 
         # Test execution
         wrong_kwargs = copy.copy(self.kwargs)
@@ -124,6 +134,7 @@ class ConnectomistQspace(unittest.TestCase):
         mock_path.isfile.side_effect = [True] * 5 + [False]
         mock_conversion.side_effect = lambda *x: x[-1]
         mock_bvecs.return_value = (self.bvals, self.bvecs, 2, 1)
+        mock_path.join.side_effect = lambda *x: x[0] + "/" + x[1]
 
         # Test execution
         self.assertRaises(ConnectomistError,
@@ -158,13 +169,13 @@ class ConnectomistQspace(unittest.TestCase):
         self.assertTrue(
             [mock.call(self.kwargs["outdir"])] == mock_mkdir.call_args_list)
         expected_copyfiles = [
-            mock.call(self.kwargs["bval"],
+            mock.call(self.kwargs["bvals"][0],
                       self.kwargs["outdir"] + "/" + "dwi.bval"),
-            mock.call(self.kwargs["bvec"],
+            mock.call(self.kwargs["bvecs"][0],
                       self.kwargs["outdir"] + "/" + "dwi.bvec")]
         self.assertTrue(expected_copyfiles == mock_copyfile.call_args_list)
         expected_conversions = [
-            mock.call(self.kwargs["dwi"],
+            mock.call(self.kwargs["dwis"][0],
                       self.kwargs["outdir"] + "/" + "dwi.ima"),
             mock.call(self.kwargs["b0_magnitude"],
                       self.kwargs["outdir"] + "/" + "b0_magnitude.ima"),
@@ -172,8 +183,8 @@ class ConnectomistQspace(unittest.TestCase):
                       self.kwargs["outdir"] + "/" + "b0_phase.ima")]
         self.assertTrue(expected_conversions == mock_conversion.call_args_list)
         self.assertTrue([
-            mock.call(self.kwargs["outdir"] + "/" + "dwi.bval",
-                      self.kwargs["outdir"] + "/" + "dwi.bvec")] ==
+            mock.call([self.kwargs["outdir"] + "/" + "dwi.bval"],
+                      [self.kwargs["outdir"] + "/" + "dwi.bvec"])] ==
             mock_bvecs.call_args_list)
         self.assertTrue(len(mock_params.call_args_list) == 1)
         expected_saves = [

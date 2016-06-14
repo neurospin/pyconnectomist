@@ -39,9 +39,9 @@ class ConnectomistPreproc(unittest.TestCase):
         """ Define function parameters.
         """
         self.kwargs = {
-            "dwi": "/my/path/mock_dwi.nii.gz",
-            "bval": "/my/path/mock_dwi.bval",
-            "bvec": "/my/path/mock_dwi.bvec",
+            "dwis": ["/my/path/mock_dwi.nii.gz"],
+            "bvals": ["/my/path/mock_dwi.bval"],
+            "bvecs": ["/my/path/mock_dwi.bvec"],
             "outdir": "/my/path/mock_outdir",
             "subject_id": "Lola",
             "delta_TE": 5,
@@ -62,6 +62,8 @@ class ConnectomistPreproc(unittest.TestCase):
             "water_fat_shift": 4.68,
             "delete_steps": True,
             "morphologist_dir": "/my/path/mock_morphologist",
+            "noise_threshold": 2.0,
+            "dilatation_radius": 4.0,
             "manufacturer": "Siemens"
         }
 
