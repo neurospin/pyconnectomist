@@ -113,8 +113,9 @@ class ConnectomistNiftiToGis(unittest.TestCase):
         self.assertRaises(ConnectomistBadFileError, ptk_nifti_to_gis,
                           "nifti.nii.gz", "gis")
 
+    @mock.patch("os.remove")
     @mock.patch("os.path")
-    def test_normal_execution(self, mock_path):
+    def test_normal_execution(self, mock_path, mock_rm):
         """ Test the normal behaviour of the function.
         """
         # Set the mocked functions returned values
@@ -125,6 +126,8 @@ class ConnectomistNiftiToGis(unittest.TestCase):
         self.assertEqual(output_files, "gis.ima")
         self.assertEqual([mock.call("nifti.nii.gz")],
                          mock_path.isfile.call_args_list)
+        self.assertEqual([mock.call("gis.ima.minf")],
+                         mock_rm.call_args_list)
         self.assertTrue(len(self.mock_popen.call_args_list) == 2)
 
 

@@ -32,6 +32,8 @@ try:
     bredala.register("pyconnectomist.preproc.eddy",
                      names=["eddy_and_motion_correction",
                             "export_eddy_motion_results_to_nifti"])
+    bredala.register("pyconnectomist.preproc.qc",
+                     names=["qc_reporting"])
     bredala.register("pyconnectomist.wrappers",
                      names=["ConnectomistWrapper.__call__"])
 except:
@@ -52,8 +54,8 @@ __hopla__ = ["tool", "tool_version", "version", "config", "inputs", "outputs",
              "parallel_acceleration_factor", "b0_magnitude", "b0_phase",
              "b0_magnitude", "invertx", "inverty", "invertz", "negative_sign",
              "echo_spacing", "epi_factor", "b0_field", "water_fat_shift",
-             "delete_steps", "morphologist_dir", "noise_threshold",
-             "dilatation_radius"]
+             "delete_steps", "morphologist_dir", "projectname",
+             "timestep", "t1zcropping"]
 
 # Script documentation
 doc = """
@@ -67,14 +69,15 @@ Steps:
 
 1- Create the preprocessing output directory if not existing.
 2- Import files to Connectomist and choose q-space model.
-3- Create a brain mask.
-4- Detect and correct outlying diffusion slices.
-5- Susceptibility correction.
-6- Eddy current and motion correction.
-7- Export result as a Nifti with a .bval and a .bvec.
-8- Export outliers.
-9- Registration t1 - dwi
-10- Delete intermediate files and directories if requested.
+3- Registration t1 - dwi
+4- Create a brain mask.
+5- Detect and correct outlying diffusion slices.
+6- Susceptibility correction.
+7- Eddy current and motion correction.
+8- QC reporting.
+9- Export result as a Nifti with a .bval and a .bvec.
+10- Export outliers.
+11- Delete intermediate files and directories if requested.
 
 Command:
 
@@ -82,6 +85,8 @@ python $HOME/git/pyconnectomist/pyconnectomist/scripts/pyconnectomist_preproc \
     -v 2 \
     -o /tmp/pyconnectomist \
     -s ab130187 \
+    -pn myproject \
+    -tn t0 \
     -i /neurospin/senior/nsap/data/V0/nifti/ab130187/000009_DTI/DTI.nii.gz \
     -r /neurospin/senior/nsap/data/V0/nifti/ab130187/000009_DTI/DTI.bvec \
     -b /neurospin/senior/nsap/data/V0/nifti/ab130187/000009_DTI/DTI.bval \
@@ -125,6 +130,12 @@ parser.add_argument(
 parser.add_argument(
     "-e", "--erase", dest="erase", action="store_true",
     help="if activated, clean the subject folder if already created.")
+parser.add_argument(
+    "-pn", "--projectname", dest="projectname", required=True,
+    help="the project name.")
+parser.add_argument(
+    "-ts", "--timestep", dest="timestep", required=True,
+    help="the time step assocaited to the diffusion dataset.")
 parser.add_argument(
     "-c", "--connectomistconfig", dest="connectomistconfig", metavar="PATH",
     help="the path to the Connectomist configuration file.", type=is_file)
@@ -198,22 +209,17 @@ parser.add_argument(
     "-w", "--water_fat_shift", dest="water_fat_shift", type=float,
     default=4.68, help="Philips only, the spins frequency offsets.")
 parser.add_argument(
+    "-zc", "--t1zcropping", dest="t1zcropping", type=int,
+    default=0, help=("Crop the t1 image in the z direction in order to remove "
+                     "the neck."))
+parser.add_argument(
     "-d", "--delete_steps", dest="delete_steps", action="store_true",
     help=("if activated, remove all intermediate files and directories at "
           "the end."))
 parser.add_argument(
     "-g", "--morphologist_dir", dest="morphologist_dir", required=True,
     metavar="PATH", type=is_directory,
-    help="the path to the morphologist processings home directory.")
-parser.add_argument(
-    "-nt", "--noise_threshold", dest="noise_threshold", type=float,
-    default=2.0,
-    help=("the noise threshold percentage used to compute the rough histogram "
-          "based mask."))
-parser.add_argument(
-    "-dr", "--dilatation_radius", dest="dilatation_radius", type=float,
-    default=4.0,
-    help="the dilatation radius in mm used to compute the rough mask.")       
+    help="the path to the morphologist processings home directory.")    
 args = parser.parse_args()
 
 
@@ -235,6 +241,8 @@ if args.verbose > 0:
     print("[info] Phase: {0}.".format(args.b0_phase))
 outdir = args.outdir
 subjectid = args.subjectid
+projectname = args.projectname
+timestep = args.timestep
 subjdir = os.path.join(args.outdir, subjectid, "preproc")
 dwis = args.dwifiles
 bvecs = args.bvecfiles
@@ -255,10 +263,9 @@ echo_spacing = args.echo_spacing
 epi_factor = args.epi_factor
 b0_field = args.b0_field
 water_fat_shift = args.water_fat_shift
+t1zcropping = args.t1zcropping
 delete_steps = args.delete_steps
 morphologist_dir = args.morphologist_dir
-noise_threshold = args.noise_threshold
-dilatation_radius = args.dilatation_radius
 inputs = dwis + bvecs + bvals
 outputs = []
 if not os.path.isdir(subjdir):
@@ -274,6 +281,8 @@ Connectomist preproc: all steps
 returned_values = complete_preprocessing(
     subjdir,
     subjectid,
+    projectname,
+    timestep,
     dwis,
     bvals,
     bvecs,
@@ -293,10 +302,9 @@ returned_values = complete_preprocessing(
     EPI_factor=epi_factor,
     b0_field=b0_field,
     water_fat_shift=water_fat_shift,
+    t1_foot_zcropping=t1zcropping,
     delete_steps=delete_steps,
     morphologist_dir=morphologist_dir,
-    noise_threshold=noise_threshold,
-    dilatation_radius=dilatation_radius,
     path_connectomist=config)
 preproc_dwi, preproc_bval, preproc_bvec, preproc_outliers = returned_values
 outputs = [preproc_dwi, preproc_bval, preproc_bvec, preproc_outliers]

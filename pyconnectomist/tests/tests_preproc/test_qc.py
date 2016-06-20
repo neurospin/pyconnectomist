@@ -26,13 +26,12 @@ else:
     from unittest.mock import patch
 
 # pyConnectomist import
-from pyconnectomist.preproc.mask import rough_mask_extraction
-from pyconnectomist.exceptions import ConnectomistBadFileError
+from pyconnectomist.preproc.qc import qc_reporting
 
 
-class ConnectomistMask(unittest.TestCase):
-    """ Test the Connectomist 'Rough mask' tab:
-    'pyconnectomist.preproc.mask.rough_mask_extraction'
+class ConnectomistQc(unittest.TestCase):
+    """ Test the Connectomist 'QC Reporting' tab:
+    'pyconnectomist.preproc.qc.qc_reporting'
     """
     def setUp(self):
         """ Run before each test - the mock_popen will be available and in the
@@ -52,7 +51,13 @@ class ConnectomistMask(unittest.TestCase):
             "outdir": "/my/path/mock_outdir",
             "raw_dwi_dir": "/my/path/mock_rawdwidir",
             "registration_dir": "/my/path/mock_registrationdir",
-            "subject_id": "Lola"
+            "rough_mask_dir": "/my/path/mock_maskdir",
+            "outliers_dir": "/my/path/mock_outliersdir",
+            "susceptibility_dir": "/my/path/mock_susceptibilitydir",
+            "eddy_motion_dir": "/my/path/mock_eddydir",
+            "subject_id": "Lola",
+            "project_name": "MyProject",
+            "timestep": "MyTimeStep"
         }
 
     def tearDown(self):
@@ -60,27 +65,18 @@ class ConnectomistMask(unittest.TestCase):
         """
         self.popen_patcher.stop()
 
-    def test_badfileerror_raise(self):
-        """ A wrong input -> raise ConnectomistBadFileError.
-        """
-        # Test execution
-        self.assertRaises(ConnectomistBadFileError,
-                          rough_mask_extraction, **self.kwargs)
-
     @mock.patch("pyconnectomist.preproc.mask.ConnectomistWrapper."
                 "_connectomist_version_check")
     @mock.patch("pyconnectomist.preproc.mask.ConnectomistWrapper."
                 "create_parameter_file")
-    @mock.patch("os.path")
-    def test_normal_execution(self, mock_path, mock_params, mock_version):
+    def test_normal_execution(self, mock_params, mock_version):
         """ Test the normal behaviour of the function.
         """
         # Set the mocked functions returned values
         mock_params.return_value = "/my/path/mock_parameters"
-        mock_path.isfile.side_effect = [True, True, False]
 
         # Test execution
-        outdir = rough_mask_extraction(**self.kwargs)
+        outdir = qc_reporting(**self.kwargs)
         self.assertEqual(outdir, self.kwargs["outdir"])
         self.assertTrue(len(mock_params.call_args_list) == 1)
 

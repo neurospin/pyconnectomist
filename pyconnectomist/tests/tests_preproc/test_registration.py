@@ -51,10 +51,10 @@ class ConnectomistRegistration(unittest.TestCase):
         self.mock_popen.return_value = mock_process
         self.kwargs = {
             "outdir": "/my/path/mock_outdir",
-            "corrected_dwi_dir": "/my/path/mock_correcteddwidir",
-            "rough_mask_dir": "/my/path/mock_maskdir",
+            "raw_dwi_dir": "/my/path/mock_rawdwidir",
             "morphologist_dir": "/my/path/mock_morphologistdir",
-            "subject_id": "Lola"
+            "subject_id": "Lola",
+            "t1_foot_zcropping": 0
         }
 
     def tearDown(self):
@@ -68,8 +68,7 @@ class ConnectomistRegistration(unittest.TestCase):
         """
         # Set the mocked functions returned values
         mock_path.isfile.side_effect = [False]
-        mock_path.join.side_effect = lambda *x: (
-            x[0] + "/" + x[1] + "/" + x[2] + "/" + x[3] + "/" + x[4])
+        mock_path.join.side_effect = lambda *x: "/".join(x)
 
         # Test execution
         self.assertRaises(ConnectomistBadFileError,
@@ -79,15 +78,19 @@ class ConnectomistRegistration(unittest.TestCase):
                 "_connectomist_version_check")
     @mock.patch("pyconnectomist.preproc.registration.ConnectomistWrapper."
                 "create_parameter_file")
+    @mock.patch("pyconnectomist.preproc.registration.ptk_nifti_to_gis")
+    @mock.patch("os.mkdir")
     @mock.patch("os.path")
-    def test_normal_execution(self, mock_path, mock_params, mock_version):
+    def test_normal_execution(self, mock_path, mock_mkdir, mock_conversion,
+                              mock_params, mock_version):
         """ Test the normal behaviour of the function.
         """
         # Set the mocked functions returned values
         mock_path.isfile.side_effect = [True, True, False]
+        mock_path.isdir.return_value = False
         mock_params.return_value = "/my/path/mock_parameters"
-        mock_path.join.side_effect = lambda *x: (
-            x[0] + "/" + x[1] + "/" + x[2] + "/" + x[3] + "/" + x[4])
+        mock_path.join.side_effect = lambda *x: "/".join(x)
+        mock_conversion.side_effect = lambda *x: x[-1]
 
         # Test execution
         outdir = dwi_to_anatomy(**self.kwargs)
@@ -104,6 +107,9 @@ class ConnectomistRegistration(unittest.TestCase):
                          "{0}.nii.gz".format(self.kwargs["subject_id"])))
         self.assertEqual([mock.call(elem) for elem in expected_infiles],
                          mock_path.isfile.call_args_list)
+        self.assertEqual([mock.call(self.kwargs["outdir"])],
+                         mock_mkdir.call_args_list)
+        self.assertEqual(len(mock_conversion.call_args_list), 1)
 
 
 if __name__ == "__main__":

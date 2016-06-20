@@ -108,6 +108,9 @@ def ptk_nifti_to_gis(nifti, gis):
     ptkprocess = PtkWrapper(cmd)
     ptkprocess()
 
+    # Remove the .minf file: not to include embedded transformations
+    os.remove(gis + ".minf")
+
     return gis
 
 

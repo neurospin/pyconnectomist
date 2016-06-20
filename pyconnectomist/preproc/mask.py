@@ -9,17 +9,21 @@
 Wrapper to Connectomist's 'Rough mask' tab.
 """
 
+# System import
+import os
+import glob
+
 # pyConnectomist import
 from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
+from pyconnectomist.exceptions import ConnectomistBadFileError
 from pyconnectomist.wrappers import ConnectomistWrapper
 
 
 def rough_mask_extraction(
         outdir,
         raw_dwi_dir,
+        registration_dir,
         subject_id,
-        noise_threshold=2.0,
-        dilatation_radius=4.0,
         path_connectomist=DEFAULT_CONNECTOMIST_PATH):
     """ Wrapper to Connectomist's 'Rough mask' tab.
 
@@ -29,12 +33,10 @@ def rough_mask_extraction(
         path to Connectomist output work directory.
     raw_dwi_dir: str
         path to Connectomist Raw DWI folder.
+    registration_dir: str
+        bla
     subject_id: str
         the subject code in study.
-    noise_threshold: float (optional, default 2.0)
-        the noise threshold percentage.
-    dilatation_radius: float (optional, default 4.0)
-        the dilatation radius in mm.
     path_connectomist: str (optional)
         path to the Connectomist executable.
 
@@ -43,6 +45,13 @@ def rough_mask_extraction(
     outdir: str
         path to Connectomist's output directory.
     """
+    # Get brain t1 mask and check existance
+    t1file = os.path.join(registration_dir, "t1.ima")
+    t1brain = os.path.join(registration_dir, "Morphologist", "brain_t1.nii")
+    for fpath in (t1file, t1brain):
+        if not os.path.isfile(fpath):
+            raise ConnectomistBadFileError(fpath)
+
     # Dict with all parameters for connectomist
     algorithm = "DWI-Rough-Mask-Extraction"
     parameters_dict = {
@@ -53,7 +62,7 @@ def rough_mask_extraction(
         # ---------------------------------------------------------------------
         # Parameters not used/handled by the code
         "_subjectName": subject_id,
-        "anatomy": "",
+        "anatomy": t1file,
         "dwToT1RegistrationParameter": {
             "applySmoothing":                                1,
             "floatingLowerThreshold":                      0.0,
@@ -96,11 +105,11 @@ def rough_mask_extraction(
             "transform3DType":                               0
         },
         "maskClosingRadius":          0.0,
-        "maskDilationRadius":         dilatation_radius,
-        "morphologistBrainMask":      "",
-        "noiseThresholdPercentage":   noise_threshold,
-        "strategyRoughMaskFromT1":    0,
-        "strategyRoughMaskFromT2":    1
+        "maskDilationRadius":         4.0,
+        "morphologistBrainMask":      t1brain,
+        "noiseThresholdPercentage":   2.0,
+        "strategyRoughMaskFromT1":    1,
+        "strategyRoughMaskFromT2":    0
     }
 
     # Call with Connectomist
