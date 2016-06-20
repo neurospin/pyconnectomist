@@ -12,6 +12,7 @@ from __future__ import print_function
 import argparse
 import os
 import shutil
+from datetime import datetime
 
 # Bredala import
 try:
@@ -36,15 +37,20 @@ try:
                      names=["qc_reporting"])
     bredala.register("pyconnectomist.wrappers",
                      names=["ConnectomistWrapper.__call__"])
+    bredala.register("pyconnectomist.utils.pdftools",
+                     names=["generate_pdf"])
 except:
     pass
 
 # Pyconnectomist import
+import pyconnectomist
 from pyconnectomist import __version__ as version
 from pyconnectomist.preproc import complete_preprocessing
+from pyconnectomist.preproc import STEPS
 from pyconnectomist.manufacturers import MANUFACTURERS
 from pyconnectomist.wrappers import ConnectomistWrapper
 from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
+from pyconnectomist.utils.pdftools import generate_pdf
 
 
 # Parameters to keep trace
@@ -55,7 +61,7 @@ __hopla__ = ["tool", "tool_version", "version", "config", "inputs", "outputs",
              "b0_magnitude", "invertx", "inverty", "invertz", "negative_sign",
              "echo_spacing", "epi_factor", "b0_field", "water_fat_shift",
              "delete_steps", "morphologist_dir", "projectname",
-             "timestep", "t1zcropping"]
+             "timestep", "t1zcropping", "reportfile", "clientname"]
 
 # Script documentation
 doc = """
@@ -78,6 +84,7 @@ Steps:
 9- Export result as a Nifti with a .bval and a .bvec.
 10- Export outliers.
 11- Delete intermediate files and directories if requested.
+12- Generate QC reporting.
 
 Command:
 
@@ -130,6 +137,9 @@ parser.add_argument(
 parser.add_argument(
     "-e", "--erase", dest="erase", action="store_true",
     help="if activated, clean the subject folder if already created.")
+parser.add_argument(
+    "-cn", "--clientname", dest="clientname", default="NC",
+    help="the client name.")
 parser.add_argument(
     "-pn", "--projectname", dest="projectname", required=True,
     help="the project name.")
@@ -241,6 +251,7 @@ if args.verbose > 0:
     print("[info] Phase: {0}.".format(args.b0_phase))
 outdir = args.outdir
 subjectid = args.subjectid
+clientname = args.clientname
 projectname = args.projectname
 timestep = args.timestep
 subjdir = os.path.join(args.outdir, subjectid, "preproc")
@@ -310,3 +321,35 @@ preproc_dwi, preproc_bval, preproc_bvec, preproc_outliers = returned_values
 outputs = [preproc_dwi, preproc_bval, preproc_bvec, preproc_outliers]
 if args.verbose > 1:
     print("[result] In folder: {0}.".format(subjdir))
+
+
+"""
+Generate QC reporting
+"""
+reportfile = os.path.join(subjdir, "QcFast_{0}_{1}_{2}.pdf".format(
+    projectname, subjectid, timestep))
+tic = datetime.now()
+generate_pdf(
+    datapath=os.path.join(subjdir, STEPS[6]),
+    struct_file=os.path.join(
+        os.path.abspath(os.path.dirname(pyconnectomist.__file__)), "utils",
+        "resources", "pyconnectomist_qcfast.json"),
+    author="NeuroSpin",
+    client=clientname,
+    poweredby="Connectomist-{0}".format(tool_version),
+    project=projectname,
+    timepoint=timestep,
+    subject=subjectid,
+    date="{0}-{1}-{2}".format(tic.year, tic.month, tic.day),
+    title="DWI QC Reporting",
+    filename=reportfile,
+    pagesize=None,
+    left_margin=10,
+    right_margin=10,
+    top_margin=20,
+    bottom_margin=20,
+    show_boundary=False,
+    verbose=0)
+outputs.append(reportfile)
+if args.verbose > 1:
+    print("[result] In file: {0}.".format(reportfile))
