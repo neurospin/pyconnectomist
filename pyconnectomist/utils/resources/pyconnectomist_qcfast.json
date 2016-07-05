@@ -84,9 +84,9 @@
         "type": "triplanar",
         "style": "TwoCol",
         "images": [
-            ["DWI-Susceptibility-Artifact-Correction/snapshot-sagittal-t1-rgb-without-susceptibility.jpg"],
-            [null],
             ["DWI-Susceptibility-Artifact-Correction/snapshot-sagittal-t1-rgb-with-susceptibility.jpg"],
+            [null],
+            ["DWI-Susceptibility-Artifact-Correction/snapshot-sagittal-t1-rgb-without-susceptibility.jpg"],
             ["DWI-Susceptibility-Artifact-Correction/snapshot-histogram-displacement-in-pixel.jpg"]
         ],
         "texts": [
@@ -103,7 +103,7 @@
             ["DWI-Eddy-Current-And-Motion-Correction/snapshot-motion-profile.jpg"]
         ],
         "texts": [
-            "The motion parameters of the affine transformations used to correct Eddy curent distortions."
+            "The motion parameters of the affine transformations used to correct eddy current distortions."
         ],
         "topmargin": 0.1,
         "linecount": 120
