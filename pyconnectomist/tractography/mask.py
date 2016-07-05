@@ -27,6 +27,7 @@ BOOL_MAP = {
 
 def tractography_mask(
         outdir,
+        registered_dwi_dir,
         subject_id,
         morphologist_dir,
         add_cerebelum=False,
@@ -38,6 +39,8 @@ def tractography_mask(
     ----------
     outdir: str
         path to Connectomist output work directory.
+    registered_dwi_dir: str
+        path to Connectomist register DWI directory.
     subject_id: str
         the subject code in study.
     morphologist_dir: str
@@ -58,19 +61,8 @@ def tractography_mask(
     apcfile = os.path.join(
         morphologist_dir, subject_id, "t1mri", "default_acquisition",
         "{0}.APC".format(subject_id))
-    histofile = os.path.join(
-        morphologist_dir, subject_id, "t1mri", "default_acquisition",
-        "default_analysis", "nobias_{0}.han".format(subject_id))
-    t1file = os.path.join(
-        morphologist_dir, subject_id, "t1mri", "default_acquisition",
-        "default_analysis", "nobias_{0}.nii.gz".format(subject_id))
-    voronoifile = os.path.join(
-        morphologist_dir, subject_id, "t1mri", "default_acquisition",
-        "default_analysis", "segmentation",
-        "voronoi_{0}.nii.gz".format(subject_id))
-    for fpath in (apcfile, histofile, t1file, voronoifile):
-        if not os.path.isfile(fpath):
-            raise ConnectomistBadFileError(fpath)
+    if not os.path.isfile(apcfile):
+        raise ConnectomistBadFileError(apcfile)
 
     # Dict with all parameters for connectomist
     algorithm = "DWI-Tractography-Mask"
@@ -80,14 +72,12 @@ def tractography_mask(
         "addCommissures": BOOL_MAP[add_commissures],
         "addROIMask": 0,
         "fileNameCommissureCoordinates": apcfile,
-        "fileNameHistogramAnalysis": histofile,
+        "anatomyAndTalairachDirectory": registered_dwi_dir,
         "fileNameROIMaskToAdd": "",
         "fileNameROIMaskToRemove": "",
-        "fileNameUnbiasedT1": t1file,
-        "fileNameVoronoiMask": voronoifile,
         "outputWorkDirectory": outdir,
         "removeROIMask": 0,
-        "removeTemporaryFiles": 2}
+        "removeTemporaryFiles": 0} # TODO 2
 
     # Call with Connectomist
     connprocess = ConnectomistWrapper(path_connectomist)
