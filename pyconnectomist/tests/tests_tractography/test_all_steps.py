@@ -68,6 +68,7 @@ class ConnectomistTractography(unittest.TestCase):
             "storing_increment": 10,
             "output_orientation_count": 500,
             "rgbscale": 1.0,
+            "model_only": False,
             "path_connectomist": "/my/path/mock_connectomist"
         }
 
@@ -127,10 +128,10 @@ class ConnectomistTractography(unittest.TestCase):
         mock_path.isdir.side_effect = [False, True, True, True]
         mock_path.join.side_effect = lambda *x: x[0] + "/" + x[1]
         mock_emask.return_value = self.kwargs["outdir"] + "/" + "mask"
-        mock_escalars.return_value = [
-            self.kwargs["outdir"] + "/" + "gfa",
-            self.kwargs["outdir"] + "/" + "md"
-        ]
+        mock_escalars.return_value = {
+            "gfa": self.kwargs["outdir"] + "/" + "gfa",
+            "md": self.kwargs["outdir"] + "/" + "md"
+        }
         mock_ebundles.return_value = [
             self.kwargs["outdir"] + "/" + "bundles" + "/" + "bundle1",
             self.kwargs["outdir"] + "/" + "bundles" + "/" + "bundle2"
@@ -144,9 +145,9 @@ class ConnectomistTractography(unittest.TestCase):
             mock.call(self.kwargs["outdir"])],
             mock_mkdir.call_args_list)
         self.assertEqual([
-            mock.call(self.kwargs["dwi_preproc_dir"], PREPROC_STEPS[5]),
-            mock.call(self.kwargs["dwi_preproc_dir"], PREPROC_STEPS[4]),
             mock.call(self.kwargs["dwi_preproc_dir"], PREPROC_STEPS[1]),
+            mock.call(self.kwargs["dwi_preproc_dir"], PREPROC_STEPS[5]),
+            mock.call(self.kwargs["dwi_preproc_dir"], PREPROC_STEPS[2]),
             mock.call(self.kwargs["outdir"],
                       STEPS[0].format(self.kwargs["model"])),
             mock.call(self.kwargs["outdir"], STEPS[1]),
@@ -158,11 +159,11 @@ class ConnectomistTractography(unittest.TestCase):
         self.assertEqual([
             mock.call(self.kwargs["outdir"]),
             mock.call(os.path.join(self.kwargs["dwi_preproc_dir"],
-                                   PREPROC_STEPS[5])),
+                                   PREPROC_STEPS[1])),
             mock.call(os.path.join(self.kwargs["dwi_preproc_dir"],
-                      PREPROC_STEPS[4])),
+                      PREPROC_STEPS[5])),
             mock.call(os.path.join(self.kwargs["dwi_preproc_dir"],
-                      PREPROC_STEPS[1]))],
+                      PREPROC_STEPS[2]))],
             mock_path.isdir.call_args_list)
         self.assertEqual([
             mock.call(os.path.join(tractography_dir, "*.bundlesdata"))],
@@ -172,8 +173,8 @@ class ConnectomistTractography(unittest.TestCase):
         self.assertEqual(len(mock_model.call_args_list), 1)
         self.assertEqual(
             output_files,
-            (mock_escalars.return_value[0], mock_escalars.return_value[1],
-             mock_emask.return_value, mock_ebundles.return_value))
+            (mock_escalars.return_value, mock_emask.return_value,
+             mock_ebundles.return_value))
 
 
 if __name__ == "__main__":

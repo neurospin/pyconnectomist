@@ -178,25 +178,25 @@ def complete_tractography(
         os.mkdir(outdir)
 
     # Step 2 - Detect the Connectomist registration folder
-    registered_dwi_dir = os.path.join(dwi_preproc_dir, PREPROC_STEPS[5])
+    registered_dwi_dir = os.path.join(dwi_preproc_dir, PREPROC_STEPS[1])
     if not os.path.isdir(registered_dwi_dir):
         raise ConnectomistError(
             "In '{0}' can't detect Connectomist registration "
-            "folder '{1}'.".format(dwi_preproc_dir, PREPROC_STEPS[5]))
+            "folder '{1}'.".format(dwi_preproc_dir, PREPROC_STEPS[1]))
 
     # Step 3 - Detect the Connectomist eddy motion correction folder
-    eddy_motion_dir = os.path.join(dwi_preproc_dir, PREPROC_STEPS[4])
+    eddy_motion_dir = os.path.join(dwi_preproc_dir, PREPROC_STEPS[5])
     if not os.path.isdir(eddy_motion_dir):
         raise ConnectomistError(
             "In '{0}' can't detect Connectomist eddy motion correction "
-            "folder '{1}'.".format(dwi_preproc_dir, PREPROC_STEPS[4]))
+            "folder '{1}'.".format(dwi_preproc_dir, PREPROC_STEPS[5]))
 
     # Step 4 - Detect the Connectomist rough mask folder
-    rough_mask_dir = os.path.join(dwi_preproc_dir, PREPROC_STEPS[1])
+    rough_mask_dir = os.path.join(dwi_preproc_dir, PREPROC_STEPS[2])
     if not os.path.isdir(rough_mask_dir):
         raise ConnectomistError(
             "In '{0}' can't detect Connectomist rough mask "
-            "folder '{1}'.".format(dwi_preproc_dir, PREPROC_STEPS[1]))
+            "folder '{1}'.".format(dwi_preproc_dir, PREPROC_STEPS[2]))
 
     # Step 5 - Compute the diffusion model
     model_dir = os.path.join(outdir, STEPS[0].format(model))
@@ -224,6 +224,7 @@ def complete_tractography(
         mask_dir = os.path.join(outdir, STEPS[1])
         tractography_mask(
             mask_dir,
+            registered_dwi_dir,
             subject_id,
             morphologist_dir=morphologist_dir,
             add_cerebelum=add_cerebelum,
@@ -274,8 +275,7 @@ def complete_tractography(
             path_connectomist=path_connectomist)
 
     # Step 9 - Export diffusion scalars
-    gfa, md = export_scalars_to_nifti(model_dir, model, outdir,
-                                      gfafilename="gfa", mdfilename="md")
+    scalars = export_scalars_to_nifti(model_dir, model, outdir)
 
     # Step 10 - Export tractography mask
     mask = None
@@ -287,4 +287,4 @@ def complete_tractography(
     if not model_only:
         bundles = export_bundles_to_trk(labeling_dir, outdir)
 
-    return gfa, md, mask, bundles
+    return scalars, mask, bundles
