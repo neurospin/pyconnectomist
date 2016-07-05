@@ -191,18 +191,8 @@ class ConnectomistModelExport(unittest.TestCase):
         self.kwargs = {
             "model_dir": "/my/path/mock_modeldir",
             "model": "qba",
-            "outdir": "/my/path/mock_outdir",
-            "gfafilename": "gfa",
-            "mdfilename": "md"
+            "outdir": "/my/path/mock_outdir"
         }
-
-    @mock.patch("pyconnectomist.tractography.model.os.mkdir")
-    def test_badfileerror_execution(self, mock_mkdir):
-        """ A wrong input -> raise ConnectomistBadFileError.
-        """
-        # Test execution
-        self.assertRaises(ConnectomistBadFileError,
-                          export_scalars_to_nifti, **self.kwargs)
 
     @mock.patch("pyconnectomist.tractography.model.ptk_gis_to_nifti")
     @mock.patch("pyconnectomist.tractography.model.os.path.isdir")
@@ -213,24 +203,26 @@ class ConnectomistModelExport(unittest.TestCase):
         """ Test the normal behaviour of the function.
         """
         # Set the mocked functions returned values
-        mock_isfile.side_effect = [True, True]
+        mock_isfile.side_effect = [True, True, False, False, False, False]
         mock_isdir.side_effect = [False]
         mock_conversion.side_effect = lambda *x: x[-1]
 
         # Test execution
         outfiles = export_scalars_to_nifti(**self.kwargs)
-        expected_outfiles = (
-            os.path.join(self.kwargs["outdir"],
-                         self.kwargs["gfafilename"] + ".nii.gz"),
-            os.path.join(self.kwargs["outdir"],
-                         self.kwargs["mdfilename"] + ".nii.gz"))
-        expected_files = [
-            os.path.join(
-                self.kwargs["model_dir"],
-                "{0}_gfa.ima".format(self.kwargs["model"])),
-            os.path.join(
-                self.kwargs["model_dir"],
-                "{0}_mean_diffusivity.ima".format(self.kwargs["model"]))]
+        expected_outfiles = {
+            "gfa": os.path.join(
+                self.kwargs["outdir"],
+                "{0}_gfa.nii.gz".format(self.kwargs["model"])),
+            "mean_diffusivity": os.path.join(
+                self.kwargs["outdir"],
+                "{0}_mean_diffusivity.nii.gz".format(self.kwargs["model"]))}
+        expected_files = []
+        for name in ("gfa", "mean_diffusivity", "adc", "lambda_parallel",
+                            "lambda_transverse"):
+            expected_files.append(
+                os.path.join(
+                    self.kwargs["model_dir"],
+                    "{0}_{1}.ima".format(self.kwargs["model"], name)))
         self.assertEqual(expected_outfiles, outfiles)
         self.assertEqual([mock.call(self.kwargs["outdir"])],
                          mock_isdir.call_args_list)
@@ -238,9 +230,11 @@ class ConnectomistModelExport(unittest.TestCase):
                          mock_mkdir.call_args_list)
         self.assertEqual([mock.call(elem) for elem in expected_files],
                          mock_isfile.call_args_list)
-        self.assertEqual([mock.call(expected_files[0], expected_outfiles[0]),
-                          mock.call(expected_files[1], expected_outfiles[1])],
-                         mock_conversion.call_args_list)
+        self.assertEqual([
+            mock.call(expected_files[0], expected_outfiles["gfa"]),
+            mock.call(expected_files[1],
+                      expected_outfiles["mean_diffusivity"])],
+            mock_conversion.call_args_list)
 
 
 if __name__ == "__main__":
