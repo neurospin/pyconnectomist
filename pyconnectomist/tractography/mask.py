@@ -77,7 +77,7 @@ def tractography_mask(
         "fileNameROIMaskToRemove": "",
         "outputWorkDirectory": outdir,
         "removeROIMask": 0,
-        "removeTemporaryFiles": 0} # TODO 2
+        "removeTemporaryFiles": 2}
 
     # Call with Connectomist
     connprocess = ConnectomistWrapper(path_connectomist)
