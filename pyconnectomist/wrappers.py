@@ -120,10 +120,10 @@ class ConnectomistWrapper(object):
             os.mkdir(outdir)
 
         # Write the parameter file
-        parameter_file = os.path.join(outdir, "%s.py" % algorithm)
+        parameter_file = os.path.join(outdir, "%s.json" % algorithm)
         parameters_dict["_algorithmName"] = algorithm
         with open(parameter_file, "w") as f:
-            json.dump(parameters_dict, sort_keys=True, indent=4)
+            json.dump(parameters_dict, f, sort_keys=True, indent=4)
 
         return parameter_file
 
