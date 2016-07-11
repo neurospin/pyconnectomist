@@ -47,7 +47,7 @@ def rough_mask_extraction(
     """
     # Get brain t1 mask and check existance
     t1file = os.path.join(registration_dir, "t1.ima")
-    t1brain = os.path.join(registration_dir, "Morphologist", "brain_t1.nii")
+    t1brain = os.path.join(registration_dir, "Morphologist", "brain_t1.ima")
     for fpath in (t1file, t1brain):
         if not os.path.isfile(fpath):
             raise ConnectomistBadFileError(fpath)
