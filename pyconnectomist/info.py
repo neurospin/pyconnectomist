@@ -72,7 +72,7 @@ VERSION = __version__
 PROVIDES = ["pyconnectomist"]
 REQUIRES = [
     "numpy>=1.6.1",
-    "nibabel>=1.1.0"
+    "nibabel>=1.1.0",
     "reportlab>=3.0"
 ]
 EXTRA_REQUIRES = {}
