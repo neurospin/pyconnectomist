@@ -14,8 +14,8 @@ import os
 import re
 import warnings
 import time
-import pprint
 import subprocess
+import json
 
 # Clindmri import
 from . import DEFAULT_CONNECTOMIST_PATH
@@ -78,8 +78,7 @@ class ConnectomistWrapper(object):
         ConnectomistError: If Connectomist call failed.
         """
         # Command to be run.
-        cmd = "%s -p %s -f %s" % (self.path_connectomist, algorithm,
-                                  parameter_file)
+        cmd = "%s -b -p %s" % (self.path_connectomist, parameter_file)
 
         # Run the command.
         process = subprocess.Popen(
@@ -122,11 +121,9 @@ class ConnectomistWrapper(object):
 
         # Write the parameter file
         parameter_file = os.path.join(outdir, "%s.py" % algorithm)
+        parameters_dict["_algorithmName"] = algorithm
         with open(parameter_file, "w") as f:
-            f.write("algorithmName = '%s'\n" % algorithm)
-            # Pretty text to write, without the first "{"
-            pretty_dict = pprint.pformat(parameters_dict)[1:]
-            f.write("parameterValues = {\n " + pretty_dict)
+            json.dump(parameters_dict, sort_keys=True, indent=4)
 
         return parameter_file
 
