@@ -12,6 +12,7 @@ from __future__ import print_function
 import argparse
 import os
 import shutil
+from datetime import datetime
 from pprint import pprint
 import json
 
@@ -118,13 +119,14 @@ First check if the Connectomist subject directory exists on the file system,
 and clean it if requested.
 """
 tool = "pyconnectomist_dtifit"
+timestamp = datetime.now().isoformat()
 tool_version = version
 connectomist_config = args.connectomistconfig or DEFAULT_CONNECTOMIST_PATH
 connectomist_version = ConnectomistWrapper._connectomist_version_check(
     connectomist_config)
 runtime = dict([(name, locals()[name])
                for name in ("connectomist_config", "tool", "tool_version",
-                            "connectomist_version")])
+                            "connectomist_version", "timestamp")])
 if args.verbose > 0:
     print("[info] Start Connectomist DTI fit...")
     print("[info] Directory: {0}.".format(args.outdir))
