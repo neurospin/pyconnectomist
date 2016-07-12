@@ -62,9 +62,9 @@ Steps:
 6- Create the tractography mask.
 7- The tractography algorithm.
 8- Fast bundle labeling.
-9 - Export diffusion scalars.
-10 - Export tractography mask.
-11 - Export bundels.
+9- Export diffusion scalars.
+10- Export tractography mask.
+11- Export bundels.
 
 Command:
 
