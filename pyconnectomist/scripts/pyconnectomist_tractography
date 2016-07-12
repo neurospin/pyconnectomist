@@ -12,6 +12,8 @@ from __future__ import print_function
 import argparse
 import os
 import shutil
+from pprint import pprint
+import json
 
 # Bredala import
 try:
@@ -40,8 +42,7 @@ from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
 
 
 # Parameters to keep trace
-__hopla__ = ["tool", "tool_version", "version", "config", "inputs", "outputs",
-             "outdir", "subjectid", "preprocdir", "morphologistdir"]
+__hopla__ = ["runtime", "inputs", "outputs"]
 
 # Script documentation
 doc = """
@@ -70,8 +71,14 @@ Command:
 python $HOME/git/pyconnectomist/pyconnectomist/scripts/pyconnectomist_tractography \
     -v 2 \
     -o /tmp/pyconnectomist \
-    -g /neurospin/senior/nsap/data/V0/morphologist \
-    -s ab130187 \
+    -g /neurospin/senior/nsap/data/V4/morphologist \
+    -s jp090065 \
+    -m aqbi \
+    -r 4 \
+    -t streamline_regularize_deterministic \
+    -i 5. \
+    -a 300. \
+    -d 1 \
     -e
 """
 
@@ -117,6 +124,27 @@ parser.add_argument(
           "specified assume data in '<outdir>/<subjectid>/preproc'."),
     type=is_directory)
 parser.add_argument(
+    "-m", "--model", dest="model", default="aqbi", choices=["aqbi", "sdt"],
+    help="the diffusion model.")
+parser.add_argument(
+    "-r", "--order", dest="order", default=4, type=int,
+    help="the diffusion model order.")
+parser.add_argument(
+    "-t", "--tracking", dest="tracking",
+    default="streamline_regularize_deterministic",
+    choices=["streamline_regularize_deterministic", "streamline_deterministic",
+             "streamline_probabilistic"],
+    help="the tractography algorithm.")
+parser.add_argument(
+    "-i", "--minlength", dest="minlength", default=5., type=float,
+    help="the minimum length of a fiber.")
+parser.add_argument(
+    "-a", "--maxlength", dest="maxlength", default=300., type=float,
+    help="the maximum length of a fiber.")
+parser.add_argument(
+    "-d", "--seeds", dest="seeds", default=8, type=int,
+    help="the number of seeds per voxel.")
+parser.add_argument(
     "-g", "--morphologistdir", dest="morphologistdir", required=True,
     metavar="PATH", type=is_directory,
     help="the path to the morphologist processings home directory.")
@@ -127,41 +155,66 @@ args = parser.parse_args()
 First check if the Connectomist subject directory exists on the file system,
 and clean it if requested.
 """
-tool = "Connectomist tract"
-config = args.connectomistconfig or DEFAULT_CONNECTOMIST_PATH
-tool_version = ConnectomistWrapper._connectomist_version_check(config)
+tool = "pyconnectomist_tractography"
+tool_version = version
+connectomist_config = args.connectomistconfig or DEFAULT_CONNECTOMIST_PATH
+connectomist_version = ConnectomistWrapper._connectomist_version_check(
+    connectomist_config)
+runtime = dict([(name, locals()[name])
+               for name in ("connectomist_config", "tool", "tool_version",
+                            "connectomist_version")])
 if args.verbose > 0:
     print("[info] Start Connectomist tractography...")
     print("[info] Directory: {0}.".format(args.outdir))
     print("[info] Subject: {0}.".format(args.subjectid))
-    print("[info] Preproc: {0}.".format(args.preprocdir))
+    print("[info] Preproc dir: {0}.".format(args.preprocdir))
+    print("[info] Model: {0}.".format(args.model))
+    print("[info] Model order: {0}.".format(args.order))
+    print("[info] Tractography algorithm: {0}.".format(args.tracking))
+    print("[info] Number of seeds: {0}.".format(args.seeds))
+    print("[info] Keeping fibers of length: [{0} - "
+          "{1}].".format(args.minlength, args.maxlength))
 outdir = args.outdir
 subjectid = args.subjectid
 subjdir = os.path.join(args.outdir, subjectid, "tract")
 preprocdir = args.preprocdir
 morphologistdir = args.morphologistdir
+model = args.model
+order = args.order
+min_fiber_length = args.minlength
+max_fiber_length = args.maxlength
+aperture_angle = 30.
+tracking_type = args.tracking
+voxel_sampler_point_count = args.seeds
 if preprocdir is None:
     preprocdir = os.path.join(args.outdir, subjectid, "preproc")
     if args.verbose > 0:
-        print("[info] Preproc: {0}.".format(preprocdir))
+        print("[info] Generated preproc dir: {0}.".format(preprocdir))
 if not os.path.isdir(subjdir):
     os.makedirs(subjdir)
 elif os.path.isdir(subjdir) and args.erase:
     shutil.rmtree(subjdir)
     os.mkdir(subjdir)
 inputs = [preprocdir]
-outputs = []
+inputs = dict([(name, locals()[name])
+               for name in ("outdir", "subjectid", "subjdir", "preprocdir",
+                            "morphologistdir", "model", "order", 
+                            "min_fiber_length", "max_fiber_length",
+                            "aperture_angle", "tracking_type",
+                            "voxel_sampler_point_count")])
+outputs = None
+
 
 """
 Connectomist tractography: all steps
 """
-gfa, md, mask, bundles = complete_tractography(
+scalars, mask, bundles = complete_tractography(
     subjdir,
     preprocdir,
     morphologistdir,
     subjectid,
-    model="aqbi",
-    order=4,
+    model=model,
+    order=order,
     aqbi_laplacebeltrami_sharpefactor=0.0,
     regularization_lccurvefactor=0.006,
     dti_estimator="linear",
@@ -172,19 +225,35 @@ gfa, md, mask, bundles = complete_tractography(
     sd_kernel_voxel_count=300,
     add_cerebelum=True,
     add_commissures=True,
-    tracking_type="streamline_regularize_deterministic",
+    tracking_type=tracking_type,
     bundlemap="aimsbundlemap",
-    min_fiber_length=5.,
-    max_fiber_length=300.,
-    aperture_angle=30.,
+    min_fiber_length=min_fiber_length,
+    max_fiber_length=max_fiber_length,
+    aperture_angle=aperture_angle,
     forward_step=0.2,
-    voxel_sampler_point_count=8,
+    voxel_sampler_point_count=voxel_sampler_point_count,
     gibbs_temperature=1.,
     storing_increment=10,
     output_orientation_count=500,
     rgbscale=3.0,
     model_only=False,
-    path_connectomist=config)
-outputs = [gfa, md, mask, bundles]
+    path_connectomist=connectomist_config)
+
+
+"""
+Update the outputs and save them and the inputs in a 'logs' directory.
+"""
+logdir = os.path.join(subjdir, "logs")
+if not os.path.isdir(logdir):
+    os.mkdir(logdir)
+outputs = dict([(name, locals()[name])
+               for name in ("scalars", "mask", "bundles")])
+for name, final_struct in [("inputs", inputs), ("outputs", outputs),
+                           ("runtime", runtime)]:
+    log_file = os.path.join(logdir, "{0}.json".format(name))
+    with open(log_file, "wt") as open_file:
+        json.dump(final_struct, open_file, sort_keys=True, check_circular=True,
+                  indent=4)
 if args.verbose > 1:
-    print("[result] In folder: {0}.".format(subjdir))
+    print("[final]")
+    pprint(outputs)
