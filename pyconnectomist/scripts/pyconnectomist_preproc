@@ -87,7 +87,7 @@ python $HOME/git/pyconnectomist/pyconnectomist/scripts/pyconnectomist_preproc \
     -v 2 \
     -o /tmp/pyconnectomist \
     -s jp090065 \
-    -pn myproject \
+    -P myproject \
     -T t0 \
     -i /neurospin/senior/nsap/data/V4/nifti/jp090065/000007_HARDI1/HARDI1.nii.gz \
     -r /neurospin/senior/nsap/data/V4/nifti/jp090065/000007_HARDI1/HARDI1.bvec \
@@ -133,10 +133,10 @@ parser.add_argument(
     "-e", "--erase", dest="erase", action="store_true",
     help="if activated, clean the subject folder if already created.")
 parser.add_argument(
-    "-cn", "--clientname", dest="clientname", default="NC",
+    "-C", "--clientname", dest="clientname", default="NC",
     help="the client name.")
 parser.add_argument(
-    "-pn", "--projectname", dest="projectname", required=True,
+    "-P", "--projectname", dest="projectname", required=True,
     help="the project name.")
 parser.add_argument(
     "-T", "--timestep", dest="timestep", required=True,
