@@ -203,7 +203,8 @@ class ConnectomistModelExport(unittest.TestCase):
         """ Test the normal behaviour of the function.
         """
         # Set the mocked functions returned values
-        mock_isfile.side_effect = [True, True, False, False, False, False]
+        mock_isfile.side_effect = [True, True, False, False, False, False,
+                                   False]
         mock_isdir.side_effect = [False]
         mock_conversion.side_effect = lambda *x: x[-1]
 
@@ -218,7 +219,7 @@ class ConnectomistModelExport(unittest.TestCase):
                 "{0}_mean_diffusivity.nii.gz".format(self.kwargs["model"]))}
         expected_files = []
         for name in ("gfa", "mean_diffusivity", "adc", "lambda_parallel",
-                            "lambda_transverse"):
+                     "lambda_transverse", "fa"):
             expected_files.append(
                 os.path.join(
                     self.kwargs["model_dir"],

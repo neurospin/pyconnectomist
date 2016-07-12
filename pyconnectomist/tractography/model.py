@@ -246,7 +246,7 @@ def export_scalars_to_nifti(
     # Step 2 - Convert to Nifti
     scalars = {}
     for name in ("gfa", "mean_diffusivity", "adc", "lambda_parallel",
-                        "lambda_transverse"):
+                 "lambda_transverse", "fa"):
         gis_file = os.path.join(model_dir, "{0}_{1}.ima".format(model, name))
         if not os.path.isfile(gis_file):
             continue
