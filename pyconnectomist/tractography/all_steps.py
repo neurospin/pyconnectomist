@@ -28,10 +28,10 @@ from pyconnectomist.preproc.all_steps import STEPS as PREPROC_STEPS
 
 # Define steps
 STEPS = [
-    "07-Local_modeling_{0}",
-    "08-Tractography_mask",
-    "09-Tractography_{0}",
-    "10-Fast_bundle_labeling"
+    "08-Local_modeling_{0}",
+    "09-Tractography_mask",
+    "10-Tractography_{0}",
+    "11-Fast_bundle_labeling"
 ]
 
 
