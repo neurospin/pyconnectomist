@@ -429,10 +429,18 @@ class TriPlanar(Flowable):
             self.display_mode = "single"
         self.images = images
         self.preserve_aspect_ratio = preserve_aspect_ratio
+        self.missing_file = os.path.join(os.path.dirname(__file__),
+                                         "resources", "missing.png")
 
     def draw(self):
         """ Draw the triplanar element.
         """
+        # Check that all expected images exist
+        for cnt, path in enumerate(self.images):
+            if path is not None and not os.path.isfile(path):
+                self.images[cnt] = self.missing_file
+
+        # Dispaly images
         if self.display_mode == "multi":
             if self.images[0] is not None:
                 self.canv.drawImage(
