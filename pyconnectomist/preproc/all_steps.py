@@ -160,7 +160,6 @@ def complete_preprocessing(
     preproc_outliers: str
         path to the outliers detection summary.
     """
-
     # Step 1 - Create the preprocessing output directory if not existing
     if not os.path.isdir(outdir):
         os.mkdir(outdir)
@@ -212,22 +211,27 @@ def complete_preprocessing(
         path_connectomist=path_connectomist)
 
     # Step 6 - Susceptibility correction
-    susceptibility_dir = os.path.join(outdir, STEPS[4])
-    susceptibility_correction(
-        susceptibility_dir,
-        raw_dwi_dir,
-        rough_mask_dir,
-        outliers_dir,
-        subject_id,
-        delta_TE,
-        partial_fourier_factor,
-        parallel_acceleration_factor,
-        negative_sign,
-        echo_spacing,
-        EPI_factor,
-        b0_field,
-        water_fat_shift,
-        path_connectomist=path_connectomist)
+    if b0_magnitude is None and b0_phase is None:
+        corrected_dir = outliers_dir
+        susceptibility_dir = ""
+    else:
+        corrected_dir = os.path.join(outdir, STEPS[4])
+        susceptibility_dir = corrected_dir
+        susceptibility_correction(
+            corrected_dir,
+            raw_dwi_dir,
+            rough_mask_dir,
+            outliers_dir,
+            subject_id,
+            delta_TE,
+            partial_fourier_factor,
+            parallel_acceleration_factor,
+            negative_sign,
+            echo_spacing,
+            EPI_factor,
+            b0_field,
+            water_fat_shift,
+            path_connectomist=path_connectomist)       
 
     # Step 7 - Eddy current and motion correction
     eddy_motion_dir = os.path.join(outdir, STEPS[5])
@@ -235,7 +239,7 @@ def complete_preprocessing(
         eddy_motion_dir,
         raw_dwi_dir,
         rough_mask_dir,
-        susceptibility_dir,
+        corrected_dir,
         subject_id,
         path_connectomist=path_connectomist)
 

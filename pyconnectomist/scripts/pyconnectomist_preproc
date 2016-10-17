@@ -53,6 +53,7 @@ from pyconnectomist.manufacturers import MANUFACTURERS
 from pyconnectomist.wrappers import ConnectomistWrapper
 from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
 from pyconnectomist.utils.pdftools import generate_pdf
+from pyconnectomist.info import PTK_RELEASE
 
 
 # Parameters to keep trace
@@ -175,7 +176,7 @@ parser.add_argument(
     dest="parallel_acceleration_factor", type=float, required=True,
     help="the number of parallel acquisition in the k-space plane.")
 parser.add_argument(
-    "-u", "--b0_magnitude", dest="b0_magnitude", metavar="FILE", required=True,
+    "-u", "--b0_magnitude", dest="b0_magnitude", metavar="FILE",
     help="the path to the B0 magnitude map (also contains phase for GE).",
     type=is_file)
 parser.add_argument(
@@ -345,7 +346,7 @@ generate_pdf(
         "resources", "pyconnectomist_qcfast.json"),
     author="NeuroSpin",
     client=clientname,
-    poweredby="Connectomist-{0}".format(tool_version),
+    poweredby="Connectomist-{0}".format(PTK_RELEASE),
     project=projectname,
     timepoint=timestep,
     subject=subjectid,
