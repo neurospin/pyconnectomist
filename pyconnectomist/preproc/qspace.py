@@ -305,7 +305,7 @@ def data_import_and_qspace_sampling(
     # rewrite bvec, bval file accordingly (remove extra T2 values)
     if nb_nodiff > 1:
         bval = os.path.join(outdir, "dwi.bval")
-        dw_indexes = np.where(bvalues != 0)[0]
+        dw_indexes = np.where(bvalues >= 100)[0]
         new_bvals = np.concatenate(([0], bvalues[dw_indexes]))
         np.savetxt(bval, new_bvals)
         bvec = os.path.join(outdir, "dwi.bvec")
