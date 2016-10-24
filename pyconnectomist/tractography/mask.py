@@ -11,6 +11,7 @@ Wrapper to Connectomist's 'Tractography mask' tab.
 
 # System import
 import os
+import glob
 
 # pyConnectomist import
 from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
@@ -58,11 +59,13 @@ def tractography_mask(
         path to Connectomist's output directory.
     """
     # Get morphologist result files and check existance
-    apcfile = os.path.join(
-        morphologist_dir, subject_id, "t1mri", "default_acquisition",
+    apcpattern = os.path.join(
+        morphologist_dir, subject_id, "t1mri", "*",
         "{0}.APC".format(subject_id))
-    if not os.path.isfile(apcfile):
-        raise ConnectomistBadFileError(apcfile)
+    apcfiles = glob.glob(apcpattern)
+    if len(apcfiles) != 1 or not os.path.isfile(apcfiles[0]):
+        raise ConnectomistBadFileError(apcpattern)
+    apcfile = apcfiles[0]
 
     # Dict with all parameters for connectomist
     algorithm = "DWI-Tractography-Mask"

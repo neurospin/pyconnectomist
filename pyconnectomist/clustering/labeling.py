@@ -147,11 +147,16 @@ def fast_bundle_labeling(
 
     # Get Connectomist transformations
     dwtot1file = os.path.join(registered_dwi_dir, "dw_to_t1.trm")
-    t1total = os.path.join(
-            morphologist_dir, subject_id, "t1mri", "default_acquisition",
-            "registration",
-            "RawT1-{0}_default_acquisition_TO_Talairach-ACPC.trm".format(
-                subject_id))
+    morphologist_regpattern = os.path.join(
+        morphologist_dir, subject_id, "t1mri", "*", "registration")
+    morphologist_regdirs = glob.glob(morphologist_regpattern)
+    if len(morphologist_regdirs) != 1:
+        raise ConnectomistBadFileError(morphologist_regpattern)
+    morphologist_regdir = morphologist_regdirs[0]
+    timepoint = morphologist_regdir.split(os.sep)[-2]
+    t1total = os.path.join(morphologist_regdir,
+                           "RawT1-{0}_{1}_TO_Talairach-ACPC.trm".format(
+                                subject_id, timepoint))
 
     # Check input parameter files existence
     required_files = paths_bundle_map + [dwtot1file, t1total]

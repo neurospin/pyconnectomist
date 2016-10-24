@@ -11,6 +11,7 @@ Wrapper to Connectomist's 'Anatomy & Talairach' tab.
 
 # System import
 import os
+import glob
 
 # pyConnectomist import
 from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
@@ -50,15 +51,17 @@ def dwi_to_anatomy(
     """
     # Get morphologist result files and check existance
     subject_morphologist_dir = os.path.join(morphologist_dir, subject_id)
-    apcfile = os.path.join(
-        subject_morphologist_dir, "t1mri", "default_acquisition",
-        "{0}.APC".format(subject_id))
-    t1file = os.path.join(
-        subject_morphologist_dir, "t1mri", "default_acquisition",
-        "{0}.nii.gz".format(subject_id))
-    for fpath in (apcfile, t1file):
-        if not os.path.isfile(fpath):
-            raise ConnectomistBadFileError(fpath)
+    apcpattern = os.path.join(subject_morphologist_dir,
+                              "t1mri", "*", "{0}.APC".format(subject_id))
+    t1pattern = os.path.join(subject_morphologist_dir,
+                             "t1mri", "*","{0}.nii.gz".format(subject_id))
+    files = []
+    for fpattern in (apcpattern, t1pattern):
+        fpath = glob.glob(fpattern)
+        if len(fpath) != 1 or not os.path.isfile(fpath[0]):
+            raise ConnectomistBadFileError(fpattern)
+        files.append(fpath[0])
+    acpcfile, t1file = files
 
     # Create the directory if not existing
     if not os.path.isdir(outdir):
