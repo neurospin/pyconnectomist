@@ -205,7 +205,7 @@ def complete_preprocessing(
         subject_id,
         path_connectomist=path_connectomist)
 
-    ## Quit if requested: preproc already performed
+    # Quit if requested: preproc already performed
     if already_corrected:
         return None, None, None, None
 

@@ -101,7 +101,7 @@ def extract_dwi_shells(dwi_nii_path, bvals_path, bvecs_path, outdir):
     return nodiff_file, dwis
 
 
-def read_bvals_bvecs(bvals_path, bvecs_path, min_bval=100.):
+def read_bvals_bvecs(bvals_path, bvecs_path, min_bval=200.):
     """ Read b-values and associated b-vectors.
 
     Parameters

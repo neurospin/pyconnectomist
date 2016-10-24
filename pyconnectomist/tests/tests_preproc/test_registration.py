@@ -62,11 +62,13 @@ class ConnectomistRegistration(unittest.TestCase):
         """
         self.popen_patcher.stop()
 
-    @mock.patch("os.path")
-    def test_badfileerror_raise(self, mock_path):
+    @mock.patch("pyconnectomist.preproc.registration.os.path")
+    @mock.patch("pyconnectomist.preproc.registration.glob.glob")
+    def test_badfileerror_raise(self, mock_glob, mock_path):
         """ A wrong input -> raise ConnectomistBadFileError.
         """
         # Set the mocked functions returned values
+        mock_glob.return_value = [self.kwargs["morphologist_dir"]]
         mock_path.isfile.side_effect = [False]
         mock_path.join.side_effect = lambda *x: "/".join(x)
 
@@ -79,13 +81,19 @@ class ConnectomistRegistration(unittest.TestCase):
     @mock.patch("pyconnectomist.preproc.registration.ConnectomistWrapper."
                 "create_parameter_file")
     @mock.patch("pyconnectomist.preproc.registration.ptk_nifti_to_gis")
-    @mock.patch("os.mkdir")
-    @mock.patch("os.path")
-    def test_normal_execution(self, mock_path, mock_mkdir, mock_conversion,
-                              mock_params, mock_version):
+    @mock.patch("pyconnectomist.preproc.registration.os.mkdir")
+    @mock.patch("pyconnectomist.preproc.registration.os.path")
+    @mock.patch("pyconnectomist.preproc.registration.glob.glob")
+    def test_normal_execution(self, mock_glob, mock_path, mock_mkdir,
+                              mock_conversion, mock_params, mock_version):
         """ Test the normal behaviour of the function.
         """
         # Set the mocked functions returned values
+        mock_glob.side_effect = [
+            [self.kwargs["morphologist_dir"] + os.sep +
+             "{0}.APC".format(self.kwargs["subject_id"])],
+            [self.kwargs["morphologist_dir"] + os.sep +
+             "{0}.nii.gz".format(self.kwargs["subject_id"])]]
         mock_path.isfile.side_effect = [True, True, False]
         mock_path.isdir.return_value = False
         mock_params.return_value = "/my/path/mock_parameters"
@@ -98,12 +106,8 @@ class ConnectomistRegistration(unittest.TestCase):
         self.assertTrue(len(mock_params.call_args_list) == 1)
         expected_infiles = (
             os.path.join(self.kwargs["morphologist_dir"],
-                         self.kwargs["subject_id"], "t1mri",
-                         "default_acquisition",
                          "{0}.APC".format(self.kwargs["subject_id"])),
             os.path.join(self.kwargs["morphologist_dir"],
-                         self.kwargs["subject_id"], "t1mri",
-                         "default_acquisition",
                          "{0}.nii.gz".format(self.kwargs["subject_id"])))
         self.assertEqual([mock.call(elem) for elem in expected_infiles],
                          mock_path.isfile.call_args_list)

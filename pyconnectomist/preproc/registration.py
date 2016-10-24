@@ -54,7 +54,7 @@ def dwi_to_anatomy(
     apcpattern = os.path.join(subject_morphologist_dir,
                               "t1mri", "*", "{0}.APC".format(subject_id))
     t1pattern = os.path.join(subject_morphologist_dir,
-                             "t1mri", "*","{0}.nii.gz".format(subject_id))
+                             "t1mri", "*", "{0}.nii.gz".format(subject_id))
     files = []
     for fpattern in (apcpattern, t1pattern):
         fpath = glob.glob(fpattern)
