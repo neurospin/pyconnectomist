@@ -114,7 +114,7 @@ parser.add_argument(
     "-c", "--connectomistconfig", dest="connectomistconfig", metavar="PATH",
     help="the path to the Connectomist configuration file.", type=is_file)
 parser.add_argument(
-    "-o", "--outdir", dest="outdir", required=True, metavar="PATH",
+    "-o", "--outdir", dest="outdir", metavar="PATH",
     help="the Connectomist tractography home directory.", type=is_directory)
 parser.add_argument(
     "-s", "--subjectid", dest="subjectid", required=True,
@@ -149,6 +149,11 @@ parser.add_argument(
     "-g", "--morphologistdir", dest="morphologistdir", required=True,
     metavar="PATH", type=is_directory,
     help="the path to the morphologist processings home directory.")
+parser.add_argument(
+    "-n", "--tractdir", dest="tractdir", metavar="PATH",
+    help=("the path to the Connectomist tractography. If not "
+          "specified generate data in '<outdir>/<subjectid>/tract'."),
+    type=is_directory)
 args = parser.parse_args()
 
 
@@ -178,7 +183,6 @@ if args.verbose > 0:
           "{1}].".format(args.minlength, args.maxlength))
 outdir = args.outdir
 subjectid = args.subjectid
-subjdir = os.path.join(args.outdir, subjectid, "tract")
 preprocdir = args.preprocdir
 morphologistdir = args.morphologistdir
 model = args.model
@@ -188,18 +192,26 @@ max_fiber_length = args.maxlength
 aperture_angle = 30.
 tracking_type = args.tracking
 voxel_sampler_point_count = args.seeds
+tractdir = args.tractdir
+if tractdir is None:
+    if outdir is None:
+        raise ValueError("Trying to generate output directory. You need to "
+                         "specify the -o, --outdir command line option.")
+    tractdir = os.path.join(outdir, subjectid, "tract")
+    if args.verbose > 0:
+        print("[info] Generated dtifit dir: {0}.".format(dtifitdir))
 if preprocdir is None:
     preprocdir = os.path.join(args.outdir, subjectid, "preproc")
     if args.verbose > 0:
         print("[info] Generated preproc dir: {0}.".format(preprocdir))
-if not os.path.isdir(subjdir):
-    os.makedirs(subjdir)
-elif os.path.isdir(subjdir) and args.erase:
-    shutil.rmtree(subjdir)
-    os.mkdir(subjdir)
+if not os.path.isdir(tractdir):
+    os.makedirs(tractdir)
+elif args.erase and os.path.isdir(tractdir):
+    shutil.rmtree(tractdir)
+    os.mkdir(tractdir)
 inputs = [preprocdir]
 inputs = dict([(name, locals()[name])
-               for name in ("outdir", "subjectid", "subjdir", "preprocdir",
+               for name in ("outdir", "subjectid", "tractdir", "preprocdir",
                             "morphologistdir", "model", "order", 
                             "min_fiber_length", "max_fiber_length",
                             "aperture_angle", "tracking_type",
@@ -211,7 +223,7 @@ outputs = None
 Connectomist tractography: all steps
 """
 scalars, mask, bundles = complete_tractography(
-    subjdir,
+    tractdir,
     preprocdir,
     morphologistdir,
     subjectid,
@@ -245,7 +257,7 @@ scalars, mask, bundles = complete_tractography(
 """
 Update the outputs and save them and the inputs in a 'logs' directory.
 """
-logdir = os.path.join(subjdir, "logs")
+logdir = os.path.join(tractdir, "logs")
 if not os.path.isdir(logdir):
     os.mkdir(logdir)
 outputs = dict([(name, locals()[name])

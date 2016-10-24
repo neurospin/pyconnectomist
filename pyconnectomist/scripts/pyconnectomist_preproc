@@ -146,7 +146,7 @@ parser.add_argument(
     "-c", "--connectomistconfig", dest="connectomistconfig", metavar="PATH",
     help="the path to the Connectomist configuration file.", type=is_file)
 parser.add_argument(
-    "-o", "--outdir", dest="outdir", required=True, metavar="PATH",
+    "-o", "--outdir", dest="outdir", metavar="PATH",
     help="the Connectomist preprocessing home directory.", type=is_directory)
 parser.add_argument(
     "-s", "--subjectid", dest="subjectid", required=True,
@@ -225,7 +225,16 @@ parser.add_argument(
 parser.add_argument(
     "-g", "--morphologist_dir", dest="morphologist_dir", required=True,
     metavar="PATH", type=is_directory,
-    help="the path to the morphologist processings home directory.")    
+    help="the path to the morphologist processings home directory.")
+parser.add_argument(
+    "-Q", "--already_corrected", dest="already_corrected", action="store_true",
+    help=("if activated, only the first three step are computed in order to "
+          "facilitate the modeling, tractography, bundeling steps."))
+parser.add_argument(
+    "-O", "--preprocdir", dest="preprocdir", metavar="PATH",
+    help=("the path to the Connectomist diffusion preprocessings. If not "
+          "specified generate data in '<outdir>/<subjectid>/preproc'."),
+    type=is_directory)       
 args = parser.parse_args()
 
 
@@ -253,10 +262,15 @@ if args.verbose > 0:
     print("[info] Phase: {0}.".format(args.b0_phase))
 outdir = args.outdir
 subjectid = args.subjectid
+preprocdir = args.preprocdir
 clientname = args.clientname
 projectname = args.projectname
 timestep = args.timestep
-subjdir = os.path.join(args.outdir, subjectid, "preproc")
+if preprocdir is None:
+    if outdir is None:
+        raise ValueError("Trying to generate output directory. You need to "
+                         "specify the -o, --outdir command line option.")
+    preprocdir = os.path.join(args.outdir, subjectid, "preproc")
 dwis = args.dwifiles
 bvecs = args.bvecfiles
 bvals = args.bvalfiles
@@ -279,29 +293,30 @@ water_fat_shift = args.water_fat_shift
 t1zcropping = args.t1zcropping
 delete_steps = args.delete_steps
 morphologist_dir = args.morphologist_dir
+already_corrected = args.already_corrected
 inputs = dict([(name, locals()[name])
-               for name in ("outdir", "subjectid", "subjdir", "dwis", "bvecs",
-                            "bvals", "manufacturer", "delta_te",
+               for name in ("outdir", "subjectid", "preprocdir", "dwis",
+                            "bvecs", "bvals", "manufacturer", "delta_te",
                             "partial_fourier_factor", "negative_sign",
                             "parallel_acceleration_factor", "b0_phase",
                             "b0_magnitude", "invertx", "inverty", "invertz", 
                             "echo_spacing", "epi_factor", "b0_field",
                             "water_fat_shift", "delete_steps",
                             "morphologist_dir", "projectname", "timestep",
-                            "t1zcropping", "clientname")])
+                            "t1zcropping", "clientname", "already_corrected")])
 outputs = None
-if not os.path.isdir(subjdir):
-    os.makedirs(subjdir)
-elif os.path.isdir(subjdir) and args.erase:
-    shutil.rmtree(subjdir)
-    os.mkdir(subjdir)
+if not os.path.isdir(preprocdir):
+    os.makedirs(preprocdir)
+elif args.erase and os.path.isdir(preprocdir):
+    shutil.rmtree(preprocdir)
+    os.mkdir(preprocdir)
 
 
 """
 Connectomist preproc: all steps
 """
 returned_values = complete_preprocessing(
-    subjdir,
+    preprocdir,
     subjectid,
     projectname,
     timestep,
@@ -327,20 +342,21 @@ returned_values = complete_preprocessing(
     t1_foot_zcropping=t1zcropping,
     delete_steps=delete_steps,
     morphologist_dir=morphologist_dir,
+    already_corrected=already_corrected,
     path_connectomist=connectomist_config)
 preproc_dwi, preproc_bval, preproc_bvec, preproc_outliers = returned_values
 if args.verbose > 1:
-    print("[result] In folder: {0}.".format(subjdir))
+    print("[result] In folder: {0}.".format(preprocdir))
 
 
 """
 Generate QC reporting
 """
-reportfile = os.path.join(subjdir, "QcFast_{0}_{1}_{2}.pdf".format(
+reportfile = os.path.join(preprocdir, "QcFast_{0}_{1}_{2}.pdf".format(
     projectname, subjectid, timestep))
 tic = datetime.now()
 generate_pdf(
-    datapath=os.path.join(subjdir, STEPS[6]),
+    datapath=os.path.join(preprocdir, STEPS[6]),
     struct_file=os.path.join(
         os.path.abspath(os.path.dirname(pyconnectomist.__file__)), "utils",
         "resources", "pyconnectomist_qcfast.json"),
@@ -367,7 +383,7 @@ if args.verbose > 1:
 """
 Update the outputs and save them and the inputs in a 'logs' directory.
 """
-logdir = os.path.join(subjdir, "logs")
+logdir = os.path.join(preprocdir, "logs")
 if not os.path.isdir(logdir):
     os.mkdir(logdir)
 outputs = dict([(name, locals()[name])
