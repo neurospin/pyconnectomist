@@ -64,6 +64,7 @@ def complete_preprocessing(
         t1_foot_zcropping=0,
         delete_steps=False,
         morphologist_dir=None,
+        already_corrected=False,
         path_connectomist=DEFAULT_CONNECTOMIST_PATH):
     """ Function that runs all preprocessing tabs from Connectomist.
 
@@ -150,6 +151,9 @@ def complete_preprocessing(
         + outliers.py
     morphologist_dir: str (optional, default None)
         the path to the morphologist processings.
+    already_corrected: bool (optional, default False)
+        if True, only the first three step are computed in order to facilitate
+        the modeling, tractography, bundeling steps.
     path_connectomist: str (optional)
         path to the Connectomist executable.
 
@@ -201,6 +205,10 @@ def complete_preprocessing(
         subject_id,
         path_connectomist=path_connectomist)
 
+    ## Quit if requested: preproc already performed
+    if already_corrected:
+        return None, None, None, None
+
     # Step 5 - Detect and correct outlying diffusion slices
     outliers_dir = os.path.join(outdir, STEPS[3])
     outlying_slice_detection(
@@ -231,7 +239,7 @@ def complete_preprocessing(
             EPI_factor,
             b0_field,
             water_fat_shift,
-            path_connectomist=path_connectomist)       
+            path_connectomist=path_connectomist)
 
     # Step 7 - Eddy current and motion correction
     eddy_motion_dir = os.path.join(outdir, STEPS[5])
