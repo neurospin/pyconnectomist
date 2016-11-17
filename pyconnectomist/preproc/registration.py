@@ -12,6 +12,7 @@ Wrapper to Connectomist's 'Anatomy & Talairach' tab.
 # System import
 import os
 import glob
+import nibabel
 
 # pyConnectomist import
 from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
@@ -26,6 +27,9 @@ def dwi_to_anatomy(
         morphologist_dir,
         subject_id,
         t1_foot_zcropping=0,
+        level_count=32,
+        lower_theshold=0.0,
+        apply_smoothing=True,
         path_connectomist=DEFAULT_CONNECTOMIST_PATH):
     """ Wrapper to Connectomist's 'Anatomy & Talairach' tab.
 
@@ -41,6 +45,12 @@ def dwi_to_anatomy(
         the subject code in study.
     t1_foot_zcropping: int (optional, default 0)
         crop the t1 image in the z direction in order to remove the neck.
+    level_count: int (optional, default 32)
+        the number of bins in the histogram.
+    lower_theshold: float (optional, default 0)
+        remove noise in the image by applying this lower theshold.
+    apply_smoothing: bool (optional, default True)
+        smooth the image before performing the histogram analysis.
     path_connectomist: str (optional)
         path to the Connectomist executable.
 
@@ -63,6 +73,10 @@ def dwi_to_anatomy(
         files.append(fpath[0])
     acpcfile, t1file = files
 
+    # Get the min image dimension
+    im = nibabel.load(t1file)
+    mindim = min(im.shape)
+
     # Create the directory if not existing
     if not os.path.isdir(outdir):
         os.mkdir(outdir)
@@ -71,6 +85,10 @@ def dwi_to_anatomy(
     t1gisfile = os.path.join(outdir, "t1_morphologist.ima")
     t1gisfile = ptk_nifti_to_gis(t1file, t1gisfile)
 
+    # Convert the 'apply_smoothing' parameter
+    if apply_smoothing:
+        apply_smoothing = 1
+
     # Dict with all parameters for connectomist
     algorithm = "DWI-To-Anatomy-Matching"
     parameters_dict = {
@@ -78,8 +96,8 @@ def dwi_to_anatomy(
         "customMorphologistDirectory": subject_morphologist_dir,
         "computeNormalization": 2,
         "dwToT1RegistrationParameter": {
-            "applySmoothing": 1,
-            "floatingLowerThreshold": 0.0,
+            "applySmoothing": apply_smoothing,
+            "floatingLowerThreshold": lower_theshold,
             "initialParametersRotationX": 0,
             "initialParametersRotationY": 0,
             "initialParametersRotationZ": 0,
@@ -92,8 +110,8 @@ def dwi_to_anatomy(
             "initialParametersTranslationX": 0,
             "initialParametersTranslationY": 0,
             "initialParametersTranslationZ": 0,
-            "initializeCoefficientsUsingCenterOfGravity": True,
-            "levelCount": 32,
+            "initializeCoefficientsUsingCenterOfGravity": False,
+            "levelCount": level_count,
             "maximumIterationCount": 1000,
             "maximumTestGradient": 1000.0,
             "maximumTolerance": 0.01,
@@ -115,7 +133,7 @@ def dwi_to_anatomy(
             "similarityMeasureName": 1,
             "stepSize": 0.1,
             "stoppingCriterionError": 0.01,
-            "subSamplingMaximumSizes": "64",
+            "subSamplingMaximumSizes": "64 {0}".format(mindim),
             "transform3DType": 0},
         "_subjectName": subject_id,
         "anteriorPosteriorAdditionSliceCount": 0,

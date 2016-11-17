@@ -62,6 +62,9 @@ def complete_preprocessing(
         b0_field=3.0,
         water_fat_shift=4.68,
         t1_foot_zcropping=0,
+        level_count=32,
+        lower_theshold=0.0,
+        apply_smoothing=True,
         delete_steps=False,
         morphologist_dir=None,
         already_corrected=False,
@@ -145,6 +148,12 @@ def complete_preprocessing(
         Philips only, default 4.68 pixels.
     t1_foot_zcropping: int (optional, default 0)
         crop the t1 image in the z direction in order to remove the neck.
+    level_count: int (optional, default 32)
+        the number of bins in the histogram.
+    lower_theshold: float (optional, default 0)
+        remove noise in the image by applying this lower theshold.
+    apply_smoothing: bool (optional, default True)
+        smooth the image before performing the histogram analysis.
     delete_steps: bool (optional, default False)
         if True remove all intermediate files and directories at the end of
         preprocessing, to keep only 4 files: preprocessed Nifti + bval + bvec
@@ -194,6 +203,9 @@ def complete_preprocessing(
         morphologist_dir,
         subject_id,
         t1_foot_zcropping=t1_foot_zcropping,
+        level_count=level_count,
+        lower_theshold=lower_theshold,
+        apply_smoothing=apply_smoothing,
         path_connectomist=path_connectomist)
 
     # Step 4 - Create a brain mask

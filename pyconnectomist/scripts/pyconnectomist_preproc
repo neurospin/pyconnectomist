@@ -219,6 +219,16 @@ parser.add_argument(
     default=0, help=("Crop the t1 image in the z direction in order to remove "
                      "the neck."))
 parser.add_argument(
+    "-L", "--levelcount", dest="level_count", type=int,
+    default=32, help="The number of bins in the histogram.")
+parser.add_argument(
+    "-K", "--lowertheshold", dest="lower_theshold", type=float,
+    default=0., help=("Remove noise in the image by applying this lower "
+                     "theshold."))
+parser.add_argument(
+    "-S", "--nosmoothing", dest="no_smoothing", action="store_true",
+    help=("Do not smooth the image before performing the histogram analysis."))
+parser.add_argument(
     "-d", "--delete_steps", dest="delete_steps", action="store_true",
     help=("if activated, remove all intermediate files and directories at "
           "the end."))
@@ -236,7 +246,6 @@ parser.add_argument(
           "specified generate data in '<outdir>/<subjectid>/preproc'."),
     type=is_directory)       
 args = parser.parse_args()
-
 
 """
 First check if the Connectomist subject directory exists on the file system,
@@ -291,6 +300,9 @@ epi_factor = args.epi_factor
 b0_field = args.b0_field
 water_fat_shift = args.water_fat_shift
 t1zcropping = args.t1zcropping
+level_count = args.level_count
+apply_smoothing = not args.no_smoothing
+lower_theshold = args.lower_theshold
 delete_steps = args.delete_steps
 morphologist_dir = args.morphologist_dir
 already_corrected = args.already_corrected
@@ -303,7 +315,9 @@ inputs = dict([(name, locals()[name])
                             "echo_spacing", "epi_factor", "b0_field",
                             "water_fat_shift", "delete_steps",
                             "morphologist_dir", "projectname", "timestep",
-                            "t1zcropping", "clientname", "already_corrected")])
+                            "t1zcropping", "level_count", "apply_smoothing",
+                            "lower_theshold", "clientname",
+                            "already_corrected")])
 outputs = None
 if not os.path.isdir(preprocdir):
     os.makedirs(preprocdir)
@@ -340,6 +354,9 @@ returned_values = complete_preprocessing(
     b0_field=b0_field,
     water_fat_shift=water_fat_shift,
     t1_foot_zcropping=t1zcropping,
+    level_count=level_count,
+    lower_theshold=lower_theshold,
+    apply_smoothing=apply_smoothing,
     delete_steps=delete_steps,
     morphologist_dir=morphologist_dir,
     already_corrected=already_corrected,
