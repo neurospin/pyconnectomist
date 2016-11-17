@@ -119,12 +119,13 @@ class ConnectomistNiftiToGis(unittest.TestCase):
         """ Test the normal behaviour of the function.
         """
         # Set the mocked functions returned values
-        mock_path.isfile.side_effect = [True, False]
+        mock_path.isfile.side_effect = [True, True]
 
         # Test execution
         output_files = ptk_nifti_to_gis("nifti.nii.gz", "gis")
         self.assertEqual(output_files, "gis.ima")
-        self.assertEqual([mock.call("nifti.nii.gz")],
+        self.assertEqual([mock.call("nifti.nii.gz"),
+                          mock.call("gis.ima.minf")],
                          mock_path.isfile.call_args_list)
         self.assertEqual([mock.call("gis.ima.minf")],
                          mock_rm.call_args_list)
