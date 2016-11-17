@@ -199,7 +199,7 @@ if tractdir is None:
                          "specify the -o, --outdir command line option.")
     tractdir = os.path.join(outdir, subjectid, "tract")
     if args.verbose > 0:
-        print("[info] Generated dtifit dir: {0}.".format(dtifitdir))
+        print("[info] Generated tractdir dir: {0}.".format(tractdir))
 if preprocdir is None:
     preprocdir = os.path.join(args.outdir, subjectid, "preproc")
     if args.verbose > 0:
