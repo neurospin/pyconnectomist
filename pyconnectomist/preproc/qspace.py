@@ -14,6 +14,7 @@ import os
 import shutil
 import numpy as np
 import nibabel
+import warnings
 
 # pyConnectomist import
 from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
@@ -290,9 +291,13 @@ def data_import_and_qspace_sampling(
         # Spherical single-shell custom
         parameters_dict["qSpaceSamplingType"] = 4
     else:
-        raise ConnectomistError(
-            "'{0}' shell model(s) not handled yet: path to .bval files: "
-            "'{1}'".format(nb_shells, bvals))
+        warnings.warn(
+            "'{0}' shell model(s) not handled yet.".format(nb_shells))
+        # Arbitrary shell
+        parameters_dict["qSpaceSamplingType"] = 12
+        parameters_dict["qSpaceChoice13BValueFileNames"] = ";".join(bvals)
+        parameters_dict["qSpaceChoice13BValueThreshold"] = 50.0
+        parameters_dict["qSpaceChoice13OrientationFileNames"] = ";".join(bvecs)
 
     # Call with Connectomist
     process = ConnectomistWrapper(path_connectomist)
