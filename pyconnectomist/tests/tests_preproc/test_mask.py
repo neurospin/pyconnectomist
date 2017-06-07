@@ -16,6 +16,9 @@ fake return string.
 # System import
 import unittest
 import sys
+import os
+import nibabel
+import numpy
 # COMPATIBILITY: since python 3.3 mock is included in unittest module
 python_version = sys.version_info
 if python_version[:2] <= (3, 3):
@@ -52,8 +55,13 @@ class ConnectomistMask(unittest.TestCase):
             "outdir": "/my/path/mock_outdir",
             "raw_dwi_dir": "/my/path/mock_rawdwidir",
             "registration_dir": "/my/path/mock_registrationdir",
-            "subject_id": "Lola"
+            "morphologist_dir": "/my/path/mock_morphologistdir",
+            "subject_id": "Lola",
+            "level_count": 32,
+            "lower_theshold": 0.0,
+            "apply_smoothing": True
         }
+        self.t1img = nibabel.Nifti1Image(numpy.zeros((2, 3, 4)), numpy.eye(4))
 
     def tearDown(self):
         """ Run after each test.
@@ -72,12 +80,20 @@ class ConnectomistMask(unittest.TestCase):
     @mock.patch("pyconnectomist.preproc.mask.ConnectomistWrapper."
                 "create_parameter_file")
     @mock.patch("os.path")
-    def test_normal_execution(self, mock_path, mock_params, mock_version):
+    @mock.patch("pyconnectomist.preproc.registration.glob.glob")
+    @mock.patch("pyconnectomist.preproc.registration.nibabel.load")
+    def test_normal_execution(self, mock_load, mock_glob, mock_path,
+                              mock_params, mock_version):
         """ Test the normal behaviour of the function.
         """
         # Set the mocked functions returned values
+        mock_load.return_value = self.t1img
+        mock_glob.side_effect = [
+            [self.kwargs["morphologist_dir"] + os.sep +
+             "{0}.nii.gz".format(self.kwargs["subject_id"])],
+            []]
         mock_params.return_value = "/my/path/mock_parameters"
-        mock_path.isfile.side_effect = [True, True, False]
+        mock_path.isfile.side_effect = [True, True, True, False]
 
         # Test execution
         outdir = rough_mask_extraction(**self.kwargs)

@@ -98,7 +98,8 @@ class ConnectomistRegistration(unittest.TestCase):
             [self.kwargs["morphologist_dir"] + os.sep +
              "{0}.APC".format(self.kwargs["subject_id"])],
             [self.kwargs["morphologist_dir"] + os.sep +
-             "{0}.nii.gz".format(self.kwargs["subject_id"])]]
+             "{0}.nii.gz".format(self.kwargs["subject_id"])],
+            []]
         mock_path.isfile.side_effect = [True, True, False]
         mock_path.isdir.return_value = False
         mock_params.return_value = "/my/path/mock_parameters"

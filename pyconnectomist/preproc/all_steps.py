@@ -214,7 +214,11 @@ def complete_preprocessing(
         rough_mask_dir,
         raw_dwi_dir,
         registration_dir,
+        morphologist_dir,
         subject_id,
+        level_count=level_count,
+        lower_theshold=lower_theshold,
+        apply_smoothing=apply_smoothing,
         path_connectomist=path_connectomist)
 
     # Quit if requested: preproc already performed

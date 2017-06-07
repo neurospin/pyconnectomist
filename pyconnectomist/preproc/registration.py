@@ -60,16 +60,19 @@ def dwi_to_anatomy(
         path to Connectomist's output directory.
     """
     # Get morphologist result files and check existance
+    extensions = (".nii.gz", ".nii")
     subject_morphologist_dir = os.path.join(morphologist_dir, subject_id)
     apcpattern = os.path.join(subject_morphologist_dir,
                               "t1mri", "*", "{0}.APC".format(subject_id))
-    t1pattern = os.path.join(subject_morphologist_dir,
-                             "t1mri", "*", "{0}.nii.gz".format(subject_id))
+    t1pattern = os.path.join(subject_morphologist_dir, "t1mri", "*", "{0}{1}")
+    t1patterns = [t1pattern.format(subject_id, ext) for ext in extensions]
     files = []
-    for fpattern in (apcpattern, t1pattern):
-        fpath = glob.glob(fpattern)
+    for fpatterns in ((apcpattern, ), t1patterns):
+        fpath = []
+        for fpattern in fpatterns:
+            fpath.extend(glob.glob(fpattern))
         if len(fpath) != 1 or not os.path.isfile(fpath[0]):
-            raise ConnectomistBadFileError(fpattern)
+            raise ConnectomistBadFileError(str(t1patterns))
         files.append(fpath[0])
     acpcfile, t1file = files
 
