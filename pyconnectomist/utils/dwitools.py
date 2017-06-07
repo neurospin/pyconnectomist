@@ -162,8 +162,8 @@ def read_bvals_bvecs(bvals_path, bvecs_path, min_bval=200.):
         raise ValueError("b-values and b-vectors shapes do not correspond.")
 
     # Infer nb of T2 and nb of shells.
-    nb_nodiff = np.sum(bvals < 50)  # nb of volumes where bvalue<50
-    b0_set = set(bvals[bvals < 50])
+    nb_nodiff = np.sum(bvals <= 50)  # nb of volumes where bvalue<50
+    b0_set = set(bvals[bvals <= 50])
     bvals_set = set(bvals) - b0_set    # set of non-zero bvalues
     bvals_set = set([int(round(bval, -2)) for bval in list(bvals_set)])
     nb_shells = len(bvals_set)
