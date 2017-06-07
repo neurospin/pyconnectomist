@@ -22,7 +22,7 @@ try:
     bredala.USE_PROFILER = False
     bredala.register("pyconnectomist.preproc",
                      names=["complete_preprocessing"])
-    bredala.register("pyconnectomist.preproc.qsapce",
+    bredala.register("pyconnectomist.preproc.qspace",
                      names=["data_import_and_qspace_sampling"])
     bredala.register("pyconnectomist.preproc.mask",
                      names=["rough_mask_extraction"])
@@ -241,6 +241,10 @@ parser.add_argument(
     help=("if activated, only the first three step are computed in order to "
           "facilitate the modeling, tractography, bundeling steps."))
 parser.add_argument(
+    "-R", "--report_only", dest="report_only", action="store_true",
+    help=("if activated, only the report will be generated. Might be "
+          "usefull when manual operations must be performed."))
+parser.add_argument(
     "-O", "--preprocdir", dest="preprocdir", metavar="PATH",
     help=("the path to the Connectomist diffusion preprocessings. If not "
           "specified generate data in '<outdir>/<subjectid>/preproc'."),
@@ -306,6 +310,7 @@ lower_theshold = args.lower_theshold
 delete_steps = args.delete_steps
 morphologist_dir = args.morphologist_dir
 already_corrected = args.already_corrected
+report_only = args.report_only
 inputs = dict([(name, locals()[name])
                for name in ("outdir", "subjectid", "preprocdir", "dwis",
                             "bvecs", "bvals", "manufacturer", "delta_te",
@@ -317,7 +322,7 @@ inputs = dict([(name, locals()[name])
                             "morphologist_dir", "projectname", "timestep",
                             "t1zcropping", "level_count", "apply_smoothing",
                             "lower_theshold", "clientname",
-                            "already_corrected")])
+                            "already_corrected", "report_only")])
 outputs = None
 if not os.path.isdir(preprocdir):
     os.makedirs(preprocdir)
@@ -329,41 +334,42 @@ elif args.erase and os.path.isdir(preprocdir):
 """
 Connectomist preproc: all steps
 """
-returned_values = complete_preprocessing(
-    preprocdir,
-    subjectid,
-    projectname,
-    timestep,
-    dwis,
-    bvals,
-    bvecs,
-    manufacturer,
-    delta_te,
-    partial_fourier_factor,
-    parallel_acceleration_factor,
-    b0_magnitude,
-    b0_phase=b0_phase,
-    phase_axis=phase_axis,
-    slice_axis=slice_axis,
-    invertX=invertx,
-    invertY=inverty,
-    invertZ=invertz,
-    negative_sign=negative_sign,
-    echo_spacing=echo_spacing,
-    EPI_factor=epi_factor,
-    b0_field=b0_field,
-    water_fat_shift=water_fat_shift,
-    t1_foot_zcropping=t1zcropping,
-    level_count=level_count,
-    lower_theshold=lower_theshold,
-    apply_smoothing=apply_smoothing,
-    delete_steps=delete_steps,
-    morphologist_dir=morphologist_dir,
-    already_corrected=already_corrected,
-    path_connectomist=connectomist_config)
-preproc_dwi, preproc_bval, preproc_bvec, preproc_outliers = returned_values
-if args.verbose > 1:
-    print("[result] In folder: {0}.".format(preprocdir))
+if not report_only:
+    returned_values = complete_preprocessing(
+        preprocdir,
+        subjectid,
+        projectname,
+        timestep,
+        dwis,
+        bvals,
+        bvecs,
+        manufacturer,
+        delta_te,
+        partial_fourier_factor,
+        parallel_acceleration_factor,
+        b0_magnitude,
+        b0_phase=b0_phase,
+        phase_axis=phase_axis,
+        slice_axis=slice_axis,
+        invertX=invertx,
+        invertY=inverty,
+        invertZ=invertz,
+        negative_sign=negative_sign,
+        echo_spacing=echo_spacing,
+        EPI_factor=epi_factor,
+        b0_field=b0_field,
+        water_fat_shift=water_fat_shift,
+        t1_foot_zcropping=t1zcropping,
+        level_count=level_count,
+        lower_theshold=lower_theshold,
+        apply_smoothing=apply_smoothing,
+        delete_steps=delete_steps,
+        morphologist_dir=morphologist_dir,
+        already_corrected=already_corrected,
+        path_connectomist=connectomist_config)
+    preproc_dwi, preproc_bval, preproc_bvec, preproc_outliers = returned_values
+    if args.verbose > 1:
+        print("[result] In folder: {0}.".format(preprocdir))
 
 
 """
@@ -400,18 +406,19 @@ if args.verbose > 1:
 """
 Update the outputs and save them and the inputs in a 'logs' directory.
 """
-logdir = os.path.join(preprocdir, "logs")
-if not os.path.isdir(logdir):
-    os.mkdir(logdir)
-outputs = dict([(name, locals()[name])
-               for name in ("reportfile", "preproc_dwi", "preproc_bval",
-                            "preproc_bvec", "preproc_outliers")])
-for name, final_struct in [("inputs", inputs), ("outputs", outputs),
-                           ("runtime", runtime)]:
-    log_file = os.path.join(logdir, "{0}.json".format(name))
-    with open(log_file, "wt") as open_file:
-        json.dump(final_struct, open_file, sort_keys=True, check_circular=True,
-                  indent=4)
-if args.verbose > 1:
-    print("[final]")
-    pprint(outputs)
+if not report_only:
+    logdir = os.path.join(preprocdir, "logs")
+    if not os.path.isdir(logdir):
+        os.mkdir(logdir)
+    outputs = dict([(name, locals()[name])
+                   for name in ("reportfile", "preproc_dwi", "preproc_bval",
+                                "preproc_bvec", "preproc_outliers")])
+    for name, final_struct in [("inputs", inputs), ("outputs", outputs),
+                               ("runtime", runtime)]:
+        log_file = os.path.join(logdir, "{0}.json".format(name))
+        with open(log_file, "wt") as open_file:
+            json.dump(final_struct, open_file, sort_keys=True,
+                      check_circular=True, indent=4)
+    if args.verbose > 1:
+        print("[final]")
+        pprint(outputs)
