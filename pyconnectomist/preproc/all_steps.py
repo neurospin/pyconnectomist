@@ -22,22 +22,26 @@ from .susceptibility import susceptibility_correction
 from .eddy import eddy_and_motion_correction
 from .eddy import export_eddy_motion_results_to_nifti
 from .registration import dwi_to_anatomy
+from .qc import qc_reporting
 
 
 # Define steps
 STEPS = [
     "01-Import_and_qspace_model",
-    "02-Rough_mask",
-    "03-Outliers",
-    "04-Suceptibility",
-    "05-Eddy_current_and_motion",
-    "06-Anatomy_Talairach"
+    "02-Anatomy_Talairach",
+    "03-Rough_mask",
+    "04-Outliers",
+    "05-Suceptibility",
+    "06-Eddy_current_and_motion",
+    "07-QC_reporting"
 ]
 
 
 def complete_preprocessing(
         outdir,
         subject_id,
+        project_name,
+        timestep,
         dwis,
         bvals,
         bvecs,
@@ -57,10 +61,13 @@ def complete_preprocessing(
         EPI_factor=None,
         b0_field=3.0,
         water_fat_shift=4.68,
+        t1_foot_zcropping=0,
+        level_count=32,
+        lower_theshold=0.0,
+        apply_smoothing=True,
         delete_steps=False,
         morphologist_dir=None,
-        noise_threshold=2.0,
-        dilatation_radius=4.0,
+        already_corrected=False,
         path_connectomist=DEFAULT_CONNECTOMIST_PATH):
     """ Function that runs all preprocessing tabs from Connectomist.
 
@@ -70,21 +77,23 @@ def complete_preprocessing(
 
     2- Import files to Connectomist and choose q-space model.
 
-    3- Create a brain mask.
+    3- Registration t1 - dwi.
 
-    4- Detect and correct outlying diffusion slices.
+    4- Create a brain mask.
 
-    5- Susceptibility correction.
+    5- Detect and correct outlying diffusion slices.
 
-    6- Eddy current and motion correction.
+    6- Susceptibility correction.
 
-    7- Export result as a Nifti with a .bval and a .bvec.
+    7- Eddy current and motion correction.
 
-    8- Export outliers.
+    8- QC reporting.
 
-    9- Registration t1 - dwi.
+    9- Export result as a Nifti with a .bval and a .bvec.
 
-    10- Delete intermediate files and directories if requested.
+    10- Export outliers.
+
+    11- Delete intermediate files and directories if requested.
 
     Parameters
     ----------
@@ -92,6 +101,10 @@ def complete_preprocessing(
         path to folder where all the preprocessing will be done.
     subject_id: str (mandatory)
         subject identifier.
+    project_name: str
+        the name of the project.
+    timestep: str
+        the time step assocaited to this diffusion dataset.
     dwis: list of str (mandatory)
         path to input Nifti DW datasets.
     bvals: list of str (mandatory)
@@ -133,17 +146,23 @@ def complete_preprocessing(
         Philips only, B0 field intensity, by default 3.0.
     water_fat_shift: float (optional, default 4.68)
         Philips only, default 4.68 pixels.
+    t1_foot_zcropping: int (optional, default 0)
+        crop the t1 image in the z direction in order to remove the neck.
+    level_count: int (optional, default 32)
+        the number of bins in the histogram.
+    lower_theshold: float (optional, default 0)
+        remove noise in the image by applying this lower theshold.
+    apply_smoothing: bool (optional, default True)
+        smooth the image before performing the histogram analysis.
     delete_steps: bool (optional, default False)
         if True remove all intermediate files and directories at the end of
         preprocessing, to keep only 4 files: preprocessed Nifti + bval + bvec
         + outliers.py
     morphologist_dir: str (optional, default None)
         the path to the morphologist processings.
-    noise_threshold: float (optional, default 2.0)
-        the noise threshold percentage used to compute the rough histogram
-        based mask.
-    dilatation_radius: float (optional, default 4.0)
-        the dilatation radius in mm used to compute the rough mask.
+    already_corrected: bool (optional, default False)
+        if True, only the first three step are computed in order to facilitate
+        the modeling, tractography, bundeling steps.
     path_connectomist: str (optional)
         path to the Connectomist executable.
 
@@ -154,7 +173,6 @@ def complete_preprocessing(
     preproc_outliers: str
         path to the outliers detection summary.
     """
-
     # Step 1 - Create the preprocessing output directory if not existing
     if not os.path.isdir(outdir):
         os.mkdir(outdir)
@@ -177,18 +195,38 @@ def complete_preprocessing(
         slice_axis,
         path_connectomist=path_connectomist)
 
-    # Step 3 - Create a brain mask
-    rough_mask_dir = os.path.join(outdir, STEPS[1])
+    # Step 3 - Registration t1 - dwi
+    registration_dir = os.path.join(outdir, STEPS[1])
+    dwi_to_anatomy(
+        registration_dir,
+        raw_dwi_dir,
+        morphologist_dir,
+        subject_id,
+        t1_foot_zcropping=t1_foot_zcropping,
+        level_count=level_count,
+        lower_theshold=lower_theshold,
+        apply_smoothing=apply_smoothing,
+        path_connectomist=path_connectomist)
+
+    # Step 4 - Create a brain mask
+    rough_mask_dir = os.path.join(outdir, STEPS[2])
     rough_mask_extraction(
         rough_mask_dir,
         raw_dwi_dir,
+        registration_dir,
+        morphologist_dir,
         subject_id,
-        noise_threshold=noise_threshold,
-        dilatation_radius=dilatation_radius,
+        level_count=level_count,
+        lower_theshold=lower_theshold,
+        apply_smoothing=apply_smoothing,
         path_connectomist=path_connectomist)
 
-    # Step 4 - Detect and correct outlying diffusion slices
-    outliers_dir = os.path.join(outdir, STEPS[2])
+    # Quit if requested: preproc already performed
+    if already_corrected:
+        return None, None, None, None
+
+    # Step 5 - Detect and correct outlying diffusion slices
+    outliers_dir = os.path.join(outdir, STEPS[3])
     outlying_slice_detection(
         outliers_dir,
         raw_dwi_dir,
@@ -196,61 +234,71 @@ def complete_preprocessing(
         subject_id,
         path_connectomist=path_connectomist)
 
-    # Step 5 - Susceptibility correction
-    susceptibility_dir = os.path.join(outdir, STEPS[3])
-    susceptibility_correction(
-        susceptibility_dir,
-        raw_dwi_dir,
-        rough_mask_dir,
-        outliers_dir,
-        subject_id,
-        delta_TE,
-        partial_fourier_factor,
-        parallel_acceleration_factor,
-        negative_sign,
-        echo_spacing,
-        EPI_factor,
-        b0_field,
-        water_fat_shift,
-        path_connectomist=path_connectomist)
+    # Step 6 - Susceptibility correction
+    if b0_magnitude is None and b0_phase is None:
+        corrected_dir = outliers_dir
+        susceptibility_dir = ""
+    else:
+        corrected_dir = os.path.join(outdir, STEPS[4])
+        susceptibility_dir = corrected_dir
+        susceptibility_correction(
+            corrected_dir,
+            raw_dwi_dir,
+            rough_mask_dir,
+            outliers_dir,
+            subject_id,
+            delta_TE,
+            partial_fourier_factor,
+            parallel_acceleration_factor,
+            negative_sign,
+            echo_spacing,
+            EPI_factor,
+            b0_field,
+            water_fat_shift,
+            path_connectomist=path_connectomist)
 
-    # Step 6 - Eddy current and motion correction
-    eddy_motion_dir = os.path.join(outdir, STEPS[4])
+    # Step 7 - Eddy current and motion correction
+    eddy_motion_dir = os.path.join(outdir, STEPS[5])
     eddy_and_motion_correction(
         eddy_motion_dir,
         raw_dwi_dir,
         rough_mask_dir,
-        susceptibility_dir,
+        corrected_dir,
         subject_id,
         path_connectomist=path_connectomist)
 
-    # Step 7 - Export result as a Nifti with a .bval and a .bvec
+    # Step 8 - QC reporting
+    qc_dir = os.path.join(outdir, STEPS[6])
+    qc_reporting(
+        qc_dir,
+        raw_dwi_dir,
+        registration_dir,
+        rough_mask_dir,
+        outliers_dir,
+        susceptibility_dir,
+        eddy_motion_dir,
+        subject_id,
+        project_name=project_name,
+        timestep=timestep,
+        path_connectomist=path_connectomist)
+
+    # Step 9 - Export result as a Nifti with a .bval and a .bvec
     preproc_files = export_eddy_motion_results_to_nifti(
         eddy_motion_dir,
         outdir=outdir,
         filename="dwi")
     preproc_dwi, preproc_bval, preproc_bvec = preproc_files
 
-    # Step 8 - Export outliers.py
+    # Step 10 - Export outliers.py
     path_outliers_py = os.path.join(outliers_dir, "outliers.py")
     preproc_outliers = os.path.join(outdir, "outliers.py")
     shutil.copy(path_outliers_py, preproc_outliers)
 
-    # Step 9 - Registration t1 - dwi
-    if morphologist_dir is not None:
-        registration_dir = os.path.join(outdir, STEPS[5])
-        dwi_to_anatomy(
-            registration_dir,
-            eddy_motion_dir,
-            rough_mask_dir,
-            morphologist_dir,
-            subject_id,
-            path_connectomist=path_connectomist)
-
-    # Step 10 - Delete intermediate files and directories if requested
+    # Step 11 - Delete intermediate files and directories if requested
     if delete_steps:
-        intermediate_dirs = [raw_dwi_dir, rough_mask_dir, outliers_dir,
-                             susceptibility_dir, eddy_motion_dir]
+        intermediate_dirs = [raw_dwi_dir, registration_dir, rough_mask_dir,
+                             outliers_dir, susceptibility_dir, eddy_motion_dir,
+                             qc_dir]
         for directory in intermediate_dirs:
             shutil.rmtree(directory)
 

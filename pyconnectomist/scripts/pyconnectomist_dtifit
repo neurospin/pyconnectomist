@@ -12,6 +12,9 @@ from __future__ import print_function
 import argparse
 import os
 import shutil
+from datetime import datetime
+from pprint import pprint
+import json
 
 # Bredala import
 try:
@@ -34,8 +37,7 @@ from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
 
 
 # Parameters to keep trace
-__hopla__ = ["tool", "tool_version", "version", "config", "inputs", "outputs",
-             "outdir", "subjectid", "preprocdir", "morphologistdir"]
+__hopla__ = ["runtime", "inputs", "outputs"]
 
 # Script documentation
 doc = """
@@ -59,8 +61,8 @@ Command:
 python $HOME/git/pyconnectomist/pyconnectomist/scripts/pyconnectomist_dtifit \
     -v 2 \
     -o /tmp/pyconnectomist \
-    -g /neurospin/senior/nsap/data/V0/morphologist \
-    -s ab130187 \
+    -g /neurospin/senior/nsap/data/V4/morphologist \
+    -s jp090065 \
     -e
 """
 
@@ -95,8 +97,9 @@ parser.add_argument(
     "-c", "--connectomistconfig", dest="connectomistconfig", metavar="PATH",
     help="the path to the Connectomist configuration file.", type=is_file)
 parser.add_argument(
-    "-o", "--outdir", dest="outdir", required=True, metavar="PATH",
-    help="the Connectomist tractography home directory.", type=is_directory)
+    "-o", "--outdir", dest="outdir", metavar="PATH", 
+    help="the Connectomist diffusion tensor output home directory.",
+    type=is_directory)
 parser.add_argument(
     "-s", "--subjectid", dest="subjectid", required=True,
     help="the subject identifier.")
@@ -104,6 +107,11 @@ parser.add_argument(
     "-p", "--preprocdir", dest="preprocdir", metavar="PATH",
     help=("the path to the Connectomist diffusion preprocessings. If not "
           "specified assume data in '<outdir>/<subjectid>/preproc'."),
+    type=is_directory)
+parser.add_argument(
+    "-d", "--dtifitdir", dest="dtifitdir", metavar="PATH",
+    help=("the path to the Connectomist diffusion tensor estimation. If not "
+          "specified generate data in '<outdir>/<subjectid>/dtifit'."),
     type=is_directory)
 parser.add_argument(
     "-g", "--morphologistdir", dest="morphologistdir", required=True,
@@ -116,43 +124,76 @@ args = parser.parse_args()
 First check if the Connectomist subject directory exists on the file system,
 and clean it if requested.
 """
-tool = "Connectomist tract"
-config = args.connectomistconfig or DEFAULT_CONNECTOMIST_PATH
-tool_version = ConnectomistWrapper._connectomist_version_check(config)
+tool = "pyconnectomist_dtifit"
+timestamp = datetime.now().isoformat()
+tool_version = version
+connectomist_config = args.connectomistconfig or DEFAULT_CONNECTOMIST_PATH
+connectomist_version = ConnectomistWrapper._connectomist_version_check(
+    connectomist_config)
+runtime = dict([(name, locals()[name])
+               for name in ("connectomist_config", "tool", "tool_version",
+                            "connectomist_version", "timestamp")])
 if args.verbose > 0:
     print("[info] Start Connectomist DTI fit...")
     print("[info] Directory: {0}.".format(args.outdir))
     print("[info] Subject: {0}.".format(args.subjectid))
-    print("[info] Preproc: {0}.".format(args.preprocdir))
+    print("[info] Preproc dir: {0}.".format(args.preprocdir))
 outdir = args.outdir
 subjectid = args.subjectid
-subjdir = os.path.join(args.outdir, subjectid, "dtifit")
+dtifitdir = args.dtifitdir
+if dtifitdir is None:
+    if outdir is None:
+        raise ValueError("Trying to generate output directory. You need to "
+                         "specify the -o, --outdir command line option.")
+    dtifitdir = os.path.join(outdir, subjectid, "dtifit")
+    if args.verbose > 0:
+        print("[info] Generated dtifit dir: {0}.".format(dtifitdir))
 preprocdir = args.preprocdir
 morphologistdir = args.morphologistdir
 if preprocdir is None:
     preprocdir = os.path.join(args.outdir, subjectid, "preproc")
     if args.verbose > 0:
-        print("[info] Preproc: {0}.".format(preprocdir))
-if not os.path.isdir(subjdir):
-    os.makedirs(subjdir)
-elif os.path.isdir(subjdir) and args.erase:
-    shutil.rmtree(subjdir)
-    os.mkdir(subjdir)
-inputs = [preprocdir]
-outputs = []
+        print("[info] Generated preproc dir: {0}.".format(preprocdir))
+if not os.path.isdir(dtifitdir):
+    os.makedirs(dtifitdir)
+elif args.erase and os.path.isdir(dtifitdir):
+    shutil.rmtree(dtifitdir)
+    os.mkdir(dtifitdir)
+params = locals()
+inputs = dict([(name, params[name])
+               for name in ("outdir", "subjectid", "preprocdir",
+                            "morphologistdir", "dtifitdir")])
+outputs = None
+
 
 """
 Connectomist tractography: DTI fit only
 """
-gfa, md, _, _ = complete_tractography(
-    subjdir,
+scalars, _, _ = complete_tractography(
+    dtifitdir,
     preprocdir,
     morphologistdir,
     subjectid,
     model="dti",
     rgbscale=1.0,
     model_only=True,
-    path_connectomist=config)
-outputs = [gfa, md]
+    path_connectomist=connectomist_config)
+
+
+"""
+Update the outputs and save them and the inputs in a 'logs' directory.
+"""
+logdir = os.path.join(dtifitdir, "logs")
+if not os.path.isdir(logdir):
+    os.mkdir(logdir)
+params = locals()
+outputs = dict([(name, params[name]) for name in ("scalars", )])
+for name, final_struct in [("inputs", inputs), ("outputs", outputs),
+                           ("runtime", runtime)]:
+    log_file = os.path.join(logdir, "{0}.json".format(name))
+    with open(log_file, "wt") as open_file:
+        json.dump(final_struct, open_file, sort_keys=True, check_circular=True,
+                  indent=4)
 if args.verbose > 1:
-    print("[result] In folder: {0}.".format(subjdir))
+    print("[final]")
+    pprint(outputs)

@@ -8,7 +8,7 @@
 ##########################################################################
 
 # pyConnectomist current version
-version_major = 1
+version_major = 2
 version_minor = 0
 version_micro = 0
 
@@ -16,11 +16,11 @@ version_micro = 0
 __version__ = "{0}.{1}.{2}".format(version_major, version_minor, version_micro)
 
 # Define default Connectomist path for the package
-DEFAULT_CONNECTOMIST_PATH = ("/i2bm/local/Ubuntu-14.04-x86_64/ptk/bin/"
+DEFAULT_CONNECTOMIST_PATH = ("/volatile/PTK-6.0-Ubuntu-14.04LTS-x86_64/bin/"
                              "connectomist")
 
 # Define Connectomist PTK supported version
-PTK_RELEASE = "5.0"
+PTK_RELEASE = "6.0"
 
 # Expected by setup.py: the status of the project
 CLASSIFIERS = ["Development Status :: 5 - Production/Stable",
@@ -72,6 +72,7 @@ VERSION = __version__
 PROVIDES = ["pyconnectomist"]
 REQUIRES = [
     "numpy>=1.6.1",
-    "nibabel>=1.1.0"
+    "nibabel>=1.1.0",
+    "reportlab>=3.0"
 ]
 EXTRA_REQUIRES = {}

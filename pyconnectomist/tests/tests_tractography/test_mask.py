@@ -52,6 +52,7 @@ class ConnectomistMask(unittest.TestCase):
         self.mock_popen.return_value = mock_process
         self.kwargs = {
             "outdir": "/my/path/mock_outdir",
+            "registered_dwi_dir": "/my/path/mock_register",
             "subject_id": "Lola",
             "morphologist_dir": "/my/path/mock_morphologist",
             "add_cerebelum": False,
@@ -64,12 +65,13 @@ class ConnectomistMask(unittest.TestCase):
         """
         self.popen_patcher.stop()
 
-    @mock.patch("os.path")
-    def test_badfileerror_raise(self, mock_path):
+    @mock.patch("pyconnectomist.tractography.mask.os.path")
+    @mock.patch("pyconnectomist.tractography.mask.glob.glob")
+    def test_badfileerror_raise(self, mock_glob, mock_path):
         """ A bad input file -> raise ConnectomistBadFileError.
         """
         # Set the mocked functions returned values
-        mock_path.isfile.side_effect = [False, True, True, True]
+        mock_path.isfile.side_effect = [False]
 
         # Test execution
         self.assertRaises(ConnectomistBadFileError, tractography_mask,
@@ -79,14 +81,21 @@ class ConnectomistMask(unittest.TestCase):
                 "_connectomist_version_check")
     @mock.patch("pyconnectomist.tractography.mask.ConnectomistWrapper."
                 "create_parameter_file")
-    @mock.patch("os.path")
-    def test_normal_execution(self, mock_path, mock_params, mock_version):
+    @mock.patch("pyconnectomist.tractography.mask.os.path")
+    @mock.patch("pyconnectomist.tractography.mask.glob.glob")
+    def test_normal_execution(self, mock_glob, mock_path, mock_params,
+                              mock_version):
         """ Test the normal behaviour of the function.
         """
         # Set the mocked functions returned values
+        mock_glob.return_value = [
+            self.kwargs["morphologist_dir"] + os.sep +
+            self.kwargs["subject_id"] + os.sep + "t1_mri" + os.sep +
+            "default_acquisition" + os.sep + "{0}.APC".format(
+                self.kwargs["subject_id"])]
         mock_params.return_value = "/my/path/mock_parameters"
         mock_path.join.side_effect = lambda *x: x[-1]
-        mock_path.isfile.side_effect = [True, True, True, True]
+        mock_path.isfile.side_effect = [True]
 
         # Test execution
         outdir = tractography_mask(**self.kwargs)
@@ -94,10 +103,7 @@ class ConnectomistMask(unittest.TestCase):
         self.assertEqual(len(mock_params.call_args_list), 1)
         self.assertEqual(len(self.mock_popen.call_args_list), 2)
         self.assertEqual([
-            mock.call("{0}.APC".format(self.kwargs["subject_id"])),
-            mock.call("nobias_{0}.han".format(self.kwargs["subject_id"])),
-            mock.call("nobias_{0}.nii.gz".format(self.kwargs["subject_id"])),
-            mock.call("voronoi_{0}.nii.gz".format(self.kwargs["subject_id"]))],
+            mock.call(mock_glob.return_value[0])],
             mock_path.isfile.call_args_list)
 
 

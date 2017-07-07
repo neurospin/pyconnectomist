@@ -44,6 +44,8 @@ class ConnectomistPreproc(unittest.TestCase):
             "bvecs": ["/my/path/mock_dwi.bvec"],
             "outdir": "/my/path/mock_outdir",
             "subject_id": "Lola",
+            "project_name": "MyProject",
+            "timestep": "MyTimeStep",
             "delta_TE": 5,
             "partial_fourier_factor": 1,
             "parallel_acceleration_factor": 2,
@@ -60,29 +62,29 @@ class ConnectomistPreproc(unittest.TestCase):
             "EPI_factor": None,
             "b0_field": 3.0,
             "water_fat_shift": 4.68,
+            "t1_foot_zcropping": 0,
             "delete_steps": True,
             "morphologist_dir": "/my/path/mock_morphologist",
-            "noise_threshold": 2.0,
-            "dilatation_radius": 4.0,
             "manufacturer": "Siemens"
         }
 
     @mock.patch("pyconnectomist.preproc.all_steps."
                 "data_import_and_qspace_sampling")
+    @mock.patch("pyconnectomist.preproc.all_steps.dwi_to_anatomy")
     @mock.patch("pyconnectomist.preproc.all_steps.rough_mask_extraction")
     @mock.patch("pyconnectomist.preproc.all_steps.outlying_slice_detection")
     @mock.patch("pyconnectomist.preproc.all_steps.susceptibility_correction")
     @mock.patch("pyconnectomist.preproc.all_steps.eddy_and_motion_correction")
+    @mock.patch("pyconnectomist.preproc.all_steps.qc_reporting")
     @mock.patch("pyconnectomist.preproc.all_steps."
                 "export_eddy_motion_results_to_nifti")
-    @mock.patch("pyconnectomist.preproc.all_steps.dwi_to_anatomy")
     @mock.patch("shutil.rmtree")
     @mock.patch("shutil.copy")
     @mock.patch("os.mkdir")
     def test_normal_execution(self, mock_mkdir, mock_copy, mock_rmtree,
-                              mock_registration, mock_expeddy, mock_eddy,
+                              mock_expeddy, mock_qc, mock_eddy,
                               mock_susceptibility, mock_outliers, mock_mask,
-                              mock_qspace):
+                              mock_registration, mock_qspace):
         """ Test the normal behaviour of the function.
         """
         # Set the mocked functions returned values
@@ -92,10 +94,10 @@ class ConnectomistPreproc(unittest.TestCase):
         output_files = complete_preprocessing(**self.kwargs)
         mock_outliers = os.path.join(self.kwargs["outdir"], "outliers.py")
         mock_copy.assert_called_once_with(
-            os.path.join(self.kwargs["outdir"], STEPS[2], "outliers.py"),
+            os.path.join(self.kwargs["outdir"], STEPS[3], "outliers.py"),
             mock_outliers)
         expected_rmtree_calls = []
-        for dirname in STEPS[:-1]:
+        for dirname in STEPS:
             expected_rmtree_calls.append(
                 mock.call(os.path.join(self.kwargs["outdir"], dirname)))
         self.assertEqual(expected_rmtree_calls, mock_rmtree.call_args_list)

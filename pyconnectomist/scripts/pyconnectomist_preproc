@@ -12,6 +12,9 @@ from __future__ import print_function
 import argparse
 import os
 import shutil
+from datetime import datetime
+import json
+from pprint import pprint
 
 # Bredala import
 try:
@@ -19,7 +22,7 @@ try:
     bredala.USE_PROFILER = False
     bredala.register("pyconnectomist.preproc",
                      names=["complete_preprocessing"])
-    bredala.register("pyconnectomist.preproc.qsapce",
+    bredala.register("pyconnectomist.preproc.qspace",
                      names=["data_import_and_qspace_sampling"])
     bredala.register("pyconnectomist.preproc.mask",
                      names=["rough_mask_extraction"])
@@ -32,28 +35,29 @@ try:
     bredala.register("pyconnectomist.preproc.eddy",
                      names=["eddy_and_motion_correction",
                             "export_eddy_motion_results_to_nifti"])
+    bredala.register("pyconnectomist.preproc.qc",
+                     names=["qc_reporting"])
     bredala.register("pyconnectomist.wrappers",
                      names=["ConnectomistWrapper.__call__"])
+    bredala.register("pyconnectomist.utils.pdftools",
+                     names=["generate_pdf"])
 except:
     pass
 
 # Pyconnectomist import
+import pyconnectomist
 from pyconnectomist import __version__ as version
 from pyconnectomist.preproc import complete_preprocessing
+from pyconnectomist.preproc import STEPS
 from pyconnectomist.manufacturers import MANUFACTURERS
 from pyconnectomist.wrappers import ConnectomistWrapper
 from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
+from pyconnectomist.utils.pdftools import generate_pdf
+from pyconnectomist.info import PTK_RELEASE
 
 
 # Parameters to keep trace
-__hopla__ = ["tool", "tool_version", "version", "config", "inputs", "outputs",
-             "outdir", "subjectid", "subjdir", "dwis", "bvecs", "bvals",
-             "manufacturer", "delta_te", "partial_fourier_factor",
-             "parallel_acceleration_factor", "b0_magnitude", "b0_phase",
-             "b0_magnitude", "invertx", "inverty", "invertz", "negative_sign",
-             "echo_spacing", "epi_factor", "b0_field", "water_fat_shift",
-             "delete_steps", "morphologist_dir", "noise_threshold",
-             "dilatation_radius"]
+__hopla__ = ["runtime", "inputs", "outputs"]
 
 # Script documentation
 doc = """
@@ -67,34 +71,38 @@ Steps:
 
 1- Create the preprocessing output directory if not existing.
 2- Import files to Connectomist and choose q-space model.
-3- Create a brain mask.
-4- Detect and correct outlying diffusion slices.
-5- Susceptibility correction.
-6- Eddy current and motion correction.
-7- Export result as a Nifti with a .bval and a .bvec.
-8- Export outliers.
-9- Registration t1 - dwi
-10- Delete intermediate files and directories if requested.
+3- Registration t1 - dwi
+4- Create a brain mask.
+5- Detect and correct outlying diffusion slices.
+6- Susceptibility correction.
+7- Eddy current and motion correction.
+8- QC reporting.
+9- Export result as a Nifti with a .bval and a .bvec.
+10- Export outliers.
+11- Delete intermediate files and directories if requested.
+12- Generate QC reporting.
 
 Command:
 
 python $HOME/git/pyconnectomist/pyconnectomist/scripts/pyconnectomist_preproc \
     -v 2 \
     -o /tmp/pyconnectomist \
-    -s ab130187 \
-    -i /neurospin/senior/nsap/data/V0/nifti/ab130187/000009_DTI/DTI.nii.gz \
-    -r /neurospin/senior/nsap/data/V0/nifti/ab130187/000009_DTI/DTI.bvec \
-    -b /neurospin/senior/nsap/data/V0/nifti/ab130187/000009_DTI/DTI.bval \
+    -s jp090065 \
+    -P myproject \
+    -T t0 \
+    -i /neurospin/senior/nsap/data/V4/nifti/jp090065/000007_HARDI1/HARDI1.nii.gz \
+    -r /neurospin/senior/nsap/data/V4/nifti/jp090065/000007_HARDI1/HARDI1.bvec \
+    -b /neurospin/senior/nsap/data/V4/nifti/jp090065/000007_HARDI1/HARDI1.bval \
     -m Siemens \
     -t 2.46 \
     -f 0.75 \
     -a 2 \
-    -u /neurospin/senior/nsap/data/V0/nifti/ab130187/000015_B0MAP/B0MAP.nii.gz \
-    -p /neurospin/senior/nsap/data/V0/nifti/ab130187/000016_B0MAP/B0MAP.nii.gz \
+    -u /neurospin/senior/nsap/data/V4/nifti/jp090065/000019_B0MAP/B0MAP.nii.gz \
+    -p /neurospin/senior/nsap/data/V4/nifti/jp090065/000020_B0MAP/B0MAP.nii.gz \
     -x \
     -q 0.75 \
     -l 3.0 \
-    -g /neurospin/senior/nsap/data/V0/morphologist \
+    -g /neurospin/senior/nsap/data/V4/morphologist \
     -e
 """
 
@@ -126,10 +134,19 @@ parser.add_argument(
     "-e", "--erase", dest="erase", action="store_true",
     help="if activated, clean the subject folder if already created.")
 parser.add_argument(
+    "-C", "--clientname", dest="clientname", default="NC",
+    help="the client name.")
+parser.add_argument(
+    "-P", "--projectname", dest="projectname", required=True,
+    help="the project name.")
+parser.add_argument(
+    "-T", "--timestep", dest="timestep", required=True,
+    help="the time step assocaited to the diffusion dataset.")
+parser.add_argument(
     "-c", "--connectomistconfig", dest="connectomistconfig", metavar="PATH",
     help="the path to the Connectomist configuration file.", type=is_file)
 parser.add_argument(
-    "-o", "--outdir", dest="outdir", required=True, metavar="PATH",
+    "-o", "--outdir", dest="outdir", metavar="PATH",
     help="the Connectomist preprocessing home directory.", type=is_directory)
 parser.add_argument(
     "-s", "--subjectid", dest="subjectid", required=True,
@@ -159,7 +176,7 @@ parser.add_argument(
     dest="parallel_acceleration_factor", type=float, required=True,
     help="the number of parallel acquisition in the k-space plane.")
 parser.add_argument(
-    "-u", "--b0_magnitude", dest="b0_magnitude", metavar="FILE", required=True,
+    "-u", "--b0_magnitude", dest="b0_magnitude", metavar="FILE",
     help="the path to the B0 magnitude map (also contains phase for GE).",
     type=is_file)
 parser.add_argument(
@@ -198,6 +215,20 @@ parser.add_argument(
     "-w", "--water_fat_shift", dest="water_fat_shift", type=float,
     default=4.68, help="Philips only, the spins frequency offsets.")
 parser.add_argument(
+    "-Z", "--t1zcropping", dest="t1zcropping", type=int,
+    default=0, help=("Crop the t1 image in the z direction in order to remove "
+                     "the neck."))
+parser.add_argument(
+    "-L", "--levelcount", dest="level_count", type=int,
+    default=32, help="The number of bins in the histogram.")
+parser.add_argument(
+    "-K", "--lowertheshold", dest="lower_theshold", type=float,
+    default=0., help=("Remove noise in the image by applying this lower "
+                     "theshold."))
+parser.add_argument(
+    "-S", "--nosmoothing", dest="no_smoothing", action="store_true",
+    help=("Do not smooth the image before performing the histogram analysis."))
+parser.add_argument(
     "-d", "--delete_steps", dest="delete_steps", action="store_true",
     help=("if activated, remove all intermediate files and directories at "
           "the end."))
@@ -206,24 +237,33 @@ parser.add_argument(
     metavar="PATH", type=is_directory,
     help="the path to the morphologist processings home directory.")
 parser.add_argument(
-    "-nt", "--noise_threshold", dest="noise_threshold", type=float,
-    default=2.0,
-    help=("the noise threshold percentage used to compute the rough histogram "
-          "based mask."))
+    "-Q", "--already_corrected", dest="already_corrected", action="store_true",
+    help=("if activated, only the first three step are computed in order to "
+          "facilitate the modeling, tractography, bundeling steps."))
 parser.add_argument(
-    "-dr", "--dilatation_radius", dest="dilatation_radius", type=float,
-    default=4.0,
-    help="the dilatation radius in mm used to compute the rough mask.")       
+    "-R", "--report_only", dest="report_only", action="store_true",
+    help=("if activated, only the report will be generated. Might be "
+          "usefull when manual operations must be performed."))
+parser.add_argument(
+    "-O", "--preprocdir", dest="preprocdir", metavar="PATH",
+    help=("the path to the Connectomist diffusion preprocessings. If not "
+          "specified generate data in '<outdir>/<subjectid>/preproc'."),
+    type=is_directory)       
 args = parser.parse_args()
-
 
 """
 First check if the Connectomist subject directory exists on the file system,
 and clean it if requested.
 """
-tool = "Connectomist preproc"
-config = args.connectomistconfig or DEFAULT_CONNECTOMIST_PATH
-tool_version = ConnectomistWrapper._connectomist_version_check(config)
+tool = "pyconnectomist_preproc"
+timestamp = datetime.now().isoformat()
+tool_version = version
+connectomist_config = args.connectomistconfig or DEFAULT_CONNECTOMIST_PATH
+connectomist_version = ConnectomistWrapper._connectomist_version_check(
+    connectomist_config)
+runtime = dict([(name, locals()[name])
+               for name in ("connectomist_config", "tool", "tool_version",
+                            "connectomist_version", "timestamp")])
 if args.verbose > 0:
     print("[info] Start Connectomist preproc...")
     print("[info] Directory: {0}.".format(args.outdir))
@@ -235,7 +275,15 @@ if args.verbose > 0:
     print("[info] Phase: {0}.".format(args.b0_phase))
 outdir = args.outdir
 subjectid = args.subjectid
-subjdir = os.path.join(args.outdir, subjectid, "preproc")
+preprocdir = args.preprocdir
+clientname = args.clientname
+projectname = args.projectname
+timestep = args.timestep
+if preprocdir is None:
+    if outdir is None:
+        raise ValueError("Trying to generate output directory. You need to "
+                         "specify the -o, --outdir command line option.")
+    preprocdir = os.path.join(args.outdir, subjectid, "preproc")
 dwis = args.dwifiles
 bvecs = args.bvecfiles
 bvals = args.bvalfiles
@@ -255,50 +303,122 @@ echo_spacing = args.echo_spacing
 epi_factor = args.epi_factor
 b0_field = args.b0_field
 water_fat_shift = args.water_fat_shift
+t1zcropping = args.t1zcropping
+level_count = args.level_count
+apply_smoothing = not args.no_smoothing
+lower_theshold = args.lower_theshold
 delete_steps = args.delete_steps
 morphologist_dir = args.morphologist_dir
-noise_threshold = args.noise_threshold
-dilatation_radius = args.dilatation_radius
-inputs = dwis + bvecs + bvals
-outputs = []
-if not os.path.isdir(subjdir):
-    os.makedirs(subjdir)
-elif os.path.isdir(subjdir) and args.erase:
-    shutil.rmtree(subjdir)
-    os.mkdir(subjdir)
+already_corrected = args.already_corrected
+report_only = args.report_only
+inputs = dict([(name, locals()[name])
+               for name in ("outdir", "subjectid", "preprocdir", "dwis",
+                            "bvecs", "bvals", "manufacturer", "delta_te",
+                            "partial_fourier_factor", "negative_sign",
+                            "parallel_acceleration_factor", "b0_phase",
+                            "b0_magnitude", "invertx", "inverty", "invertz", 
+                            "echo_spacing", "epi_factor", "b0_field",
+                            "water_fat_shift", "delete_steps",
+                            "morphologist_dir", "projectname", "timestep",
+                            "t1zcropping", "level_count", "apply_smoothing",
+                            "lower_theshold", "clientname",
+                            "already_corrected", "report_only")])
+outputs = None
+if not os.path.isdir(preprocdir):
+    os.makedirs(preprocdir)
+elif args.erase and os.path.isdir(preprocdir):
+    shutil.rmtree(preprocdir)
+    os.mkdir(preprocdir)
 
 
 """
 Connectomist preproc: all steps
 """
-returned_values = complete_preprocessing(
-    subjdir,
-    subjectid,
-    dwis,
-    bvals,
-    bvecs,
-    manufacturer,
-    delta_te,
-    partial_fourier_factor,
-    parallel_acceleration_factor,
-    b0_magnitude,
-    b0_phase=b0_phase,
-    phase_axis=phase_axis,
-    slice_axis=slice_axis,
-    invertX=invertx,
-    invertY=inverty,
-    invertZ=invertz,
-    negative_sign=negative_sign,
-    echo_spacing=echo_spacing,
-    EPI_factor=epi_factor,
-    b0_field=b0_field,
-    water_fat_shift=water_fat_shift,
-    delete_steps=delete_steps,
-    morphologist_dir=morphologist_dir,
-    noise_threshold=noise_threshold,
-    dilatation_radius=dilatation_radius,
-    path_connectomist=config)
-preproc_dwi, preproc_bval, preproc_bvec, preproc_outliers = returned_values
-outputs = [preproc_dwi, preproc_bval, preproc_bvec, preproc_outliers]
+if not report_only:
+    returned_values = complete_preprocessing(
+        preprocdir,
+        subjectid,
+        projectname,
+        timestep,
+        dwis,
+        bvals,
+        bvecs,
+        manufacturer,
+        delta_te,
+        partial_fourier_factor,
+        parallel_acceleration_factor,
+        b0_magnitude,
+        b0_phase=b0_phase,
+        phase_axis=phase_axis,
+        slice_axis=slice_axis,
+        invertX=invertx,
+        invertY=inverty,
+        invertZ=invertz,
+        negative_sign=negative_sign,
+        echo_spacing=echo_spacing,
+        EPI_factor=epi_factor,
+        b0_field=b0_field,
+        water_fat_shift=water_fat_shift,
+        t1_foot_zcropping=t1zcropping,
+        level_count=level_count,
+        lower_theshold=lower_theshold,
+        apply_smoothing=apply_smoothing,
+        delete_steps=delete_steps,
+        morphologist_dir=morphologist_dir,
+        already_corrected=already_corrected,
+        path_connectomist=connectomist_config)
+    preproc_dwi, preproc_bval, preproc_bvec, preproc_outliers = returned_values
+    if args.verbose > 1:
+        print("[result] In folder: {0}.".format(preprocdir))
+
+
+"""
+Generate QC reporting
+"""
+reportfile = os.path.join(preprocdir, "QcFast_{0}_{1}_{2}.pdf".format(
+    projectname, subjectid, timestep))
+tic = datetime.now()
+generate_pdf(
+    datapath=os.path.join(preprocdir, STEPS[6]),
+    struct_file=os.path.join(
+        os.path.abspath(os.path.dirname(pyconnectomist.__file__)), "utils",
+        "resources", "pyconnectomist_qcfast.json"),
+    author="NeuroSpin",
+    client=clientname,
+    poweredby="Connectomist-{0}".format(PTK_RELEASE),
+    project=projectname,
+    timepoint=timestep,
+    subject=subjectid,
+    date="{0}-{1}-{2}".format(tic.year, tic.month, tic.day),
+    title="DWI QC Reporting",
+    filename=reportfile,
+    pagesize=None,
+    left_margin=10,
+    right_margin=10,
+    top_margin=20,
+    bottom_margin=20,
+    show_boundary=False,
+    verbose=0)
 if args.verbose > 1:
-    print("[result] In folder: {0}.".format(subjdir))
+    print("[result] In file: {0}.".format(reportfile))
+
+
+"""
+Update the outputs and save them and the inputs in a 'logs' directory.
+"""
+if not report_only:
+    logdir = os.path.join(preprocdir, "logs")
+    if not os.path.isdir(logdir):
+        os.mkdir(logdir)
+    outputs = dict([(name, locals()[name])
+                   for name in ("reportfile", "preproc_dwi", "preproc_bval",
+                                "preproc_bvec", "preproc_outliers")])
+    for name, final_struct in [("inputs", inputs), ("outputs", outputs),
+                               ("runtime", runtime)]:
+        log_file = os.path.join(logdir, "{0}.json".format(name))
+        with open(log_file, "wt") as open_file:
+            json.dump(final_struct, open_file, sort_keys=True,
+                      check_circular=True, indent=4)
+    if args.verbose > 1:
+        print("[final]")
+        pprint(outputs)

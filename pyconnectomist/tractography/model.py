@@ -213,9 +213,7 @@ def dwi_local_modeling(
 def export_scalars_to_nifti(
         model_dir,
         model,
-        outdir=None,
-        gfafilename="gfa",
-        mdfilename="md"):
+        outdir=None):
     """ After Connectomist has done the diffusion local modeling, convert the
     result scalar maps to Nifti.
 
@@ -231,16 +229,12 @@ def export_scalars_to_nifti(
         <outdir>/<gfafilename>.nii.gz
         <outdir>/<mdfilename>.nii.gz
         By default <outdir> is <model_dir>.
-    gfafilename: str (optional)
-        to change generalize anisotropy output filename, by default 'gfa'.
-    mdfilename: str (optional)
-        to change mean diffusivity output filename, by default 'md'.
 
     Returns
     -------
-    gfa, md: str
-        the generalize fractional anisotropy and the mean diffusivity
-        nifti images.
+    scalars: dict
+        the scalrs map extracted from the model: the generalize fractional
+        anisotropy, the mean diffusivity, ... in Nifti format.
     """
     # Step 1 - Set outdir path and check directory existence
     if outdir is None:
@@ -250,12 +244,14 @@ def export_scalars_to_nifti(
             os.mkdir(outdir)
 
     # Step 2 - Convert to Nifti
-    gfa = os.path.join(model_dir, "{0}_gfa.ima".format(model))
-    md = os.path.join(model_dir, "{0}_mean_diffusivity.ima".format(model))
-    for path in (gfa, md):
-        if not os.path.isfile(path):
-            raise ConnectomistBadFileError(path)
-    gfa = ptk_gis_to_nifti(gfa, os.path.join(outdir, gfafilename + ".nii.gz"))
-    md = ptk_gis_to_nifti(md, os.path.join(outdir, mdfilename + ".nii.gz"))
+    scalars = {}
+    for name in ("gfa", "mean_diffusivity", "adc", "lambda_parallel",
+                 "lambda_transverse", "fa"):
+        gis_file = os.path.join(model_dir, "{0}_{1}.ima".format(model, name))
+        if not os.path.isfile(gis_file):
+            continue
+        scalars[name] = ptk_gis_to_nifti(
+            gis_file,
+            os.path.join(outdir, "{0}_{1}.nii.gz".format(model, name)))
 
-    return gfa, md
+    return scalars

@@ -11,6 +11,7 @@ Wrapper to Connectomist's 'Tractography mask' tab.
 
 # System import
 import os
+import glob
 
 # pyConnectomist import
 from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
@@ -27,6 +28,7 @@ BOOL_MAP = {
 
 def tractography_mask(
         outdir,
+        registered_dwi_dir,
         subject_id,
         morphologist_dir,
         add_cerebelum=False,
@@ -38,6 +40,8 @@ def tractography_mask(
     ----------
     outdir: str
         path to Connectomist output work directory.
+    registered_dwi_dir: str
+        path to Connectomist register DWI directory.
     subject_id: str
         the subject code in study.
     morphologist_dir: str
@@ -55,22 +59,13 @@ def tractography_mask(
         path to Connectomist's output directory.
     """
     # Get morphologist result files and check existance
-    apcfile = os.path.join(
-        morphologist_dir, subject_id, "t1mri", "default_acquisition",
+    apcpattern = os.path.join(
+        morphologist_dir, subject_id, "t1mri", "*",
         "{0}.APC".format(subject_id))
-    histofile = os.path.join(
-        morphologist_dir, subject_id, "t1mri", "default_acquisition",
-        "default_analysis", "nobias_{0}.han".format(subject_id))
-    t1file = os.path.join(
-        morphologist_dir, subject_id, "t1mri", "default_acquisition",
-        "default_analysis", "nobias_{0}.nii.gz".format(subject_id))
-    voronoifile = os.path.join(
-        morphologist_dir, subject_id, "t1mri", "default_acquisition",
-        "default_analysis", "segmentation",
-        "voronoi_{0}.nii.gz".format(subject_id))
-    for fpath in (apcfile, histofile, t1file, voronoifile):
-        if not os.path.isfile(fpath):
-            raise ConnectomistBadFileError(fpath)
+    apcfiles = glob.glob(apcpattern)
+    if len(apcfiles) != 1 or not os.path.isfile(apcfiles[0]):
+        raise ConnectomistBadFileError(apcpattern)
+    apcfile = apcfiles[0]
 
     # Dict with all parameters for connectomist
     algorithm = "DWI-Tractography-Mask"
@@ -80,11 +75,9 @@ def tractography_mask(
         "addCommissures": BOOL_MAP[add_commissures],
         "addROIMask": 0,
         "fileNameCommissureCoordinates": apcfile,
-        "fileNameHistogramAnalysis": histofile,
+        "anatomyAndTalairachDirectory": registered_dwi_dir,
         "fileNameROIMaskToAdd": "",
         "fileNameROIMaskToRemove": "",
-        "fileNameUnbiasedT1": t1file,
-        "fileNameVoronoiMask": voronoifile,
         "outputWorkDirectory": outdir,
         "removeROIMask": 0,
         "removeTemporaryFiles": 2}

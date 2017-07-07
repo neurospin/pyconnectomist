@@ -11,19 +11,25 @@ Wrapper to Connectomist's 'Anatomy & Talairach' tab.
 
 # System import
 import os
+import glob
+import nibabel
 
 # pyConnectomist import
 from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
 from pyconnectomist.exceptions import ConnectomistBadFileError
 from pyconnectomist.wrappers import ConnectomistWrapper
+from pyconnectomist.utils.filetools import ptk_nifti_to_gis
 
 
 def dwi_to_anatomy(
         outdir,
-        corrected_dwi_dir,
-        rough_mask_dir,
+        raw_dwi_dir,
         morphologist_dir,
         subject_id,
+        t1_foot_zcropping=0,
+        level_count=32,
+        lower_theshold=0.0,
+        apply_smoothing=True,
         path_connectomist=DEFAULT_CONNECTOMIST_PATH):
     """ Wrapper to Connectomist's 'Anatomy & Talairach' tab.
 
@@ -31,14 +37,20 @@ def dwi_to_anatomy(
     ----------
     outdir: str
         path to Connectomist output work directory.
-    corrected_dwi_dir: str
-        path to Connectomist Corrected DWI directory.
-    rough_mask_dir: str
-        path to Connectomist Rough Mask directory.
+    raw_dwi_dir: str
+        path to Connectomist Raw DWI directory.
     morphologist_dir: str
         path to Morphologist directory.
     subject_id: str
         the subject code in study.
+    t1_foot_zcropping: int (optional, default 0)
+        crop the t1 image in the z direction in order to remove the neck.
+    level_count: int (optional, default 32)
+        the number of bins in the histogram.
+    lower_theshold: float (optional, default 0)
+        remove noise in the image by applying this lower theshold.
+    apply_smoothing: bool (optional, default True)
+        smooth the image before performing the histogram analysis.
     path_connectomist: str (optional)
         path to the Connectomist executable.
 
@@ -48,22 +60,47 @@ def dwi_to_anatomy(
         path to Connectomist's output directory.
     """
     # Get morphologist result files and check existance
-    apcfile = os.path.join(
-        morphologist_dir, subject_id, "t1mri", "default_acquisition",
-        "{0}.APC".format(subject_id))
-    t1file = os.path.join(
-        morphologist_dir, subject_id, "t1mri", "default_acquisition",
-        "{0}.nii.gz".format(subject_id))
-    for fpath in (apcfile, t1file):
-        if not os.path.isfile(fpath):
-            raise ConnectomistBadFileError(fpath)
+    extensions = (".nii.gz", ".nii")
+    subject_morphologist_dir = os.path.join(morphologist_dir, subject_id)
+    apcpattern = os.path.join(subject_morphologist_dir,
+                              "t1mri", "*", "{0}.APC".format(subject_id))
+    t1pattern = os.path.join(subject_morphologist_dir, "t1mri", "*", "{0}{1}")
+    t1patterns = [t1pattern.format(subject_id, ext) for ext in extensions]
+    files = []
+    for fpatterns in ((apcpattern, ), t1patterns):
+        fpath = []
+        for fpattern in fpatterns:
+            fpath.extend(glob.glob(fpattern))
+        if len(fpath) != 1 or not os.path.isfile(fpath[0]):
+            raise ConnectomistBadFileError(str(t1patterns))
+        files.append(fpath[0])
+    acpcfile, t1file = files
+
+    # Get the min image dimension
+    im = nibabel.load(t1file)
+    mindim = min(im.shape)
+
+    # Create the directory if not existing
+    if not os.path.isdir(outdir):
+        os.mkdir(outdir)
+
+    # Convert the t1file in gis format
+    t1gisfile = os.path.join(outdir, "t1_morphologist.ima")
+    t1gisfile = ptk_nifti_to_gis(t1file, t1gisfile)
+
+    # Convert the 'apply_smoothing' parameter
+    if apply_smoothing:
+        apply_smoothing = 1
 
     # Dict with all parameters for connectomist
     algorithm = "DWI-To-Anatomy-Matching"
     parameters_dict = {
+        "useCustomMorphologistDirectory": 2,
+        "customMorphologistDirectory": subject_morphologist_dir,
+        "computeNormalization": 2,
         "dwToT1RegistrationParameter": {
-            "applySmoothing": 1,
-            "floatingLowerThreshold": 0.0,
+            "applySmoothing": apply_smoothing,
+            "floatingLowerThreshold": lower_theshold,
             "initialParametersRotationX": 0,
             "initialParametersRotationY": 0,
             "initialParametersRotationZ": 0,
@@ -76,8 +113,8 @@ def dwi_to_anatomy(
             "initialParametersTranslationX": 0,
             "initialParametersTranslationY": 0,
             "initialParametersTranslationZ": 0,
-            "initializeCoefficientsUsingCenterOfGravity": True,
-            "levelCount": 32,
+            "initializeCoefficientsUsingCenterOfGravity": False,
+            "levelCount": level_count,
             "maximumIterationCount": 1000,
             "maximumTestGradient": 1000.0,
             "maximumTolerance": 0.01,
@@ -99,22 +136,21 @@ def dwi_to_anatomy(
             "similarityMeasureName": 1,
             "stepSize": 0.1,
             "stoppingCriterionError": 0.01,
-            "subSamplingMaximumSizes": "64",
+            "subSamplingMaximumSizes": "64 {0}".format(mindim),
             "transform3DType": 0},
         "_subjectName": subject_id,
         "anteriorPosteriorAdditionSliceCount": 0,
-        "correctedDwiDirectory": corrected_dwi_dir,
-        "fileNameACP": apcfile,
+        "correctedDwiDirectory": raw_dwi_dir,
         "fileNameDwToT1Transformation": "",
-        "fileNameT1": t1file,
+        "fileNameT1": t1gisfile,
         "generateDwToT1Transformation": 1,
         "headFootAdditionSliceCount": 0,
         "importDwToT1Transformation": 0,
         "leftRightAdditionSliceCount": 0,
         "outputWorkDirectory": outdir,
-        "roughMaskDirectory": rough_mask_dir,
+        "roughMaskDirectory": "",
         "t1AnteriorYCropping": 0,
-        "t1FootZCropping": 0,
+        "t1FootZCropping": t1_foot_zcropping,
         "t1HeadZCropping": 0,
         "t1LeftXCropping": 0,
         "t1PosteriorYCropping": 0,

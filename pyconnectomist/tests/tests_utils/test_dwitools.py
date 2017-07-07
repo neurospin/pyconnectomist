@@ -83,13 +83,13 @@ class ConnectomistBvecsBvals(unittest.TestCase):
         """
         # Set the mocked functions returned values
         bvecs = numpy.array([[0, 0, 0], [1, 0, 0], [0, 1, 0]]).T
-        bvals = numpy.array([0, 1500, 10])
+        bvals = numpy.array([0, 1500, 80])
         mock_loadtxt.side_effect = lambda x: {"dwi.bval": bvals,
                                               "dwi.bvec": bvecs}[x]
 
         # Test execution
         self.assertRaises(ValueError, read_bvals_bvecs, "dwi.bval", "dwi.bvec",
-                          min_bval=100.)
+                          min_bval=200.)
 
     @mock.patch("numpy.loadtxt")
     def test_normal_execution(self, mock_loadtxt):

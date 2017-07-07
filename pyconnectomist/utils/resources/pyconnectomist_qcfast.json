@@ -1,0 +1,171 @@
+{
+    "cover": {
+        "type": "cover"
+    },
+    "page1": {
+        "type": "triplanar",
+        "style": "TwoCol",
+        "images": [
+            ["DWI-Data-Import-And-QSpace-Sampling/snapshot-coronal-t2.jpg"],
+            ["DWI-Data-Import-And-QSpace-Sampling/snapshot-axial-t2.jpg"],
+            ["DWI-Data-Import-And-QSpace-Sampling/snapshot-sagittal-t2.jpg"],
+            ["DWI-Data-Import-And-QSpace-Sampling/snapshot-coronal-dw.jpg"],
+            ["DWI-Data-Import-And-QSpace-Sampling/snapshot-axial-dw.jpg"],
+            ["DWI-Data-Import-And-QSpace-Sampling/snapshot-sagittal-dw.jpg"]
+        ],
+        "texts": [
+            "The T2 weighted (b=0s/mm2) image.",
+            "The diffusion weighted raw data."
+        ],
+        "topmargin": 0.05,
+        "linecount": 42
+    },
+    "page2": {
+        "type": "triplanar",
+        "style": "OneColLandscape",
+        "images": [
+            ["DWI-Outlier-Detection/snapshot-outliers.jpg"]
+        ],
+        "texts": [
+            "The outliers detection&correction: expect few sparse outliers (corrected slices are represented by dots in the figure)."
+        ],
+        "topmargin": 0.1,
+        "linecount": 120
+    },
+    "page3": {
+        "type": "triplanar",
+        "style": "TwoCol",
+        "images": [
+            ["DWI-Tensor-Fitting/snapshot-coronal-rgb.jpg"],
+            ["DWI-Tensor-Fitting/snapshot-sagittal-rgb.jpg"],
+            ["DWI-Tensor-Fitting/snapshot-axial-rgb.jpg"],
+            ["DWI-Tensor-Fitting/snapshot-coronal-t1-rgb-odf.jpg"],
+            ["DWI-Tensor-Fitting/snapshot-sagittal-t1-rgb-odf.jpg"],
+            ["DWI-Tensor-Fitting/snapshot-axial-t1-rgb-odf.jpg"]
+        ],
+        "texts": [
+            "The corrected FA map.",
+            "The corrected orientation distribution function."
+        ],
+        "topmargin": 0.075,
+        "linecount": 42
+    },
+    "page4": {
+        "type": "triplanar",
+        "style": "OneColLandscape",
+        "images": [
+            ["DWI-Tensor-Fitting/snapshot-coronal-t1-rgb-odf.jpg"]
+        ],
+        "texts": [
+            "The corrected orientation distribution function: check connection of the corpuse callosum or the cortico spinal track."
+        ],
+        "topmargin": 0.1,
+        "linecount": 120
+    },
+    "page5": {
+        "type": "triplanar",
+        "style": "TwoCol",
+        "images": [
+            ["DWI-Susceptibility-Artifact-Correction/snapshot-coronal-t2-b0-magnitude.jpg"],
+            ["DWI-Susceptibility-Artifact-Correction/snapshot-axial-t2-b0-magnitude.jpg"],
+            ["DWI-Susceptibility-Artifact-Correction/snapshot-sagittal-t2-b0-magnitude.jpg"],
+            ["DWI-Susceptibility-Artifact-Correction/snapshot-coronal-t2-b0-phase.jpg"],
+            ["DWI-Susceptibility-Artifact-Correction/snapshot-axial-t2-b0-phase.jpg"],
+            ["DWI-Susceptibility-Artifact-Correction/snapshot-sagittal-t2-b0-phase.jpg"]
+        ],
+        "texts": [
+            "The B0 magnitude map on the T2 weighted image.",
+            "The B0 unwarp phase map on the T2 weighted image."
+        ],
+        "topmargin": 0.075,
+        "linecount": 42
+    },
+    "page6": {
+        "type": "triplanar",
+        "style": "TwoCol",
+        "images": [
+            ["DWI-Susceptibility-Artifact-Correction/snapshot-sagittal-t1-rgb-with-susceptibility.jpg"],
+            [null],
+            ["DWI-Susceptibility-Artifact-Correction/snapshot-sagittal-t1-rgb-without-susceptibility.jpg"],
+            ["DWI-Susceptibility-Artifact-Correction/snapshot-histogram-displacement-in-pixel.jpg"]
+        ],
+        "texts": [
+            "The FA map on the T1 image without correction.",
+            "The FA map on the T1 image with correction reprensented by the histogram of the displacement along the phase axis."
+        ],
+        "topmargin": 0.1,
+        "linecount": 42
+    },
+    "page7": {
+        "type": "triplanar",
+        "style": "OneColLandscape",
+        "images": [
+            ["DWI-Eddy-Current-And-Motion-Correction/snapshot-motion-profile.jpg"]
+        ],
+        "texts": [
+            "The motion parameters of the affine transformations used to correct eddy current distortions."
+        ],
+        "topmargin": 0.1,
+        "linecount": 120
+    },
+    "page8": {
+        "type": "triplanar",
+        "style": "OneCol",
+        "images": [[
+            "DWI-Tensor-Fitting/snapshot-coronal-adc.jpg",
+            "DWI-Tensor-Fitting/snapshot-axial-adc.jpg",
+            "DWI-Tensor-Fitting/snapshot-sagittal-adc.jpg",
+            "DWI-Tensor-Fitting/snapshot-histogram-adc.jpg"
+        ]],
+        "texts": [
+            "The corrected apparent diffusion coefficient map and distribution."
+        ],
+        "topmargin": 0.05,
+        "linecount": 100
+    },
+    "page9": {
+        "type": "triplanar",
+        "style": "OneCol",
+        "images": [[
+            "DWI-Tensor-Fitting/snapshot-coronal-fa.jpg",
+            "DWI-Tensor-Fitting/snapshot-axial-fa.jpg",
+            "DWI-Tensor-Fitting/snapshot-sagittal-fa.jpg",
+            "DWI-Tensor-Fitting/snapshot-histogram-fa.jpg"
+        ]],
+        "texts": [
+            "The corrected fractional anisotropy map and distribution.."
+        ],
+        "topmargin": 0.05,
+        "linecount": 100
+    },
+    "page10": {
+        "type": "triplanar",
+        "style": "OneCol",
+        "images": [[
+            "DWI-Tensor-Fitting/snapshot-coronal-lambda-transverse.jpg",
+            "DWI-Tensor-Fitting/snapshot-axial-lambda-transverse.jpg",
+            "DWI-Tensor-Fitting/snapshot-sagittal-lambda-transverse.jpg",
+            "DWI-Tensor-Fitting/snapshot-histogram-lambda-transverse.jpg"
+        ]],
+        "texts": [
+            "The corrected transverse diffusivity map and distribution.."
+        ],
+        "topmargin": 0.05,
+        "linecount": 100
+    },
+    "page11": {
+        "type": "triplanar",
+        "style": "OneCol",
+        "images": [[
+            "DWI-Tensor-Fitting/snapshot-coronal-lambda-parallel.jpg",
+            "DWI-Tensor-Fitting/snapshot-axial-lambda-parallel.jpg",
+            "DWI-Tensor-Fitting/snapshot-sagittal-lambda-parallel.jpg",
+            "DWI-Tensor-Fitting/snapshot-histogram-lambda-parallel.jpg"
+        ]],
+        "texts": [
+            "The corrected parallel diffusivity map and distribution.."
+        ],
+        "topmargin": 0.05,
+        "linecount": 100
+    }
+}

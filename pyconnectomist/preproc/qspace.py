@@ -14,6 +14,7 @@ import os
 import shutil
 import numpy as np
 import nibabel
+import warnings
 
 # pyConnectomist import
 from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
@@ -186,7 +187,7 @@ def data_import_and_qspace_sampling(
         path to Connectomist's output directory.
     """
     # Check input parameters
-    for axis in (phase_axis, phase_axis):
+    for axis in (phase_axis, slice_axis):
         if axis not in AXIS:
             raise ValueError("Invalid axis '{0}'.".format(axis))
     if len(set(map(len, (dwis, bvecs, bvals)))) != 1:
@@ -235,7 +236,8 @@ def data_import_and_qspace_sampling(
         # ---------------------------------------------------------------------
         # Field: "Q-space sampling"
         "qSpaceSamplingType": 4,  # default "spherical single-shell custom"
-        "qSpaceChoice5BValue": None,
+        "qSpaceChoice5BValueFileNames": ";".join(bvals),
+        "qSpaceChoice5BValueThreshold": 50,
         "qSpaceChoice5OrientationFileNames": ";".join(bvecs),
 
         # Apparently Connectomist uses 2 as True, and 0 as False.
@@ -254,8 +256,6 @@ def data_import_and_qspace_sampling(
         "qSpaceChoice9BValues":               "",
         "qSpaceChoice10BValues":              "",
         "qSpaceChoice11BValues":              "",
-        "qSpaceChoice12BValues":              "",
-        "qSpaceChoice13BValues":              "",
         "qSpaceChoice1NumberOfSteps":         11,
         "qSpaceChoice2NumberOfOrientations":   6,
         "qSpaceChoice3NumberOfOrientations":   6,
@@ -263,14 +263,12 @@ def data_import_and_qspace_sampling(
         "qSpaceChoice6NumberOfOrientations":   6,
         "qSpaceChoice7NumberOfOrientations":   6,
         "qSpaceChoice8NumberOfOrientations":   6,
-        "qSpaceChoice9OrientationFileNames":  "",
         "qSpaceChoice10NumberOfOrientations": "",
         "qSpaceChoice11NumberOfOrientations": "",
-        "qSpaceChoice12NumberOfOrientations": "",
         "qSpaceChoice13OrientationFileNames": "",
         # ---------------------------------------------------------------------
-        # Field: "Diffusion time (in ms)"
-        "diffusionTime": 1.0,
+        # Field: micro structure config"
+        "gradientCharacteristicsFileNames": "",
         # ---------------------------------------------------------------------
         # Field: "Work directory"
         "outputWorkDirectory": outdir,
@@ -292,12 +290,14 @@ def data_import_and_qspace_sampling(
     if nb_shells == 1:
         # Spherical single-shell custom
         parameters_dict["qSpaceSamplingType"] = 4
-        bvals_set = set(bvalues) - {0}
-        parameters_dict["qSpaceChoice5BValue"] = bvals_set.pop()
     else:
-        raise ConnectomistError(
-            "'{0}' shell model(s) not handled yet: path to .bval files: "
-            "'{1}'".format(nb_shells, bvals))
+        warnings.warn(
+            "'{0}' shell model(s) not handled yet.".format(nb_shells))
+        # Arbitrary shell
+        parameters_dict["qSpaceSamplingType"] = 12
+        parameters_dict["qSpaceChoice13BValueFileNames"] = ";".join(bvals)
+        parameters_dict["qSpaceChoice13BValueThreshold"] = 50.0
+        parameters_dict["qSpaceChoice13OrientationFileNames"] = ";".join(bvecs)
 
     # Call with Connectomist
     process = ConnectomistWrapper(path_connectomist)
@@ -310,7 +310,7 @@ def data_import_and_qspace_sampling(
     # rewrite bvec, bval file accordingly (remove extra T2 values)
     if nb_nodiff > 1:
         bval = os.path.join(outdir, "dwi.bval")
-        dw_indexes = np.where(bvalues != 0)[0]
+        dw_indexes = np.where(bvalues >= 100)[0]
         new_bvals = np.concatenate(([0], bvalues[dw_indexes]))
         np.savetxt(bval, new_bvals)
         bvec = os.path.join(outdir, "dwi.bvec")

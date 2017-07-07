@@ -110,11 +110,13 @@ class ConnectomistFastLabeling(unittest.TestCase):
         self.assertRaises(ConnectomistError, fast_bundle_labeling,
                           **wrong_kwargs)
 
-    @mock.patch("os.path")
-    def test_badfileerror_raise(self, mock_path):
+    @mock.patch("pyconnectomist.clustering.labeling.os.path")
+    @mock.patch("pyconnectomist.clustering.labeling.glob.glob")
+    def test_badfileerror_raise(self, mock_glob, mock_path):
         """ A bad input file -> raise ConnectomistBadFileError.
         """
         # Set the mocked functions returned values
+        mock_glob.return_value = [self.kwargs["morphologist_dir"]]
         mock_path.isfile.side_effect = [False, True, True, True]
 
         # Test execution
@@ -125,11 +127,14 @@ class ConnectomistFastLabeling(unittest.TestCase):
                 "_connectomist_version_check")
     @mock.patch("pyconnectomist.clustering.labeling.ConnectomistWrapper."
                 "create_parameter_file")
-    @mock.patch("os.path")
-    def test_normal_execution(self, mock_path, mock_params, mock_version):
+    @mock.patch("pyconnectomist.clustering.labeling.os.path")
+    @mock.patch("pyconnectomist.clustering.labeling.glob.glob")
+    def test_normal_execution(self, mock_glob, mock_path, mock_params,
+                              mock_version):
         """ Test the normal behaviour of the function.
         """
         # Set the mocked functions returned values
+        mock_glob.return_value = [self.kwargs["morphologist_dir"]]
         mock_params.return_value = "/my/path/mock_parameters"
         mock_path.join.side_effect = lambda *x: x[0] + "/" + x[1]
         mock_path.isfile.side_effect = [True, True, True, True, True]
@@ -139,10 +144,9 @@ class ConnectomistFastLabeling(unittest.TestCase):
         dwtot1file = os.path.join(self.kwargs["registered_dwi_dir"],
                                   "dw_to_t1.trm")
         t1total = os.path.join(
-                self.kwargs["morphologist_dir"], self.kwargs["subject_id"],
-                "t1mri", "default_acquisition", "registration",
-                "RawT1-{0}_default_acquisition_TO_Talairach-ACPC.trm".format(
-                    self.kwargs["subject_id"]))
+            self.kwargs["morphologist_dir"],
+            "RawT1-{0}_path_TO_Talairach-ACPC.trm".format(
+                self.kwargs["subject_id"]))
         self.assertEqual(outdir, self.kwargs["outdir"])
         self.assertEqual(len(mock_params.call_args_list), 1)
         self.assertEqual(len(self.mock_popen.call_args_list), 2)

@@ -121,25 +121,6 @@ class ConnectomistQspace(unittest.TestCase):
         self.assertRaises(ConnectomistBadManufacturerNameError,
                           data_import_and_qspace_sampling, **wrong_kwargs)
 
-    @mock.patch("pyconnectomist.preproc.qspace.read_bvals_bvecs")
-    @mock.patch("pyconnectomist.preproc.qspace.ptk_nifti_to_gis")
-    @mock.patch("os.path")
-    @mock.patch("shutil.copyfile")
-    @mock.patch("os.mkdir")
-    def test_nbshell_raise(self, mock_mkdir, mock_copyfile, mock_path,
-                           mock_conversion, mock_bvecs):
-        """ A wrong qsapce sampling -> raise ConnectomistError.
-        """
-        # Set the mocked functions returned values
-        mock_path.isfile.side_effect = [True] * 5 + [False]
-        mock_conversion.side_effect = lambda *x: x[-1]
-        mock_bvecs.return_value = (self.bvals, self.bvecs, 2, 1)
-        mock_path.join.side_effect = lambda *x: x[0] + "/" + x[1]
-
-        # Test execution
-        self.assertRaises(ConnectomistError,
-                          data_import_and_qspace_sampling, **self.kwargs)
-
     @mock.patch("numpy.savetxt")
     @mock.patch("pyconnectomist.preproc.qspace.ConnectomistWrapper."
                 "_connectomist_version_check")

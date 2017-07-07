@@ -18,7 +18,12 @@ infopath = os.path.join(os.path.dirname(__file__), "pyconnectomist", "info.py")
 with open(infopath) as open_file:
     exec(open_file.read(), release_info)
 pkgdata = {
-    "pyconnectomist": ["tests/*.py", "tests/*/*.py"],
+    "pyconnectomist": [
+        os.path.join("tests", "*.py"),
+        os.path.join("tests", "*", "*.py")],
+    "pyconnectomist.utils": [
+        os.path.join("resources", "*.png"),
+        os.path.join("resources", "*.json")]
 }
 scripts = [
     "pyconnectomist/scripts/pyconnectomist_preproc",
