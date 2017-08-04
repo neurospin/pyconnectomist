@@ -11,6 +11,7 @@ Wrapper to Connectomist's 'Susceptibility' tab.
 
 # System import
 import os
+import subprocess
 
 # pyConnectomist import
 from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
@@ -259,3 +260,161 @@ def susceptibility_correction(
     process(algorithm, parameter_file, outdir)
 
     return outdir
+
+
+def susceptibility_correction_wo_fieldmap(
+        outdir,
+        t1,
+        dwi,
+        bval,
+        bvec,
+        subject_id,
+        phase_enc_dir,
+        t1_mask=None,
+        nodif_mask=None,
+        fsl_sh=None,
+        nthread=4):
+    """ Assuming the beginning of the preprocessing was done with Connectomist
+    up to Eddy current and motion correction, we now want to make susceptbility
+    distortion correction without fieldmap using registration based
+    distortion correction.
+
+    Parameters
+    ----------
+    outdir: str
+        path to directory where to output.
+    t1: str
+        path to the T1 Nifti image.
+    dwi: str
+        path to the preprocessed diffusion-weighted Nifti image.
+    bval: str
+        path to the bval file associated to the DWI image.
+    bvec: str
+        path to the bvec file associated to the DWI image.
+    subject_id: str
+        the subject code in study.
+    phase_enc_dir: str
+        in plane phase encoding direction, 'y', or 'x'.
+    t1_mask: str, default None
+        path to the t1 brain mask image.
+    nodif_mask: str, default None
+        path to the nodif brain mask image.
+    fsl_sh: str, default None
+        path to the FSL configuration file.
+    nthread: int, default 4
+        number of threads to be used (see bdp.sh --thread flag).
+
+    Returns
+    -------
+    dwi_wo_susceptibility: str
+        path to the corrected diffusion-weighted Nifti image.
+    bval: str
+        path to the bval file associated to the DWI image.
+    bvec: str
+        path to the bvec file associated to the DWI image.
+    t1_in_dwi_space: str
+        bias field corrected image in diffusion coordinates.
+    bo_in_t1_space: str
+        b=0 image in T1 coordinates.
+    t1_brain: str
+        the T1 brain image.
+    """
+    # Local import
+    from pyconnectome.utils.segtools import bet2
+    from pyconnectome.utils.filetools import apply_mask
+    from pyconnectome import DEFAULT_FSL_PATH
+
+    # Check installation
+    check_brainsuite_installation()
+
+    # Check in plane phase encoding direction
+    # The sign of the phase encoding direction has no impact in this strategy
+    # e.g. for "+y" or "-y" use "y"
+    possible_phase_enc_dirs = {"y", "x"}
+    if phase_enc_dir not in possible_phase_enc_dirs:
+        raise ValueError("Bad argument 'phase_enc_dir': {0}, should be in "
+                         "{1}.".format(phase_enc_dir, possible_phase_enc_dirs))
+
+    # Check the destination folder exists
+    if not os.path.isdir(outdir):
+        os.mkdir(outdir)
+
+    # The input of the bias field correction step is a skull-stripped MRI
+    # volume, use FSL bet2
+    if t1_mask is None:
+        fsl_sh = fsl_sh or DEFAULT_FSL_PATH
+        (t1_brain, t1_mask, _, _, _, _, _, _, _, _, _) = bet2(
+            input_file=t1,
+            output_fileroot=outdir,
+            mask=True,
+            skull=False,
+            f=0.5,
+            shfile=fsl_sh)
+    else:
+        t1_brain = apply_mask(
+            input_file=t1,
+            output_fileroot=os.path.join(
+                outdir, os.path.basename(t1).split(".")[0] + "_brain"),
+            mask_file=t1_mask,
+            fslconfig=fsl_sh)
+
+    # Run bfc (bias field correction: required by BrainSuite)
+    bfc_file = os.path.join(outdir, "{0}.bfc.nii.gz".format(subject_id))
+    bfc_biasfield_file = os.path.join(
+        outdir, "{0}.bfc.biasfield.nii.gz".format(subject_id))
+    cmd = ["bfc", "-i", t1_brain, "-o", bfc_file, "--bias", bfc_biasfield_file]
+    subprocess.check_call(cmd)
+
+    # Extract brain from the nodif volume with FSL bet2
+    if nodif_mask is None:
+        (nodif_brain, nodif_mask, _, _, _, _, _, _, _, _, _) = bet2(
+            input_file=dwi,
+            output_fileroot=outdir,
+            mask=True,
+            skull=False,
+            f=0.25,
+            shfile=fsl_sh)
+
+    # Run bdp.sh: registration + diffusion model
+    cmd = ["bdp.sh", bfc_file, "--nii", dwi, "--bval", bval, "--bvec", bvec,
+           "--t1-mask", t1_mask, "--dwi-mask", nodif_mask,
+           "--dir={0}".format(phase_enc_dir), "--threads={0}".format(nthread)]
+    subprocess.check_call(cmd)
+
+    # Path to files of interest: see
+    # http://brainsuite.org/processing/diffusion/output-files/
+    dwi_wo_susceptibility = os.path.join(
+        outdir, "{0}.dwi.RAS.correct.nii.gz".format(subject_id))
+    t1_in_dwi_space = os.path.join(
+        outdir, "{0}.bfc.D_coord.nii.gz".format(subject_id))
+    bo_in_t1_space = os.path.join(
+        outdir, "{0}.dwi.RAS.correct.0_diffusion.T1_coord.nii.gz".format(
+            subject_id))
+    for path in (dwi_wo_susceptibility, t1_in_dwi_space, bo_in_t1_space):
+        if not os.path.isfile(path):
+            raise ValueError("BrainSuite fails.")
+
+    return (dwi_wo_susceptibility, bval, bvec, t1_in_dwi_space, bo_in_t1_space,
+            t1_brain)
+
+
+def check_brainsuite_installation():
+    """ Check that Brainsuite commands, 'bfc' and 'bdp.sh', are executable.
+    If not raise an Exception.
+    """
+    # Define stout: not print in the console
+    devnull = open(os.devnull, "w")
+
+    # Check 'bfc'
+    try:
+        subprocess.check_call(["bfc"], stdout=devnull)
+    except:
+        raise Exception("Brainsuite is not installed or 'bfc' is not in "
+                        "$PATH.")
+
+    # Check 'bdp.sh'
+    try:
+        subprocess.check_call(["bdp.sh"], stdout=devnull)
+    except:
+        raise Exception("Brainsuite is not installed or 'bdp.sh' is not in "
+                        "$PATH.")

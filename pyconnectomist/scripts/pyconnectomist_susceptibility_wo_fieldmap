@@ -1,0 +1,282 @@
+#! /usr/bin/env python
+##########################################################################
+# NSAp - Copyright (C) CEA, 2017
+# Distributed under the terms of the CeCILL-B license, as published by
+# the CEA-CNRS-INRIA. Refer to the LICENSE file or to
+# http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html
+# for details.
+##########################################################################
+
+# System modules
+from __future__ import print_function
+import os
+import re
+import json
+import glob
+import argparse
+import textwrap
+import datetime
+from pprint import pprint
+from argparse import RawTextHelpFormatter
+
+# Bredala import
+try:
+    import bredala
+    bredala.USE_PROFILER = False
+    bredala.register("pyconnectomist.preproc.susceptibility",
+                     names=["susceptibility_correction_wo_fieldmap"])
+    bredala.register("pyconnectome.utils.filetools",
+                     names=["fslreorient2std"])
+    bredala.register("pyconnectome.utils.reorient",
+                     names=["reorient_image"])
+    bredala.register("nilearn.plotting.img_plotting",
+                     names=["plot_anat"])
+except:
+    pass
+
+# Package
+import pyconnectomist
+from pyconnectomist.preproc.susceptibility import (
+    susceptibility_correction_wo_fieldmap)
+
+# Third party
+import pyconnectome
+from pyconnectome import DEFAULT_FSL_PATH
+from pyconnectome.wrapper import FSLWrapper
+from pyconnectome.utils.filetools import fslreorient2std
+from pyconnectome.utils.reorient import reorient_image
+from nilearn import plotting
+
+
+# Parameters to keep trace
+__hopla__ = ["runtime", "inputs", "outputs"]
+
+
+# Script documentation
+DOC = """
+Registration based susceptibility distortion correction
+-------------------------------------------------------
+
+Assuming the beginning of the preprocessing was done up to Eddy current and
+motion correction, we now want to make susceptbility distortion correction
+without fieldmap using registration based distortion correction.
+
+python $HOME/git/pyconnectomist/pyconnectomist/scripts/pyconnectomist_susceptibility_wo_fieldmap \
+    -v 2 \
+    -t /volatile/nsap/test/t1.nii.gz \
+    -d /volatile/nsap/test/dwi.nii.gz \
+    -b /volatile/nsap/test/dwi.bval \
+    -r /volatile/nsap/test/dwi.bvec \
+    -o /volatile/nsap/test \
+    -s 006 \
+    -p y \
+    -T /volatile/nsap/test/t1_brain.nii.gz \
+    -A LAS \
+    -N 4
+"""
+
+def is_file(filearg):
+    """ Type for argparse - checks that file exists but does not open.
+    """
+    if not os.path.isfile(filearg):
+        raise argparse.ArgumentError(
+            "The file '{0}' does not exist!".format(filearg))
+    return filearg
+
+def is_directory(dirarg):
+    """ Type for argparse - checks that directory exists.
+    """
+    if not os.path.isdir(dirarg):
+        raise argparse.ArgumentError(
+            "The directory '{0}' does not exist!".format(dirarg))
+    return dirarg
+
+def get_cmd_line_args():
+    """
+    Create a command line argument parser and return a dict mapping
+    <argument name> -> <argument value>.
+    """
+    parser = argparse.ArgumentParser(
+        prog="python pyconnectomist_susceptibility_wo_fieldmap",
+        description=textwrap.dedent(DOC),
+        formatter_class=RawTextHelpFormatter)
+
+    # Required arguments
+    required = parser.add_argument_group("required arguments")
+    required.add_argument(
+        "-t", "--t1",
+        required=True, metavar="<PATH>", type=is_file,
+        help="path to the T1 Nifti image.")
+    required.add_argument(
+        "-d", "--dwi",
+        required=True, metavar="<PATH>", type=is_file,
+        help="path to the preprocessed diffusion-weighted Nifti image.")
+    required.add_argument(
+        "-b", "--bval",
+        required=True, metavar="<PATH>", type=is_file,
+        help="path to the bval file associated to the DWI image.")
+    required.add_argument(
+        "-r", "--bvec",
+        required=True, metavar="<PATH>", type=is_file,
+        help="path to the bvec file associated to the DWI image.")
+    required.add_argument(
+        "-o", "--outdir",
+        required=True, metavar="<PATH>", type=is_directory,
+        help="the destination folder.")
+    required.add_argument(
+        "-s", "--sid",
+        required=True, metavar="<STR>",
+        help="the subject identifier.")
+    required.add_argument(
+        "-p", "--phase-enc-dir",
+        required=True, metavar="<STR>", choices=("x", "y"),
+        help="in plane phase encoding direction, 'y', or 'x'.")
+
+    # Optional arguments
+    parser.add_argument(
+        "-T", "--t1-mask",
+        type=is_file, metavar="<PATH>",
+        help="path to the t1 brain mask image.")
+    parser.add_argument(
+        "-D", "--nodif-mask",
+        type=is_file, metavar="<PATH>",
+        help="path to the nodif brain mask image.")
+    parser.add_argument(
+        "-N", "--nbthred",
+        type=int, default=4,
+        help="the number of threads to be used.")
+    parser.add_argument(
+        "-F", "--fsl-sh",
+        type=is_file, metavar="<PATH>",
+        help="Bash script initializing FSL's environment.")
+    required.add_argument(
+        "-A", "--axes",
+        metavar="<axes>", default="RAS",
+        help="Orientation of the original axes X, Y, and Z.")
+    parser.add_argument(
+        "-v", "--verbose",
+        type=int, choices=[0, 1, 2], default=0,
+        help="increase the verbosity level: 0 silent, [1, 2] verbose.")
+
+    # Create a dict of arguments to pass to the 'main' function
+    args = parser.parse_args()
+    kwargs = vars(args)
+    verbose = kwargs.pop("verbose")
+    if kwargs["fsl_sh"] is None:
+        kwargs["fsl_sh"] = DEFAULT_FSL_PATH
+
+    return kwargs, verbose
+
+
+"""
+Parse the command line.
+"""
+inputs, verbose = get_cmd_line_args()
+fsl_version = FSLWrapper([], shfile=inputs["fsl_sh"]).version
+runtime = dict(tool="pyconnectomist_susceptibility_wo_fieldmap",
+               tool_version=pyconnectomist.__version__,
+               timestamp=datetime.datetime.now().isoformat(),
+               pyconnectome_version=pyconnectome.__version__,
+               fsl_version=fsl_version)
+outputs = None
+if verbose > 0:
+    pprint("[info] Starting registration based susceptibility distortion "
+           "correction...")
+    pprint("[info] Runtime:")
+    pprint(runtime)
+    pprint("[info] Inputs:")
+    pprint(inputs)
+subjdir = os.path.join(inputs["outdir"], inputs["sid"])
+if not os.path.isdir(subjdir):
+    os.mkdir(subjdir)
+
+
+"""
+Normalize input files
+"""
+normalized = {}
+for name in ["dwi", "t1", "t1_mask", "nodif_mask"]:
+    if inputs[name] is not None:
+        # Swap axes
+        if inputs["axes"] != "RAS":
+            reoriented_file = reorient_image(
+                in_file=inputs[name],
+                axes=inputs["axes"],
+                prefix=inputs["sid"] + "_",
+                output_directory=subjdir,
+                is_direct=False)
+        else:
+            reoriented_file = inputs[name]
+        # Reorient
+        normalized[name] = fslreorient2std(
+            input_image=reoriented_file,
+            output_image=os.path.join(
+                subjdir, os.path.basename(reoriented_file)),
+            fslconfig=inputs["fsl_sh"])
+    else:
+        normalized[name] = None
+
+
+"""
+Run
+"""
+brainsuite_dir = os.path.join(subjdir, "1-Susceptibility")
+(dwi_wo_susceptibility, bval, bvec, t1_in_dwi_space,
+ bo_in_t1_space, t1_brain) = susceptibility_correction_wo_fieldmap(
+    outdir=brainsuite_dir,
+    t1=normalized["t1"],
+    dwi=normalized["dwi"],
+    bval=inputs["bval"],
+    bvec=inputs["bvec"],
+    subject_id=inputs["sid"],
+    phase_enc_dir=inputs["phase_enc_dir"],
+    t1_mask=normalized["t1_mask"],
+    nodif_mask=normalized["nodif_mask"],
+    nthread=inputs["nbthred"],
+    fsl_sh=inputs["fsl_sh"])
+
+
+"""
+QC create snapshots to visually assert the registration quality
+"""
+qc_dir = os.path.join(subjdir, "2-QC_reporting")
+if not os.path.isdir(qc_dir):
+    os.mkdir(qc_dir)
+nodif_with_t1_edges = os.path.join(qc_dir, "nodif_with_t1_edges.png")
+display = plotting.plot_anat(
+    bo_in_t1_space, title="nodif + edges of registered T1")
+display.add_edges(t1_brain)
+display.savefig(nodif_with_t1_edges)
+display.close()
+nodif_with_t1_edges_large = os.path.join(
+    qc_dir, "nodif_with_t1_edges_large.png")
+display = plotting.plot_anat(
+    bo_in_t1_space, title="nodif + edges of registered T1",
+    display_mode="z", cut_coords=20)
+display.add_edges(t1_brain)
+display.savefig(nodif_with_t1_edges_large)
+display.close()
+
+
+"""
+Store inputs, runtime and outputs as JSONs in a 'logs' dir.
+"""
+logdir = os.path.join(subjdir, "logs")
+if not os.path.isdir(logdir):
+    os.mkdir(logdir)
+params = locals()
+outputs = dict([(name, params[name])
+                for name in ("dwi_wo_susceptibility", "bval", "bvec",
+                             "t1_in_dwi_space", "nodif_with_t1_edges",
+                             "bo_in_t1_space", "t1_brain",
+                             "nodif_with_t1_edges_large")])
+for name, final_struct in [("inputs", inputs), ("outputs", outputs),
+                           ("runtime", runtime)]:
+    log_file = os.path.join(logdir, "{0}.json".format(name))
+    with open(log_file, "wt") as open_file:
+        json.dump(final_struct, open_file, sort_keys=True, check_circular=True,
+                  indent=4)
+if verbose > 1:
+    print("[final]")
+    pprint(outputs)
+
