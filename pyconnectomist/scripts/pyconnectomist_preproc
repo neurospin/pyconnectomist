@@ -189,6 +189,15 @@ parser.add_argument(
     "-j", "--slice_axis", dest="slice_axis", choices=["x", "y", "z"],
     default="z", help="the acquistion slice axis.")
 parser.add_argument(
+    "-ix", "--flipx", dest="flipx", action="store_true",
+    help="if activated, invert the x-axis in the data.")
+parser.add_argument(
+    "-iy", "--flipy", dest="flipy", action="store_true",
+    help="if activated, invert the y-axis in the data.")
+parser.add_argument(
+    "-iz", "--flipz", dest="flipz", action="store_true",
+    help="if activated, invert the z-axis in the data.")
+parser.add_argument(
     "-x", "--invertx", dest="invertx", action="store_true",
     help="if activated, invert the x-axis in diffusion model.")
 parser.add_argument(
@@ -228,6 +237,9 @@ parser.add_argument(
 parser.add_argument(
     "-S", "--nosmoothing", dest="no_smoothing", action="store_true",
     help=("Do not smooth the image before performing the histogram analysis."))
+parser.add_argument(
+    "-M", "--similarity", dest="similarity", choices=["mi", "norm_mi"],
+    help="the eddy + motion correction similarity measure.")
 parser.add_argument(
     "-d", "--delete_steps", dest="delete_steps", action="store_true",
     help=("if activated, remove all intermediate files and directories at "
@@ -295,6 +307,9 @@ b0_magnitude = args.b0_magnitude
 b0_phase = args.b0_phase
 phase_axis = args.phase_axis
 slice_axis = args.slice_axis
+flipx = args.flipx
+flipy = args.flipy
+flipz = args.flipz
 invertx = args.invertx
 inverty = args.inverty
 invertz = args.invertz
@@ -307,6 +322,7 @@ t1zcropping = args.t1zcropping
 level_count = args.level_count
 apply_smoothing = not args.no_smoothing
 lower_theshold = args.lower_theshold
+similarity = args.similarity
 delete_steps = args.delete_steps
 morphologist_dir = args.morphologist_dir
 already_corrected = args.already_corrected
@@ -322,7 +338,8 @@ inputs = dict([(name, locals()[name])
                             "morphologist_dir", "projectname", "timestep",
                             "t1zcropping", "level_count", "apply_smoothing",
                             "lower_theshold", "clientname",
-                            "already_corrected", "report_only")])
+                            "already_corrected", "report_only",
+                            "flipx", "flipy", "flipz", "similarity")])
 outputs = None
 if not os.path.isdir(preprocdir):
     os.makedirs(preprocdir)
@@ -351,6 +368,9 @@ if not report_only:
         b0_phase=b0_phase,
         phase_axis=phase_axis,
         slice_axis=slice_axis,
+        flipX=flipx,
+        flipY=flipy,
+        flipZ=flipz,
         invertX=invertx,
         invertY=inverty,
         invertZ=invertz,
@@ -363,6 +383,7 @@ if not report_only:
         level_count=level_count,
         lower_theshold=lower_theshold,
         apply_smoothing=apply_smoothing,
+        similarity_measure=similarity,
         delete_steps=delete_steps,
         morphologist_dir=morphologist_dir,
         already_corrected=already_corrected,

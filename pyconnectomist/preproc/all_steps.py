@@ -53,6 +53,9 @@ def complete_preprocessing(
         b0_phase=None,
         phase_axis="y",
         slice_axis="z",
+        flipX=False,
+        flipY=False,
+        flipZ=False,
         invertX=True,
         invertY=False,
         invertZ=False,
@@ -65,6 +68,7 @@ def complete_preprocessing(
         level_count=32,
         lower_theshold=0.0,
         apply_smoothing=True,
+        similarity_measure="mi",
         delete_steps=False,
         morphologist_dir=None,
         already_corrected=False,
@@ -128,6 +132,8 @@ def complete_preprocessing(
         the acquistion phase axis 'x', 'y' or 'z'.
     slice_axis: str (optional, default 'z')
         the acquistion slice axis 'x', 'y' or 'z'.
+    flipX, flipY, flipZ: bool (optional, default False)
+        if True invert the x, y or z-axis of data.
     invertX: bool (optional, default True)
         if True invert x-axis in diffusion model.
     invertY: bool (optional, default False)
@@ -154,6 +160,8 @@ def complete_preprocessing(
         remove noise in the image by applying this lower theshold.
     apply_smoothing: bool (optional, default True)
         smooth the image before performing the histogram analysis.
+    similarity_measure: str (option, default 'mi')
+        the eddy + motion correction similarity measure.
     delete_steps: bool (optional, default False)
         if True remove all intermediate files and directories at the end of
         preprocessing, to keep only 4 files: preprocessed Nifti + bval + bvec
@@ -186,6 +194,9 @@ def complete_preprocessing(
         bvals,
         bvecs,
         manufacturer,
+        flipX,
+        flipY,
+        flipZ,
         invertX,
         invertY,
         invertZ,
@@ -265,6 +276,7 @@ def complete_preprocessing(
         rough_mask_dir,
         corrected_dir,
         subject_id,
+        similarity_measure,
         path_connectomist=path_connectomist)
 
     # Step 8 - QC reporting

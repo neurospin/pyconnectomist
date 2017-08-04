@@ -140,6 +140,9 @@ def data_import_and_qspace_sampling(
         bvals,
         bvecs,
         manufacturer,
+        flipX=False,
+        flipY=False,
+        flipZ=False,
         invertX=True,
         invertY=False,
         invertZ=False,
@@ -164,6 +167,8 @@ def data_import_and_qspace_sampling(
         path to .bvec files associated to the Nifti.
     manufacturer: str
         name of the manufacturer (e.g. "Siemens", "GE", "Philips" or "Bruker").
+    flipX, flipY, flipZ: bool (optional, default False)
+        if True invert the x, y or z-axis of data.
     invertX: bool (optional, default True)
         if True invert x-axis of diffusion model.
     invertY, invertZ: bool (optional, default False)
@@ -216,9 +221,9 @@ def data_import_and_qspace_sampling(
         "manufacturer": None,
 
         # Subfield: "Advanced parameters"
-        "flipAlongX":           0,  # "Flip data along x"
-        "flipAlongY":           0,
-        "flipAlongZ":           0,
+        "flipAlongX":           2 if flipX else 0,  # "Flip data along x"
+        "flipAlongY":           2 if flipY else 0,
+        "flipAlongZ":           2 if flipZ else 0,
         "numberOfDiscarded":    0,  # "#discarded images at beginning"
         "numberOfT2":        None,  # "#T2"
         "numberOfRepetitions":  1,  # "#repetitions"

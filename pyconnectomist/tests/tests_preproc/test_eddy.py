@@ -17,6 +17,7 @@ fake return string.
 import unittest
 import sys
 import os
+import copy
 import numpy
 # COMPATIBILITY: since python 3.3 mock is included in unittest module
 python_version = sys.version_info
@@ -56,6 +57,7 @@ class ConnectomistEddy(unittest.TestCase):
             "raw_dwi_dir": "/my/path/mock_rawdwidir",
             "rough_mask_dir": "/my/path/mock_rawmaskdir",
             "subject_id": "Lola",
+            "similarity_measure": "mi",
             "corrected_dir": "/my/path/mock_correcteddir"
         }
 
@@ -63,6 +65,15 @@ class ConnectomistEddy(unittest.TestCase):
         """ Run after each test.
         """
         self.popen_patcher.stop()
+
+    def test_similarity_raise(self):
+        """ Wrong similarity measure -> raise ValueError.
+        """
+        # Test execution
+        wrong_kwargs = copy.copy(self.kwargs)
+        wrong_kwargs["similarity_measure"] = "WRONG"
+        self.assertRaises(ValueError,
+                          eddy_and_motion_correction, **wrong_kwargs)
 
     @mock.patch("pyconnectomist.preproc.eddy.ConnectomistWrapper."
                 "_connectomist_version_check")

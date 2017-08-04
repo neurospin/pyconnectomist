@@ -21,6 +21,12 @@ from pyconnectomist.utils.filetools import ptk_gis_to_nifti
 from pyconnectomist.utils.filetools import ptk_concatenate_volumes
 from pyconnectomist.utils.filetools import exec_file
 
+# Global map
+SIMILARITY = {
+    "mi": 1,
+    "norm_mi": 2
+}
+
 
 def eddy_and_motion_correction(
         outdir,
@@ -28,6 +34,7 @@ def eddy_and_motion_correction(
         rough_mask_dir,
         corrected_dir,
         subject_id,
+        similarity_measure="mi",
         path_connectomist=DEFAULT_CONNECTOMIST_PATH):
     """ Wrapper to Connectomist's 'Eddy current & motion' tab.
 
@@ -45,6 +52,8 @@ def eddy_and_motion_correction(
         or after susceptibility correction.
     subject_id: str
         the subject code in study.
+    similarity_measure: str (option, default 'mi')
+        the registration similarity measure.
     path_connectomist: str (optional)
         path to the Connectomist executable.
 
@@ -53,6 +62,11 @@ def eddy_and_motion_correction(
     outdir: str
         path to Connectomist's output directory.
     """
+    # Check inputs
+    if similarity_measure not in ("mi", "norm_mi"):
+        raise ValueError("Unsupported similarity measure "
+                         "'{0}'.".format(similarity_measure))
+
     # Dict with all parameters for connectomist
     algorithm = "DWI-Eddy-Current-And-Motion-Correction"
     parameters_dict = {
@@ -102,7 +116,7 @@ def eddy_and_motion_correction(
             "optimizerParametersRotationY":     2,
             "stepSize":                       0.1,
             "initialParametersShearingYZ":    0.0,
-            "similarityMeasureName":            1,
+            "similarityMeasureName":            SIMILARITY[similarity_measure],
             "applySmoothing":                   1,
             "initialParametersScalingX":      1.0,
             "initialParametersScalingY":      1.0,
@@ -133,7 +147,7 @@ def eddy_and_motion_correction(
             "initialParametersTranslationX":    0,
             "initialParametersTranslationY":    0,
             "registrationResamplingOrder":      1,
-            "similarityMeasureName":            1,
+            "similarityMeasureName":            SIMILARITY[similarity_measure],
             "optimizerParametersRotationY":     2
         }
     }

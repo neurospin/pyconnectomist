@@ -54,6 +54,9 @@ class ConnectomistPreproc(unittest.TestCase):
             "phase_axis": "y",
             "slice_axis": "x",
             "path_connectomist": "/my/path/mock_connectomist",
+            "flipX": False,
+            "flipY": False,
+            "flipZ": False,
             "invertX": True,
             "invertY": False,
             "invertZ": False,
@@ -63,6 +66,7 @@ class ConnectomistPreproc(unittest.TestCase):
             "b0_field": 3.0,
             "water_fat_shift": 4.68,
             "t1_foot_zcropping": 0,
+            "similarity_measure": "mi",
             "delete_steps": True,
             "morphologist_dir": "/my/path/mock_morphologist",
             "manufacturer": "Siemens"
