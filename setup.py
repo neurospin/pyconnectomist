@@ -25,11 +25,6 @@ pkgdata = {
         os.path.join("resources", "*.png"),
         os.path.join("resources", "*.json")]
 }
-scripts = [
-    "pyconnectomist/scripts/pyconnectomist_preproc",
-    "pyconnectomist/scripts/pyconnectomist_tractography",
-    "pyconnectomist/scripts/pyconnectomist_dtifit"
-]
 
 setup(
     name=release_info["NAME"],
@@ -46,5 +41,5 @@ setup(
     extras_require=release_info["EXTRA_REQUIRES"],
     install_requires=release_info["REQUIRES"],
     package_data=pkgdata,
-    scripts=scripts
+    scripts=release_info["SCRIPTS"]
 )
