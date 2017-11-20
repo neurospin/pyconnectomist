@@ -2,8 +2,8 @@
 
 :orphan:
 
-Documentation of *pyconnectomist.clustering*
-=============================================
+API documentation of *pyconnectomist.clustering*
+=================================================
 
 
 Each labeling/clustering step (i.e. one Connectomist tab) can be run through
@@ -23,12 +23,6 @@ All the labelings steps can be done at once calling the
     <td><a class='reference internal' href='pyconnectomist.clustering.labeling.html'><em>pyconnectomist.clustering.labeling</em></a></td>
     <td>
         <p>Wrapper to Connectomist's 'Fast bundle labeling' tab.</p>
-    </td>
-    </tr>
-    <tr class='row-even'>
-    <td><a class='reference internal' href='pyconnectomist.clustering.intrasubject_fiber_clustering.html'><em>pyconnectomist.clustering.intrasubject_fiber_clustering</em></a></td>
-    <td>
-    
     </td>
     </tr>
     </tbody>

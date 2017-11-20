@@ -1,0 +1,249 @@
+
+
+.. _sphx_glr_auto_gallery_pyconnectomist_dtifit.py:
+
+
+Pyconnectomist Dtifit
+=====================
+
+Example automatically generated from package script.
+
+
+
+.. code-block:: python
+
+
+
+    # System import
+    from __future__ import print_function
+    import argparse
+    import os
+    import shutil
+    from datetime import datetime
+    from pprint import pprint
+    import json
+
+    # Bredala import
+    try:
+        import bredala
+        bredala.USE_PROFILER = False
+        bredala.register("pyconnectomist.tractography",
+                         names=["complete_tractography"])
+        bredala.register("pyconnectomist.tractography.model",
+                         names=["dwi_local_modeling", "export_scalars_to_nifti"])
+        bredala.register("pyconnectomist.wrappers",
+                         names=["ConnectomistWrapper.__call__"])
+    except:
+        pass
+
+    # Clindmri import
+    from pyconnectomist import __version__ as version
+    from pyconnectomist.tractography import complete_tractography
+    from pyconnectomist.wrappers import ConnectomistWrapper
+    from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
+
+
+    # Parameters to keep trace
+    __hopla__ = ["runtime", "inputs", "outputs"]
+
+    # Script documentation
+    doc = """
+    Connectomist DTI fit
+    ~~~~~~~~~~~~~~~~~~~~
+
+    Function that runs all the Connectomist 'Local modeling' tab to estimate a DTI
+    model from the preprocessed diffusion data.
+    Generates results in '<outdir>/<subjectid>/dtifit'.
+
+    Steps:
+
+    1- Create the model output directory if not existing.
+    2- Detect the Connectomist eddy motion correction folder.
+    3- Detect the Connectomist rough mask folder.
+    4- Compute the second order tensor diffusion model.
+    5 - Export diffusion scalars.
+
+    Command:
+
+    python $HOME/git/pyconnectomist/pyconnectomist/scripts/pyconnectomist_dtifit \
+        -v 2 \
+        -o /tmp/pyconnectomist \
+        -g /neurospin/senior/nsap/data/V4/morphologist \
+        -s jp090065 \
+        -e
+    """
+
+
+    def is_file(filearg):
+        """ Type for argparse - checks that file exists but does not open.
+        """
+        if not os.path.isfile(filearg):
+            raise argparse.ArgumentError(
+                "The file '{0}' does not exist!".format(filearg))
+        return filearg
+
+
+    def is_directory(dirarg):
+        """ Type for argparse - checks that directory exists.
+        """
+        if not os.path.isdir(dirarg):
+            raise argparse.ArgumentError(
+                "The directory '{0}' does not exist!".format(dirarg))
+        return dirarg
+
+
+    parser = argparse.ArgumentParser(description=doc,
+                                     formatter_class=argparse.RawTextHelpFormatter)
+    parser.add_argument(
+        "-v", "--verbose", dest="verbose", type=int, choices=[0, 1, 2], default=0,
+        help="increase the verbosity level: 0 silent, [1, 2] verbose.")
+    parser.add_argument(
+        "-e", "--erase", dest="erase", action="store_true",
+        help="if activated, clean the subject folder if already created.")
+    parser.add_argument(
+        "-c", "--connectomistconfig", dest="connectomistconfig", metavar="PATH",
+        help="the path to the Connectomist configuration file.", type=is_file)
+    parser.add_argument(
+        "-o", "--outdir", dest="outdir", metavar="PATH", 
+        help="the Connectomist diffusion tensor output home directory.",
+        type=is_directory)
+    parser.add_argument(
+        "-s", "--subjectid", dest="subjectid", required=True,
+        help="the subject identifier.")
+    parser.add_argument(
+        "-p", "--preprocdir", dest="preprocdir", metavar="PATH",
+        help=("the path to the Connectomist diffusion preprocessings. If not "
+              "specified assume data in '<outdir>/<subjectid>/preproc'."),
+        type=is_directory)
+    parser.add_argument(
+        "-d", "--dtifitdir", dest="dtifitdir", metavar="PATH",
+        help=("the path to the Connectomist diffusion tensor estimation. If not "
+              "specified generate data in '<outdir>/<subjectid>/dtifit'."),
+        type=is_directory)
+    parser.add_argument(
+        "-g", "--morphologistdir", dest="morphologistdir", required=True,
+        metavar="PATH", type=is_directory,
+        help="the path to the morphologist processings home directory.")
+    args = parser.parse_args()
+
+
+
+First check if the Connectomist subject directory exists on the file system,
+and clean it if requested.
+
+
+
+.. code-block:: python
+
+
+    tool = "pyconnectomist_dtifit"
+    timestamp = datetime.now().isoformat()
+    tool_version = version
+    connectomist_config = args.connectomistconfig or DEFAULT_CONNECTOMIST_PATH
+    connectomist_version = ConnectomistWrapper._connectomist_version_check(
+        connectomist_config)
+    runtime = dict([(name, locals()[name])
+                   for name in ("connectomist_config", "tool", "tool_version",
+                                "connectomist_version", "timestamp")])
+    if args.verbose > 0:
+        print("[info] Start Connectomist DTI fit...")
+        print("[info] Directory: {0}.".format(args.outdir))
+        print("[info] Subject: {0}.".format(args.subjectid))
+        print("[info] Preproc dir: {0}.".format(args.preprocdir))
+    outdir = args.outdir
+    subjectid = args.subjectid
+    dtifitdir = args.dtifitdir
+    if dtifitdir is None:
+        if outdir is None:
+            raise ValueError("Trying to generate output directory. You need to "
+                             "specify the -o, --outdir command line option.")
+        dtifitdir = os.path.join(outdir, subjectid, "dtifit")
+        if args.verbose > 0:
+            print("[info] Generated dtifit dir: {0}.".format(dtifitdir))
+    preprocdir = args.preprocdir
+    morphologistdir = args.morphologistdir
+    if preprocdir is None:
+        preprocdir = os.path.join(args.outdir, subjectid, "preproc")
+        if args.verbose > 0:
+            print("[info] Generated preproc dir: {0}.".format(preprocdir))
+    if not os.path.isdir(dtifitdir):
+        os.makedirs(dtifitdir)
+    elif args.erase and os.path.isdir(dtifitdir):
+        shutil.rmtree(dtifitdir)
+        os.mkdir(dtifitdir)
+    params = locals()
+    inputs = dict([(name, params[name])
+                   for name in ("outdir", "subjectid", "preprocdir",
+                                "morphologistdir", "dtifitdir")])
+    outputs = None
+
+
+
+Connectomist tractography: DTI fit only
+
+
+
+.. code-block:: python
+
+
+    scalars, _, _ = complete_tractography(
+        dtifitdir,
+        preprocdir,
+        morphologistdir,
+        subjectid,
+        model="dti",
+        rgbscale=1.0,
+        model_only=True,
+        path_connectomist=connectomist_config)
+
+
+
+Update the outputs and save them and the inputs in a 'logs' directory.
+
+
+
+.. code-block:: python
+
+
+    logdir = os.path.join(dtifitdir, "logs")
+    if not os.path.isdir(logdir):
+        os.mkdir(logdir)
+    params = locals()
+    outputs = dict([(name, params[name]) for name in ("scalars", )])
+    for name, final_struct in [("inputs", inputs), ("outputs", outputs),
+                               ("runtime", runtime)]:
+        log_file = os.path.join(logdir, "{0}.json".format(name))
+        with open(log_file, "wt") as open_file:
+            json.dump(final_struct, open_file, sort_keys=True, check_circular=True,
+                      indent=4)
+    if args.verbose > 1:
+        print("[final]")
+        pprint(outputs)
+
+**Total running time of the script:** ( 0 minutes  0.000 seconds)
+
+
+
+.. only :: html
+
+ .. container:: sphx-glr-footer
+
+
+  .. container:: sphx-glr-download
+
+     :download:`Download Python source code: pyconnectomist_dtifit.py <pyconnectomist_dtifit.py>`
+
+
+
+  .. container:: sphx-glr-download
+
+     :download:`Download Jupyter notebook: pyconnectomist_dtifit.ipynb <pyconnectomist_dtifit.ipynb>`
+
+
+.. only:: html
+
+ .. rst-class:: sphx-glr-signature
+
+    Gallery generated by Sphinx-Gallery
+
+

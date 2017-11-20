@@ -15,11 +15,12 @@
     
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/gallery.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.0.0',
+        VERSION:     '2.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -52,7 +53,18 @@
   </script>
 
   </head>
-  <body role="document"><nav class="navbar navbar-default navbar-static-top">
+  <body role="document"><div class="banner">
+  <div class="container-fluid banner-container">
+    <div class="row banner-inner">
+      <div class="col-xs-4">
+        <img alt="Logo" src="../../../_static/pyconnectomist.png">
+      </div>
+      <div class="col-xs-8">
+            <p>Using Connectomist in Python.</p>
+      </div>
+    </div>  
+  </div>
+</div><nav class="navbar navbar-default navbar-static-top">
   <div class="container-fluid">
     <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -62,38 +74,36 @@
           <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="../../../index.html">
-        <img alt="Logo" src="../../../_static/pyconnectomist.png">
         </a>
     </div>
     <div id="navbar" class="navbar-collapse collapse" ng-controller="navCtrl" ng-app="navApp">
       <ul class="nav navbar-nav">
         <li ng-class="{ active: isActive('index') }"><a href="../../../index.html">Home</a></li>
         <li ng-class="{ active: isActive('installation') }"><a href="../../../generated/installation.html">Installation</a></li>
-        <li ng-class="{ active: isActive('documentation') }"><a href="../../../generated/documentation.html">Documentation</a></li>
-        <li class="dropdown">
+        <li ng-class="{ active: isActive('gallery') }"><a href="../../../auto_gallery/gallery.html">Gallery</a></li>
+        <li ng-class="{ active: isActive('documentation') }"><a href="../../../generated/documentation.html">API documentation</a></li>
+        <!--<li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></a>
           <ul class="dropdown-menu">
 	        <li><a href="../../../generated/pyconnectomist.html">Pyconnectomist</a></li>
-<li><a href="../../../generated/pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
 <li><a href="../../../generated/pyconnectomist.tractography.html">Pyconnectomist.tractography</a></li>
-<li><a href="../../../generated/pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
 <li><a href="../../../generated/pyconnectomist.clustering.html">Pyconnectomist.clustering</a></li>
+<li><a href="../../../generated/pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
+<li><a href="../../../generated/pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
           </ul>
-        </li>
+        </li>-->
         <li><a href="https://github.com/AGrigis/pysphinxdoc">PYSPHINXDOC</a></li>
       </ul>
     </div>
   </div>
 </nav>
-
-
 <div class="content-wrapper">
     <div class="sphinxsidebar">
       <div class="sphinxsidebarwrapper">
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for pyconnectomist <strong>version 1.0.0</strong>
+           This documentation is for pyconnectomist <strong>version 2.0.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -330,9 +340,7 @@
 <div class="viewcode-block" id="export_scalars_to_nifti"><a class="viewcode-back" href="../../../generated/pyconnectomist.tractography.model.html#pyconnectomist.tractography.model.export_scalars_to_nifti">[docs]</a><span class="k">def</span> <span class="nf">export_scalars_to_nifti</span><span class="p">(</span>
         <span class="n">model_dir</span><span class="p">,</span>
         <span class="n">model</span><span class="p">,</span>
-        <span class="n">outdir</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-        <span class="n">gfafilename</span><span class="o">=</span><span class="s2">&quot;gfa&quot;</span><span class="p">,</span>
-        <span class="n">mdfilename</span><span class="o">=</span><span class="s2">&quot;md&quot;</span><span class="p">):</span>
+        <span class="n">outdir</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; After Connectomist has done the diffusion local modeling, convert the</span>
 <span class="sd">    result scalar maps to Nifti.</span>
 
@@ -348,16 +356,12 @@
 <span class="sd">        &lt;outdir&gt;/&lt;gfafilename&gt;.nii.gz</span>
 <span class="sd">        &lt;outdir&gt;/&lt;mdfilename&gt;.nii.gz</span>
 <span class="sd">        By default &lt;outdir&gt; is &lt;model_dir&gt;.</span>
-<span class="sd">    gfafilename: str (optional)</span>
-<span class="sd">        to change generalize anisotropy output filename, by default &#39;gfa&#39;.</span>
-<span class="sd">    mdfilename: str (optional)</span>
-<span class="sd">        to change mean diffusivity output filename, by default &#39;md&#39;.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    gfa, md: str</span>
-<span class="sd">        the generalize fractional anisotropy and the mean diffusivity</span>
-<span class="sd">        nifti images.</span>
+<span class="sd">    scalars: dict</span>
+<span class="sd">        the scalrs map extracted from the model: the generalize fractional</span>
+<span class="sd">        anisotropy, the mean diffusivity, ... in Nifti format.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Step 1 - Set outdir path and check directory existence</span>
     <span class="k">if</span> <span class="n">outdir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -367,20 +371,23 @@
             <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span>
 
     <span class="c1"># Step 2 - Convert to Nifti</span>
-    <span class="n">gfa</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_dir</span><span class="p">,</span> <span class="s2">&quot;{0}_gfa.ima&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
-    <span class="n">md</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_dir</span><span class="p">,</span> <span class="s2">&quot;{0}_mean_diffusivity.ima&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="p">(</span><span class="n">gfa</span><span class="p">,</span> <span class="n">md</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">ConnectomistBadFileError</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="n">gfa</span> <span class="o">=</span> <span class="n">ptk_gis_to_nifti</span><span class="p">(</span><span class="n">gfa</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">gfafilename</span> <span class="o">+</span> <span class="s2">&quot;.nii.gz&quot;</span><span class="p">))</span>
-    <span class="n">md</span> <span class="o">=</span> <span class="n">ptk_gis_to_nifti</span><span class="p">(</span><span class="n">md</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">mdfilename</span> <span class="o">+</span> <span class="s2">&quot;.nii.gz&quot;</span><span class="p">))</span>
+    <span class="n">scalars</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;gfa&quot;</span><span class="p">,</span> <span class="s2">&quot;mean_diffusivity&quot;</span><span class="p">,</span> <span class="s2">&quot;adc&quot;</span><span class="p">,</span> <span class="s2">&quot;lambda_parallel&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;lambda_transverse&quot;</span><span class="p">,</span> <span class="s2">&quot;fa&quot;</span><span class="p">):</span>
+        <span class="n">gis_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_dir</span><span class="p">,</span> <span class="s2">&quot;{0}_{1}.ima&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">gis_file</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">scalars</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ptk_gis_to_nifti</span><span class="p">(</span>
+            <span class="n">gis_file</span><span class="p">,</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;{0}_{1}.nii.gz&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">name</span><span class="p">)))</span>
 
-    <span class="k">return</span> <span class="n">gfa</span><span class="p">,</span> <span class="n">md</span></div>
+    <span class="k">return</span> <span class="n">scalars</span></div>
 </pre></div>
 
           </div>
         </div>
       </div>
+
     <div class="clearer">
     </div>
   </div>
@@ -388,7 +395,7 @@
 </div>
 
 <div class="footer">
-    &copy; 2016, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2017, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
 </div>
   </body>
 </html>

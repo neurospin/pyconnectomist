@@ -1,0 +1,762 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+    <title>PYCONNECTOMIST &mdash; pyConnectomist</title>
+  <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../../_static/css/bootstrap.min.css" media="screen" />
+
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/gallery.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '2.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="pyConnectomist" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+  
+   
+       <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="../../../_static/js/bootstrap.min.js" type="text/javascript"></script>
+
+  <script src="../../../_static/js/angular.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    var app = angular.module("navApp", []);
+    app.controller('navCtrl', ['$scope', '$window', function($scope, $window) {
+      $scope.isActive = function (viewLocation) {
+        var rel = $window.location.pathname.split("/")
+        rel = rel[rel.length - 1]
+        rel = rel.split(".")[0]
+        var active = (viewLocation === rel);
+        return active;};
+    }]);
+  </script>
+
+  </head>
+  <body role="document"><div class="banner">
+  <div class="container-fluid banner-container">
+    <div class="row banner-inner">
+      <div class="col-xs-4">
+        <img alt="Logo" src="../../../_static/pyconnectomist.png">
+      </div>
+      <div class="col-xs-8">
+            <p>Using Connectomist in Python.</p>
+      </div>
+    </div>  
+  </div>
+</div><nav class="navbar navbar-default navbar-static-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+        </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse" ng-controller="navCtrl" ng-app="navApp">
+      <ul class="nav navbar-nav">
+        <li ng-class="{ active: isActive('index') }"><a href="../../../index.html">Home</a></li>
+        <li ng-class="{ active: isActive('installation') }"><a href="../../../generated/installation.html">Installation</a></li>
+        <li ng-class="{ active: isActive('gallery') }"><a href="../../../auto_gallery/gallery.html">Gallery</a></li>
+        <li ng-class="{ active: isActive('documentation') }"><a href="../../../generated/documentation.html">API documentation</a></li>
+        <!--<li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+	        <li><a href="../../../generated/pyconnectomist.html">Pyconnectomist</a></li>
+<li><a href="../../../generated/pyconnectomist.tractography.html">Pyconnectomist.tractography</a></li>
+<li><a href="../../../generated/pyconnectomist.clustering.html">Pyconnectomist.clustering</a></li>
+<li><a href="../../../generated/pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
+<li><a href="../../../generated/pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
+          </ul>
+        </li>-->
+        <li><a href="https://github.com/AGrigis/pysphinxdoc">PYSPHINXDOC</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="content-wrapper">
+    <div class="sphinxsidebar">
+      <div class="sphinxsidebarwrapper">
+
+        <!-- info setup -->
+          <p class="doc-version">
+           This documentation is for pyconnectomist <strong>version 2.0.0</strong>
+          </p>
+        <p class="citing">
+          If you use the software, please do not esitate to 
+          <a &mdash; <a href="https://github.com/neurospin/pyconnectomist">
+          Report a Bug</a>.
+        </p>
+
+      <!-- toc tree -->
+      
+
+      </div>
+    </div>
+  
+
+  <div class="content">
+      
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyconnectomist.utils.pdftools</h1><div class="highlight"><pre>
+<span></span><span class="c1">##########################################################################</span>
+<span class="c1"># NSAp - Copyright (C) CEA, 2015 - 2016</span>
+<span class="c1"># Distributed under the terms of the CeCILL-B license, as published by</span>
+<span class="c1"># the CEA-CNRS-INRIA. Refer to the LICENSE file or to</span>
+<span class="c1"># http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html for details.</span>
+<span class="c1">##########################################################################</span>
+
+<span class="c1"># System import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="c1"># Reportlab import</span>
+<span class="kn">from</span> <span class="nn">reportlab.lib.pagesizes</span> <span class="kn">import</span> <span class="n">letter</span>
+<span class="kn">from</span> <span class="nn">reportlab.lib.pagesizes</span> <span class="kn">import</span> <span class="n">landscape</span>
+<span class="kn">from</span> <span class="nn">reportlab.platypus</span> <span class="kn">import</span> <span class="n">Spacer</span>
+<span class="kn">from</span> <span class="nn">reportlab.platypus</span> <span class="kn">import</span> <span class="n">BaseDocTemplate</span>
+<span class="kn">from</span> <span class="nn">reportlab.platypus</span> <span class="kn">import</span> <span class="n">Frame</span>
+<span class="kn">from</span> <span class="nn">reportlab.platypus</span> <span class="kn">import</span> <span class="n">Paragraph</span>
+<span class="kn">from</span> <span class="nn">reportlab.platypus</span> <span class="kn">import</span> <span class="n">NextPageTemplate</span>
+<span class="kn">from</span> <span class="nn">reportlab.platypus</span> <span class="kn">import</span> <span class="n">PageBreak</span>
+<span class="kn">from</span> <span class="nn">reportlab.platypus</span> <span class="kn">import</span> <span class="n">PageTemplate</span>
+<span class="kn">from</span> <span class="nn">reportlab.platypus</span> <span class="kn">import</span> <span class="n">Flowable</span>
+<span class="kn">from</span> <span class="nn">reportlab.lib.units</span> <span class="kn">import</span> <span class="n">mm</span>
+<span class="kn">from</span> <span class="nn">reportlab.lib.styles</span> <span class="kn">import</span> <span class="n">getSampleStyleSheet</span>
+<span class="kn">from</span> <span class="nn">reportlab.lib.styles</span> <span class="kn">import</span> <span class="n">ParagraphStyle</span>
+<span class="kn">from</span> <span class="nn">reportlab.lib.enums</span> <span class="kn">import</span> <span class="n">TA_CENTER</span>
+
+
+<span class="c1"># Get global image resource</span>
+<span class="n">LOGO</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span>
+                    <span class="s2">&quot;resources&quot;</span><span class="p">,</span> <span class="s2">&quot;neurospin.png&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="header_and_footer"><a class="viewcode-back" href="../../../generated/pyconnectomist.utils.pdftools.html#pyconnectomist.utils.pdftools.header_and_footer">[docs]</a><span class="k">def</span> <span class="nf">header_and_footer</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Define the page header and footer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">doc</span><span class="o">.</span><span class="n">pageTemplate</span><span class="o">.</span><span class="n">pagesize</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="n">doc</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">doc</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+    <span class="n">canvas</span><span class="o">.</span><span class="n">saveState</span><span class="p">()</span>
+    <span class="n">canvas</span><span class="o">.</span><span class="n">drawImage</span><span class="p">(</span>
+        <span class="n">LOGO</span><span class="p">,</span> <span class="n">doc</span><span class="o">.</span><span class="n">leftMargin</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">40</span> <span class="o">*</span> <span class="n">mm</span><span class="p">,</span> <span class="n">preserveAspectRatio</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">canvas</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="s2">&quot;Times-Roman&quot;</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+    <span class="n">canvas</span><span class="o">.</span><span class="n">drawString</span><span class="p">(</span>
+        <span class="n">doc</span><span class="o">.</span><span class="n">leftMargin</span><span class="p">,</span> <span class="mi">15</span> <span class="o">*</span> <span class="n">mm</span><span class="p">,</span> <span class="s2">&quot;Page {0}: {1} - {2}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">doc</span><span class="o">.</span><span class="n">page</span><span class="p">,</span> <span class="n">doc</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">doc</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">upper</span><span class="p">()))</span>
+    <span class="n">canvas</span><span class="o">.</span><span class="n">restoreState</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="PDFcreator"><a class="viewcode-back" href="../../../generated/pyconnectomist.utils.pdftools.html#pyconnectomist.utils.pdftools.PDFcreator">[docs]</a><span class="k">class</span> <span class="nc">PDFcreator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Generate a text/image PDF.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">poweredby</span><span class="p">,</span> <span class="n">project</span><span class="p">,</span> <span class="n">timepoint</span><span class="p">,</span>
+                 <span class="n">subject</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">pagesize</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">left_margin</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+                 <span class="n">right_margin</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">top_margin</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">bottom_margin</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+                 <span class="n">show_boundary</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Initilize the &#39;PDFcreator&#39; class&#39;.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        author: str (mandatory)</span>
+<span class="sd">            the PDF author.</span>
+<span class="sd">        client: str (mandatory)</span>
+<span class="sd">            the client name.</span>
+<span class="sd">        poweredby: str (mandatory)</span>
+<span class="sd">            the tool used to produce the results.</span>
+<span class="sd">        project: str (mandatory)</span>
+<span class="sd">            the project name.</span>
+<span class="sd">        timepoint: str (mandatory)</span>
+<span class="sd">            the project timepoint.</span>
+<span class="sd">        subject: str (mandatory)</span>
+<span class="sd">            the subject identifier.</span>
+<span class="sd">        date: str (mandatory)</span>
+<span class="sd">            the study date.</span>
+<span class="sd">        title: str (mandatory)</span>
+<span class="sd">            a title for the reprot.</span>
+<span class="sd">        filename: str (mandatory)</span>
+<span class="sd">            the path to file that will be generated.</span>
+<span class="sd">        pagesize: 2-uplet (optional, default None)</span>
+<span class="sd">            the size of the report page.</span>
+<span class="sd">        *_margin: float (optional, default 0.5)</span>
+<span class="sd">            the margin expressed in mm.</span>
+<span class="sd">        show_boundary: bool (optional, default False)</span>
+<span class="sd">            if True show the frame boudaries.</span>
+<span class="sd">        verbose: int (optional, default 0)</span>
+<span class="sd">            the verbosity level.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Class parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">styles</span> <span class="o">=</span> <span class="n">getSampleStyleSheet</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spacer</span> <span class="o">=</span> <span class="n">Spacer</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">mm</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">author</span> <span class="o">=</span> <span class="n">author</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subject</span> <span class="o">=</span> <span class="n">subject</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timepoint</span> <span class="o">=</span> <span class="n">timepoint</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">client</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">poweredby</span> <span class="o">=</span> <span class="n">poweredby</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">project</span> <span class="o">=</span> <span class="n">project</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">date</span>
+
+        <span class="c1"># Create the document template</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pagesize</span> <span class="o">=</span> <span class="n">pagesize</span> <span class="ow">or</span> <span class="n">letter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_margin</span> <span class="o">=</span> <span class="n">left_margin</span> <span class="o">*</span> <span class="n">mm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_margin</span> <span class="o">=</span> <span class="n">right_margin</span> <span class="o">*</span> <span class="n">mm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">top_margin</span> <span class="o">=</span> <span class="n">top_margin</span> <span class="o">*</span> <span class="n">mm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bottom_margin</span> <span class="o">=</span> <span class="n">bottom_margin</span> <span class="o">*</span> <span class="n">mm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">doc</span> <span class="o">=</span> <span class="n">BaseDocTemplate</span><span class="p">(</span>
+            <span class="n">filename</span><span class="p">,</span>
+            <span class="n">pagesize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pagesize</span><span class="p">,</span>
+            <span class="n">showBoundary</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">show_boundary</span><span class="p">),</span>
+            <span class="n">leftMargin</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">left_margin</span><span class="p">,</span>
+            <span class="n">rightMargin</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">right_margin</span><span class="p">,</span>
+            <span class="n">topMargin</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">top_margin</span><span class="p">,</span>
+            <span class="n">bottomMargin</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bottom_margin</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;{0} ({1}-{2})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">timepoint</span><span class="p">),</span>
+            <span class="n">author</span><span class="o">=</span><span class="n">author</span><span class="p">,</span>
+            <span class="n">subject</span><span class="o">=</span><span class="n">subject</span><span class="p">)</span>
+
+        <span class="c1"># Define the document frames</span>
+        <span class="c1"># &gt; normal one column frame</span>
+        <span class="n">frame1</span> <span class="o">=</span> <span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">leftMargin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">bottomMargin</span><span class="p">,</span>
+                       <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">)</span>
+        <span class="c1"># &gt; two columns frame</span>
+        <span class="n">frame2</span> <span class="o">=</span> <span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">leftMargin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">bottomMargin</span><span class="p">,</span>
+                       <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">6</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;2col1&quot;</span><span class="p">)</span>
+        <span class="n">frame3</span> <span class="o">=</span> <span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">leftMargin</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">6</span><span class="p">,</span>
+                       <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">bottomMargin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">6</span><span class="p">,</span>
+                       <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;2col2&quot;</span><span class="p">)</span>
+        <span class="c1"># &gt; landscape one colums frame</span>
+        <span class="n">frame4</span> <span class="o">=</span> <span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">leftMargin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">bottomMargin</span><span class="p">,</span>
+                       <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">)</span>
+        <span class="c1"># &gt; update document templates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">addPageTemplates</span><span class="p">([</span>
+            <span class="n">PageTemplate</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;OneCol&quot;</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="n">frame1</span><span class="p">,</span>
+                         <span class="n">onPage</span><span class="o">=</span><span class="n">header_and_footer</span><span class="p">),</span>
+            <span class="n">PageTemplate</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;OneColLandscape&quot;</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="n">frame4</span><span class="p">,</span>
+                         <span class="n">onPage</span><span class="o">=</span><span class="n">header_and_footer</span><span class="p">,</span>
+                         <span class="n">pagesize</span><span class="o">=</span><span class="n">landscape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pagesize</span><span class="p">)),</span>
+            <span class="n">PageTemplate</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;TwoCol&quot;</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="p">[</span><span class="n">frame2</span><span class="p">,</span> <span class="n">frame3</span><span class="p">],</span>
+                         <span class="n">onPage</span><span class="o">=</span><span class="n">header_and_footer</span><span class="p">)])</span>
+
+        <span class="c1"># Define template parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">templates</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;OneCol&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;pagesize&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">frame1</span><span class="o">.</span><span class="n">_aW</span><span class="p">,</span> <span class="n">frame1</span><span class="o">.</span><span class="n">_aH</span> <span class="o">-</span> <span class="mi">20</span><span class="p">),</span>
+                <span class="s2">&quot;colcount&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;text_width&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+                <span class="s2">&quot;landscape&quot;</span><span class="p">:</span> <span class="bp">False</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;OneColLandscape&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;pagesize&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">frame4</span><span class="o">.</span><span class="n">_aW</span> <span class="o">+</span> <span class="mi">50</span><span class="p">,</span> <span class="n">frame4</span><span class="o">.</span><span class="n">_aH</span> <span class="o">-</span> <span class="mi">20</span> <span class="o">-</span> <span class="mi">60</span><span class="p">),</span>
+                <span class="s2">&quot;colcount&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;text_width&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">height</span><span class="p">,</span>
+                <span class="s2">&quot;landscape&quot;</span><span class="p">:</span> <span class="bp">True</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;TwoCol&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;pagesize&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">frame2</span><span class="o">.</span><span class="n">_aW</span><span class="p">,</span> <span class="n">frame2</span><span class="o">.</span><span class="n">_aH</span> <span class="o">-</span> <span class="mi">20</span><span class="p">),</span>
+                <span class="s2">&quot;colcount&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="s2">&quot;text_width&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+                <span class="s2">&quot;landscape&quot;</span><span class="p">:</span> <span class="bp">False</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+<div class="viewcode-block" id="PDFcreator.cover"><a class="viewcode-back" href="../../../generated/pyconnectomist.utils.pdftools.html#pyconnectomist.utils.pdftools.PDFcreator.cover">[docs]</a>    <span class="k">def</span> <span class="nf">cover</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Display a cover.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Define a style for the cover</span>
+        <span class="n">cover</span> <span class="o">=</span> <span class="n">ParagraphStyle</span><span class="p">(</span><span class="s2">&quot;Cover&quot;</span><span class="p">)</span>
+        <span class="n">cover</span><span class="o">.</span><span class="n">textColor</span> <span class="o">=</span> <span class="s2">&quot;black&quot;</span>
+        <span class="n">cover</span><span class="o">.</span><span class="n">borderColor</span> <span class="o">=</span> <span class="s2">&quot;black&quot;</span>
+        <span class="n">cover</span><span class="o">.</span><span class="n">borderPadding</span> <span class="o">=</span> <span class="mi">80</span>
+        <span class="n">cover</span><span class="o">.</span><span class="n">borderWidth</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">cover</span><span class="o">.</span><span class="n">alignment</span> <span class="o">=</span> <span class="n">TA_CENTER</span>
+        <span class="n">cover</span><span class="o">.</span><span class="n">fontSize</span> <span class="o">=</span> <span class="mi">30</span>
+        <span class="n">cover</span><span class="o">.</span><span class="n">borderRadius</span> <span class="o">=</span> <span class="mi">20</span>
+        <span class="n">cover</span><span class="o">.</span><span class="n">backColor</span> <span class="o">=</span> <span class="s2">&quot;gray&quot;</span>
+        <span class="n">cover</span><span class="o">.</span><span class="n">leading</span> <span class="o">=</span> <span class="mi">40</span>
+        <span class="n">pagesize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">templates</span><span class="p">[</span><span class="s2">&quot;OneCol&quot;</span><span class="p">][</span><span class="s2">&quot;pagesize&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Cover</span><span class="p">(</span><span class="n">pagesize</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pagesize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="p">,</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">poweredby</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">,</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">timepoint</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">subject</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Spacer</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pagesize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Paragraph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">cover</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="PDFcreator.triplanar"><a class="viewcode-back" href="../../../generated/pyconnectomist.utils.pdftools.html#pyconnectomist.utils.pdftools.PDFcreator.triplanar">[docs]</a>    <span class="k">def</span> <span class="nf">triplanar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">triplanars</span><span class="p">,</span> <span class="n">page_type</span><span class="o">=</span><span class="s2">&quot;OneCol&quot;</span><span class="p">,</span>
+                  <span class="n">preserve_aspect_ratio</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">text_top_margin</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+                  <span class="n">text_padding</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">texts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">linecount</span><span class="o">=</span><span class="mi">42</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Create a triplanar page with custom layout.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        triplanars: list of (4-uplet) or (1-uplet)</span>
+<span class="sd">            the images to be displayed in triplanar views. The 4-uplet must</span>
+<span class="sd">            be of the form (image_upper_left, image_upper_right,</span>
+<span class="sd">            image_bottom_left, image_bottom_right). If a 1-uplet is specified</span>
+<span class="sd">            display the image in single mode.</span>
+<span class="sd">        page_type: str (optional, default &#39;OneCol&#39;)</span>
+<span class="sd">            the page style in &#39;OneCol&#39;, &#39;TwoCol&#39; or &#39;OneColLandscape&#39;.</span>
+<span class="sd">        preserve_aspect_ratio: bool (optional, default True)</span>
+<span class="sd">            if True preserve the image aspect ratios.</span>
+<span class="sd">        text_top_margin: float (optional, default 0.2)</span>
+<span class="sd">            the text margin ratio (ie the height of the text section in the</span>
+<span class="sd">            page) in [0, 1].</span>
+<span class="sd">        text_padding: float (optional, default 0.05)</span>
+<span class="sd">            the text padding ratio (ie the width between text boxes in the</span>
+<span class="sd">            page) in [0, 1].</span>
+<span class="sd">        texts: list of str (optional, default None)</span>
+<span class="sd">            the texts to be displayed in the page.</span>
+<span class="sd">        linecount: int (optional, default 42)</span>
+<span class="sd">            the number of characters in each line.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Welcome message</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[info] Creating a new triplanar page...&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Define the page layout</span>
+        <span class="k">if</span> <span class="n">page_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">templates</span><span class="p">:</span>
+            <span class="n">page_style</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">templates</span><span class="p">[</span><span class="n">page_type</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unexpected &#39;{0}&#39; page type.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">page_type</span><span class="p">))</span>
+        <span class="n">pagesize</span> <span class="o">=</span> <span class="n">page_style</span><span class="p">[</span><span class="s2">&quot;pagesize&quot;</span><span class="p">]</span>
+        <span class="n">spacer_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacer</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="n">mm</span>
+        <span class="n">figcount</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">triplanars</span><span class="p">)</span>
+        <span class="n">texts</span> <span class="o">=</span> <span class="n">texts</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="n">textcount</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span>
+        <span class="n">text_padding</span> <span class="o">=</span> <span class="n">page_style</span><span class="p">[</span><span class="s2">&quot;text_width&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">text_padding</span>
+        <span class="n">text_width</span> <span class="o">=</span> <span class="p">((</span><span class="n">page_style</span><span class="p">[</span><span class="s2">&quot;text_width&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">text_padding</span> <span class="o">*</span>
+                      <span class="p">(</span><span class="n">textcount</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="n">textcount</span> <span class="k">if</span> <span class="n">textcount</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">text_height</span> <span class="o">=</span> <span class="n">pagesize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">text_top_margin</span> <span class="k">if</span> <span class="n">textcount</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="n">rowcount</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">figcount</span> <span class="o">/</span> <span class="n">page_style</span><span class="p">[</span><span class="s2">&quot;colcount&quot;</span><span class="p">]))</span>
+        <span class="n">fig_height</span> <span class="o">=</span> <span class="p">((</span><span class="n">pagesize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">text_height</span> <span class="o">-</span> <span class="n">rowcount</span> <span class="o">*</span> <span class="n">spacer_height</span><span class="p">)</span> <span class="o">/</span>
+                      <span class="n">rowcount</span><span class="p">)</span>
+        <span class="n">text_spacer</span> <span class="o">=</span> <span class="n">Spacer</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">text_height</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[info] #fig {0} - #row {1} - #col {2}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">figcount</span><span class="p">,</span> <span class="n">rowcount</span><span class="p">,</span> <span class="n">page_style</span><span class="p">[</span><span class="s2">&quot;colcount&quot;</span><span class="p">]))</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[info] #txt {0} - #row 1 - #col {0}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">textcount</span><span class="p">))</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[info] #height {0} - #txt {1} - #fig {2} - &quot;</span>
+                  <span class="s2">&quot;#figs {3}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pagesize</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">text_height</span><span class="p">,</span> <span class="n">fig_height</span><span class="p">,</span>
+                                      <span class="p">(</span><span class="n">fig_height</span> <span class="o">+</span> <span class="n">spacer_height</span><span class="p">)</span> <span class="o">*</span> <span class="n">rowcount</span><span class="p">))</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[info] #width {0} - #txt {1} - #pad {2}, #tot {3}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">pagesize</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">text_width</span><span class="p">,</span> <span class="n">text_padding</span><span class="p">,</span>
+                <span class="n">text_width</span> <span class="o">*</span> <span class="n">textcount</span> <span class="o">+</span> <span class="n">text_padding</span> <span class="o">*</span> <span class="p">(</span><span class="n">textcount</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)))</span>
+
+        <span class="c1"># Display content</span>
+        <span class="c1"># &gt; apply page template</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">NextPageTemplate</span><span class="p">(</span><span class="n">page_type</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PageBreak</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">page_style</span><span class="p">[</span><span class="s2">&quot;landscape&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Spacer</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">))</span>
+        <span class="c1"># &gt; set the text</span>
+        <span class="k">if</span> <span class="n">textcount</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[info] Insert a text spacer {0}...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">text_height</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">Text</span><span class="p">(</span><span class="n">text_height</span><span class="p">,</span> <span class="n">text_width</span><span class="p">,</span> <span class="n">text_padding</span><span class="p">,</span> <span class="n">texts</span><span class="p">,</span>
+                     <span class="n">linecount</span><span class="o">=</span><span class="n">linecount</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[info] Insert a spacer {0}...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spacer_height</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spacer</span><span class="p">)</span>
+        <span class="c1"># &gt; set the figures</span>
+        <span class="k">for</span> <span class="n">cnt</span><span class="p">,</span> <span class="n">images</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">triplanars</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[info] Insert a figure {0}...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fig_height</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">TriPlanar</span><span class="p">(</span><span class="n">pagesize</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">fig_height</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span>
+                          <span class="n">preserve_aspect_ratio</span><span class="o">=</span><span class="n">preserve_aspect_ratio</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">cnt</span> <span class="o">%</span> <span class="n">rowcount</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[info] Insert a spacer {0}...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">spacer_height</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spacer</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">textcount</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cnt</span> <span class="o">/</span> <span class="n">rowcount</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">page_style</span><span class="p">[</span><span class="s2">&quot;colcount&quot;</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[info] Insert a text spacer {0}...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">text_height</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text_spacer</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spacer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PDFcreator.update"><a class="viewcode-back" href="../../../generated/pyconnectomist.utils.pdftools.html#pyconnectomist.utils.pdftools.PDFcreator.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Start the construction of the PDF.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">story</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Cover"><a class="viewcode-back" href="../../../generated/pyconnectomist.utils.pdftools.html#pyconnectomist.utils.pdftools.Cover">[docs]</a><span class="k">class</span> <span class="nc">Cover</span><span class="p">(</span><span class="n">Flowable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Display a cover page.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">poweredby</span><span class="p">,</span> <span class="n">project</span><span class="p">,</span>
+                 <span class="n">timepoint</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">linespace</span><span class="o">=</span><span class="mi">14</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Initialize the &#39;Intro&#39; class.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        width: float (mandatory)</span>
+<span class="sd">            the element width.</span>
+<span class="sd">        height: float (mandatory)</span>
+<span class="sd">            the element height.</span>
+<span class="sd">        author: str (mandatory)</span>
+<span class="sd">            the author name.</span>
+<span class="sd">        client: str (mandatory)</span>
+<span class="sd">            the client name.</span>
+<span class="sd">        poweredby: str (mandatory)</span>
+<span class="sd">            the tool used to produce the results.</span>
+<span class="sd">        project: str (mandatory)</span>
+<span class="sd">            the project name.</span>
+<span class="sd">        timepoint: str (mandatory)</span>
+<span class="sd">            the project timepoint.</span>
+<span class="sd">        subject: str (mandatory)</span>
+<span class="sd">            the subject identifier.</span>
+<span class="sd">        date: str (mandatory)</span>
+<span class="sd">            the study date.</span>
+<span class="sd">        linespace: int (mandatory)</span>
+<span class="sd">            the space between lines.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Flowable</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linespace</span> <span class="o">=</span> <span class="n">linespace</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;Performed by: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">author</span><span class="p">),</span>
+            <span class="s2">&quot;Client: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">client</span><span class="p">),</span>
+            <span class="s2">&quot;Powered by: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">poweredby</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;Project: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">project</span><span class="p">),</span>
+            <span class="s2">&quot;Subject: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">subject</span><span class="p">),</span>
+            <span class="s2">&quot;Time step: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">timepoint</span><span class="p">),</span>
+            <span class="s2">&quot;QC date: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
+        <span class="p">]</span>
+
+<div class="viewcode-block" id="Cover.draw"><a class="viewcode-back" href="../../../generated/pyconnectomist.utils.pdftools.html#pyconnectomist.utils.pdftools.Cover.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Draw the triplanar element.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">linespace</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">left</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canv</span><span class="o">.</span><span class="n">drawString</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+            <span class="n">height</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linespace</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">linespace</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">right</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canv</span><span class="o">.</span><span class="n">drawString</span><span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+            <span class="n">height</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linespace</span></div></div>
+
+
+<div class="viewcode-block" id="Text"><a class="viewcode-back" href="../../../generated/pyconnectomist.utils.pdftools.html#pyconnectomist.utils.pdftools.Text">[docs]</a><span class="k">class</span> <span class="nc">Text</span><span class="p">(</span><span class="n">Flowable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Display an introduction paragraph.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">text_width</span><span class="p">,</span> <span class="n">text_padding</span><span class="p">,</span> <span class="n">texts</span><span class="p">,</span>
+                 <span class="n">linecount</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">linespace</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Initialize the &#39;Intro&#39; class.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        height: float (mandatory)</span>
+<span class="sd">            the text box height.</span>
+<span class="sd">        text_width: float (mandatory)</span>
+<span class="sd">            each text box width.</span>
+<span class="sd">        text_padding: float (mandatory)</span>
+<span class="sd">            the padding between each text box.</span>
+<span class="sd">        texts: list of str (mandatory)</span>
+<span class="sd">            the texts to be displayed.</span>
+<span class="sd">        linecount: int (optional, default 42)</span>
+<span class="sd">            the number of characters in each line.</span>
+<span class="sd">        linespace: int (optional, default 14)</span>
+<span class="sd">            the space between lines.</span>
+<span class="sd">        verbose: int (optional, default 0)</span>
+<span class="sd">            the verbosity level.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Flowable</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_width</span> <span class="o">=</span> <span class="n">text_width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_padding</span> <span class="o">=</span> <span class="n">text_padding</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">texts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">txt</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">texts</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">txt</span><span class="p">[</span><span class="n">i</span><span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">linecount</span><span class="p">]</span>
+                               <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">txt</span><span class="p">),</span> <span class="n">linecount</span><span class="p">)])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linespace</span> <span class="o">=</span> <span class="n">linespace</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+
+<div class="viewcode-block" id="Text.draw"><a class="viewcode-back" href="../../../generated/pyconnectomist.utils.pdftools.html#pyconnectomist.utils.pdftools.Text.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Draw the text elements.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">cnt</span><span class="p">,</span> <span class="n">txt</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">texts</span><span class="p">):</span>
+            <span class="n">start_width</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text_width</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_padding</span><span class="p">)</span> <span class="o">*</span> <span class="n">cnt</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[info] Insert a text {0}-{1}...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">start_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">))</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">linespace</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">txt</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">canv</span><span class="o">.</span><span class="n">drawString</span><span class="p">(</span><span class="n">start_width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+                <span class="n">height</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linespace</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canv</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">start_width</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">start_width</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_width</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="TriPlanar"><a class="viewcode-back" href="../../../generated/pyconnectomist.utils.pdftools.html#pyconnectomist.utils.pdftools.TriPlanar">[docs]</a><span class="k">class</span> <span class="nc">TriPlanar</span><span class="p">(</span><span class="n">Flowable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Display a triplanar view.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">preserve_aspect_ratio</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Initialize the &#39;TriPlanar&#39; class.</span>
+
+<span class="sd">        If a None image is passed, an empty box will be displayed.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        width: float (mandatory)</span>
+<span class="sd">            the element width.</span>
+<span class="sd">        heights: float (mandatory)</span>
+<span class="sd">            the element height.</span>
+<span class="sd">        images: 4-uplet or 1-uplet (mandatory)</span>
+<span class="sd">            the path to the images to be displayed. If a 4-uplet is specified</span>
+<span class="sd">            the display order is (image_upper_left, image_upper_right,</span>
+<span class="sd">            image_bottom_left, image_bottom_right)</span>
+<span class="sd">        preserve_aspect_ratio: bool (optional, default True)</span>
+<span class="sd">            if True preserve the image aspect ratios.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Flowable</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_mode</span> <span class="o">=</span> <span class="s2">&quot;multi&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">display_mode</span> <span class="o">=</span> <span class="s2">&quot;single&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">images</span> <span class="o">=</span> <span class="n">images</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preserve_aspect_ratio</span> <span class="o">=</span> <span class="n">preserve_aspect_ratio</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">missing_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span>
+                                         <span class="s2">&quot;resources&quot;</span><span class="p">,</span> <span class="s2">&quot;missing.png&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TriPlanar.draw"><a class="viewcode-back" href="../../../generated/pyconnectomist.utils.pdftools.html#pyconnectomist.utils.pdftools.TriPlanar.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Draw the triplanar element.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check that all expected images exist</span>
+        <span class="k">for</span> <span class="n">cnt</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="n">cnt</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">missing_file</span>
+
+        <span class="c1"># Dispaly images</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_mode</span> <span class="o">==</span> <span class="s2">&quot;multi&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">canv</span><span class="o">.</span><span class="n">drawImage</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="n">preserveAspectRatio</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">preserve_aspect_ratio</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">canv</span><span class="o">.</span><span class="n">drawImage</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="n">preserveAspectRatio</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">preserve_aspect_ratio</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">canv</span><span class="o">.</span><span class="n">drawImage</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="n">preserveAspectRatio</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">preserve_aspect_ratio</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">canv</span><span class="o">.</span><span class="n">drawImage</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="n">preserveAspectRatio</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">preserve_aspect_ratio</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_mode</span> <span class="o">==</span> <span class="s2">&quot;single&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">canv</span><span class="o">.</span><span class="n">drawImage</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span>
+                    <span class="n">preserveAspectRatio</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">preserve_aspect_ratio</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="load_pdf_struct"><a class="viewcode-back" href="../../../generated/pyconnectomist.utils.pdftools.html#pyconnectomist.utils.pdftools.load_pdf_struct">[docs]</a><span class="k">def</span> <span class="nf">load_pdf_struct</span><span class="p">(</span><span class="n">datapath</span><span class="p">,</span> <span class="n">struct_file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Load the the pdf structure.</span>
+
+<span class="sd">    The expected pdf description is as follows:</span>
+
+<span class="sd">    ::</span>
+
+<span class="sd">        pdf_struct = {</span>
+<span class="sd">            &quot;page1&quot;: {</span>
+<span class="sd">                &quot;images&quot;: [</span>
+<span class="sd">                    relative_path1,</span>
+<span class="sd">                    relative_path2,</span>
+<span class="sd">                    relative_path3,</span>
+<span class="sd">                    [relative_path41, relative_path42, relative_path43,</span>
+<span class="sd">                     relative_path44]</span>
+<span class="sd">                ],</span>
+<span class="sd">                &quot;texts&quot;: [</span>
+<span class="sd">                    &quot;my text 1&quot;,</span>
+<span class="sd">                    &quot;my text 2&quot;</span>
+<span class="sd">                ],</span>
+<span class="sd">                &quot;type&quot;: &quot;Triplanar&quot;,</span>
+<span class="sd">                &quot;top_margin&quot;: 42,</span>
+<span class="sd">                &quot;linecount&quot;: 100,</span>
+<span class="sd">                &quot;style&quot;: &quot;OneCol&quot;</span>
+<span class="sd">            },</span>
+<span class="sd">            ...</span>
+<span class="sd">        }</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    datapath: str (mandatory)</span>
+<span class="sd">        the path where the images are stored: used to complete the relative</span>
+<span class="sd">        path.</span>
+<span class="sd">    struct_file: str (mandatory)</span>
+<span class="sd">        the path to the pdf description.</span>
+
+<span class="sd">    Retruns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pdf_struct: dict</span>
+<span class="sd">        the pdf structure.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Load the structure</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">struct_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">open_file</span><span class="p">:</span>
+        <span class="n">pdf_struct</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">open_file</span><span class="p">,</span> <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">)</span>
+
+    <span class="c1"># Update the image relative path</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">struct</span> <span class="ow">in</span> <span class="n">pdf_struct</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="s2">&quot;images&quot;</span> <span class="ow">in</span> <span class="n">struct</span><span class="p">:</span>
+            <span class="n">struct</span><span class="p">[</span><span class="s2">&quot;images&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">update_path</span><span class="p">(</span><span class="n">datapath</span><span class="p">,</span> <span class="n">struct</span><span class="p">[</span><span class="s2">&quot;images&quot;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">pdf_struct</span></div>
+
+
+<div class="viewcode-block" id="update_path"><a class="viewcode-back" href="../../../generated/pyconnectomist.utils.pdftools.html#pyconnectomist.utils.pdftools.update_path">[docs]</a><span class="k">def</span> <span class="nf">update_path</span><span class="p">(</span><span class="n">datapath</span><span class="p">,</span> <span class="n">listpath</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Update the path of a recusrsive list structure.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    datapath: str (mandatory)</span>
+<span class="sd">        the path where the images are stored: used to complete the relative</span>
+<span class="sd">        path.</span>
+<span class="sd">    listpath: list (mandatory)</span>
+<span class="sd">        a recursive list with relative path.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    newlist: list</span>
+<span class="sd">        a recursive list with absolute path.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">newlist</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">rpath</span> <span class="ow">in</span> <span class="n">listpath</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rpath</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">newlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">update_path</span><span class="p">(</span><span class="n">datapath</span><span class="p">,</span> <span class="n">rpath</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">rpath</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">newlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rpath</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">newlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">datapath</span><span class="p">,</span> <span class="n">rpath</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">newlist</span></div>
+
+
+<div class="viewcode-block" id="generate_pdf"><a class="viewcode-back" href="../../../generated/pyconnectomist.utils.pdftools.html#pyconnectomist.utils.pdftools.generate_pdf">[docs]</a><span class="k">def</span> <span class="nf">generate_pdf</span><span class="p">(</span><span class="n">datapath</span><span class="p">,</span> <span class="n">struct_file</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">poweredby</span><span class="p">,</span> <span class="n">project</span><span class="p">,</span>
+                 <span class="n">timepoint</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">pagesize</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">left_margin</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">right_margin</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">top_margin</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+                 <span class="n">bottom_margin</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">show_boundary</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Generate a PDF report from a description file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    datapath: str (mandatory)</span>
+<span class="sd">        the path where the images are stored: used to complete the relative</span>
+<span class="sd">        path.</span>
+<span class="sd">    struct_file: str (mandatory)</span>
+<span class="sd">        the path to the pdf description.</span>
+<span class="sd">    author: str (mandatory)</span>
+<span class="sd">        the author name.</span>
+<span class="sd">    client: str (mandatory)</span>
+<span class="sd">        the client name.</span>
+<span class="sd">    poweredby: str (mandatory)</span>
+<span class="sd">        the tool used to produce the results.</span>
+<span class="sd">    project: str (mandatory)</span>
+<span class="sd">        the project name.</span>
+<span class="sd">    timepoint: str (mandatory)</span>
+<span class="sd">        the project timepoint.</span>
+<span class="sd">    subject: str (mandatory)</span>
+<span class="sd">        the subject identifier.</span>
+<span class="sd">    date: str (mandatory)</span>
+<span class="sd">        the study date.</span>
+<span class="sd">    title: str (mandatory)</span>
+<span class="sd">        a title for the report.</span>
+<span class="sd">    filename: str (mandatory)</span>
+<span class="sd">        the path to file that will be generated.</span>
+<span class="sd">    pagesize: 2-uplet (optional, default None)</span>
+<span class="sd">        the size of the report page.</span>
+<span class="sd">    *_margin: float (optional, default 0.5)</span>
+<span class="sd">        the margin expressed in mm.</span>
+<span class="sd">    show_boundary: bool (optional, default False)</span>
+<span class="sd">        if True show the frame boudaries.</span>
+<span class="sd">    verbose: int (optional, default 0)</span>
+<span class="sd">        the verbosity level.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Load the pdf structure in memory</span>
+    <span class="n">pdf_struct</span> <span class="o">=</span> <span class="n">load_pdf_struct</span><span class="p">(</span><span class="n">datapath</span><span class="p">,</span> <span class="n">struct_file</span><span class="p">)</span>
+
+    <span class="c1"># Create the pdf page</span>
+    <span class="n">creator</span> <span class="o">=</span> <span class="n">PDFcreator</span><span class="p">(</span><span class="n">author</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">poweredby</span><span class="p">,</span> <span class="n">project</span><span class="p">,</span> <span class="n">timepoint</span><span class="p">,</span>
+                         <span class="n">subject</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">pagesize</span><span class="o">=</span><span class="n">pagesize</span><span class="p">,</span>
+                         <span class="n">left_margin</span><span class="o">=</span><span class="n">left_margin</span><span class="p">,</span> <span class="n">right_margin</span><span class="o">=</span><span class="n">right_margin</span><span class="p">,</span>
+                         <span class="n">top_margin</span><span class="o">=</span><span class="n">top_margin</span><span class="p">,</span> <span class="n">bottom_margin</span><span class="o">=</span><span class="n">bottom_margin</span><span class="p">,</span>
+                         <span class="n">show_boundary</span><span class="o">=</span><span class="n">show_boundary</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+
+    <span class="c1"># Add item to the pdf page</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">struct</span> <span class="ow">in</span> <span class="n">pdf_struct</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">struct</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;cover&quot;</span><span class="p">:</span>
+            <span class="n">creator</span><span class="o">.</span><span class="n">cover</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">struct</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;triplanar&quot;</span><span class="p">:</span>
+            <span class="n">creator</span><span class="o">.</span><span class="n">triplanar</span><span class="p">(</span>
+                <span class="n">struct</span><span class="p">[</span><span class="s2">&quot;images&quot;</span><span class="p">],</span>
+                <span class="n">page_type</span><span class="o">=</span><span class="n">struct</span><span class="p">[</span><span class="s2">&quot;style&quot;</span><span class="p">],</span>
+                <span class="n">text_top_margin</span><span class="o">=</span><span class="n">struct</span><span class="p">[</span><span class="s2">&quot;topmargin&quot;</span><span class="p">],</span>
+                <span class="n">linecount</span><span class="o">=</span><span class="n">struct</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;linecount&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="n">texts</span><span class="o">=</span><span class="n">struct</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;texts&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unexpected &#39;{0}&#39; page type.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">struct</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]))</span>
+
+    <span class="c1"># Save the page to disk</span>
+    <span class="n">creator</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+
+    <div class="clearer">
+    </div>
+  </div>
+  
+</div>
+
+<div class="footer">
+    &copy; 2017, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
+</div>
+  </body>
+</html>

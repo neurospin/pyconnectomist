@@ -15,11 +15,12 @@
     
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/gallery.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.0.0',
+        VERSION:     '2.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -52,7 +53,18 @@
   </script>
 
   </head>
-  <body role="document"><nav class="navbar navbar-default navbar-static-top">
+  <body role="document"><div class="banner">
+  <div class="container-fluid banner-container">
+    <div class="row banner-inner">
+      <div class="col-xs-4">
+        <img alt="Logo" src="../../../_static/pyconnectomist.png">
+      </div>
+      <div class="col-xs-8">
+            <p>Using Connectomist in Python.</p>
+      </div>
+    </div>  
+  </div>
+</div><nav class="navbar navbar-default navbar-static-top">
   <div class="container-fluid">
     <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -62,38 +74,36 @@
           <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="../../../index.html">
-        <img alt="Logo" src="../../../_static/pyconnectomist.png">
         </a>
     </div>
     <div id="navbar" class="navbar-collapse collapse" ng-controller="navCtrl" ng-app="navApp">
       <ul class="nav navbar-nav">
         <li ng-class="{ active: isActive('index') }"><a href="../../../index.html">Home</a></li>
         <li ng-class="{ active: isActive('installation') }"><a href="../../../generated/installation.html">Installation</a></li>
-        <li ng-class="{ active: isActive('documentation') }"><a href="../../../generated/documentation.html">Documentation</a></li>
-        <li class="dropdown">
+        <li ng-class="{ active: isActive('gallery') }"><a href="../../../auto_gallery/gallery.html">Gallery</a></li>
+        <li ng-class="{ active: isActive('documentation') }"><a href="../../../generated/documentation.html">API documentation</a></li>
+        <!--<li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></a>
           <ul class="dropdown-menu">
 	        <li><a href="../../../generated/pyconnectomist.html">Pyconnectomist</a></li>
-<li><a href="../../../generated/pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
 <li><a href="../../../generated/pyconnectomist.tractography.html">Pyconnectomist.tractography</a></li>
-<li><a href="../../../generated/pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
 <li><a href="../../../generated/pyconnectomist.clustering.html">Pyconnectomist.clustering</a></li>
+<li><a href="../../../generated/pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
+<li><a href="../../../generated/pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
           </ul>
-        </li>
+        </li>-->
         <li><a href="https://github.com/AGrigis/pysphinxdoc">PYSPHINXDOC</a></li>
       </ul>
     </div>
   </div>
 </nav>
-
-
 <div class="content-wrapper">
     <div class="sphinxsidebar">
       <div class="sphinxsidebarwrapper">
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for pyconnectomist <strong>version 1.0.0</strong>
+           This documentation is for pyconnectomist <strong>version 2.0.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -139,31 +149,40 @@
 <span class="kn">from</span> <span class="nn">.eddy</span> <span class="kn">import</span> <span class="n">eddy_and_motion_correction</span>
 <span class="kn">from</span> <span class="nn">.eddy</span> <span class="kn">import</span> <span class="n">export_eddy_motion_results_to_nifti</span>
 <span class="kn">from</span> <span class="nn">.registration</span> <span class="kn">import</span> <span class="n">dwi_to_anatomy</span>
+<span class="kn">from</span> <span class="nn">.qc</span> <span class="kn">import</span> <span class="n">qc_reporting</span>
 
 
 <span class="c1"># Define steps</span>
 <span class="n">STEPS</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;01-Import_and_qspace_model&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;02-Rough_mask&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;03-Outliers&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;04-Suceptibility&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;05-Eddy_current_and_motion&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;06-Anatomy_Talairach&quot;</span>
+    <span class="s2">&quot;02-Anatomy_Talairach&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;03-Rough_mask&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;04-Outliers&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;05-Suceptibility&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;06-Eddy_current_and_motion&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;07-QC_reporting&quot;</span>
 <span class="p">]</span>
 
 
 <div class="viewcode-block" id="complete_preprocessing"><a class="viewcode-back" href="../../../generated/pyconnectomist.preproc.all_steps.html#pyconnectomist.preproc.all_steps.complete_preprocessing">[docs]</a><span class="k">def</span> <span class="nf">complete_preprocessing</span><span class="p">(</span>
         <span class="n">outdir</span><span class="p">,</span>
         <span class="n">subject_id</span><span class="p">,</span>
-        <span class="n">dwi</span><span class="p">,</span>
-        <span class="n">bval</span><span class="p">,</span>
-        <span class="n">bvec</span><span class="p">,</span>
+        <span class="n">project_name</span><span class="p">,</span>
+        <span class="n">timestep</span><span class="p">,</span>
+        <span class="n">dwis</span><span class="p">,</span>
+        <span class="n">bvals</span><span class="p">,</span>
+        <span class="n">bvecs</span><span class="p">,</span>
         <span class="n">manufacturer</span><span class="p">,</span>
         <span class="n">delta_TE</span><span class="p">,</span>
         <span class="n">partial_fourier_factor</span><span class="p">,</span>
         <span class="n">parallel_acceleration_factor</span><span class="p">,</span>
         <span class="n">b0_magnitude</span><span class="p">,</span>
         <span class="n">b0_phase</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+        <span class="n">phase_axis</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span>
+        <span class="n">slice_axis</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">,</span>
+        <span class="n">flipX</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+        <span class="n">flipY</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+        <span class="n">flipZ</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
         <span class="n">invertX</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
         <span class="n">invertY</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
         <span class="n">invertZ</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
@@ -172,8 +191,14 @@
         <span class="n">EPI_factor</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
         <span class="n">b0_field</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
         <span class="n">water_fat_shift</span><span class="o">=</span><span class="mf">4.68</span><span class="p">,</span>
+        <span class="n">t1_foot_zcropping</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">level_count</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+        <span class="n">lower_theshold</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">apply_smoothing</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">similarity_measure</span><span class="o">=</span><span class="s2">&quot;mi&quot;</span><span class="p">,</span>
         <span class="n">delete_steps</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
         <span class="n">morphologist_dir</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+        <span class="n">already_corrected</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
         <span class="n">path_connectomist</span><span class="o">=</span><span class="n">DEFAULT_CONNECTOMIST_PATH</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Function that runs all preprocessing tabs from Connectomist.</span>
 
@@ -183,21 +208,23 @@
 
 <span class="sd">    2- Import files to Connectomist and choose q-space model.</span>
 
-<span class="sd">    3- Create a brain mask.</span>
+<span class="sd">    3- Registration t1 - dwi.</span>
 
-<span class="sd">    4- Detect and correct outlying diffusion slices.</span>
+<span class="sd">    4- Create a brain mask.</span>
 
-<span class="sd">    5- Susceptibility correction.</span>
+<span class="sd">    5- Detect and correct outlying diffusion slices.</span>
 
-<span class="sd">    6- Eddy current and motion correction.</span>
+<span class="sd">    6- Susceptibility correction.</span>
 
-<span class="sd">    7- Export result as a Nifti with a .bval and a .bvec.</span>
+<span class="sd">    7- Eddy current and motion correction.</span>
 
-<span class="sd">    8- Export outliers.</span>
+<span class="sd">    8- QC reporting.</span>
 
-<span class="sd">    9- Registration t1 - dwi.</span>
+<span class="sd">    9- Export result as a Nifti with a .bval and a .bvec.</span>
 
-<span class="sd">    10- Delete intermediate files and directories if requested.</span>
+<span class="sd">    10- Export outliers.</span>
+
+<span class="sd">    11- Delete intermediate files and directories if requested.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -205,12 +232,16 @@
 <span class="sd">        path to folder where all the preprocessing will be done.</span>
 <span class="sd">    subject_id: str (mandatory)</span>
 <span class="sd">        subject identifier.</span>
-<span class="sd">    dwi: str (mandatory)</span>
-<span class="sd">        path to input Nifti DW data.</span>
-<span class="sd">    bval: str (mandatory)</span>
-<span class="sd">        path to Nifti&#39;s associated .bval file.</span>
-<span class="sd">    bvec: str (mandatory)</span>
-<span class="sd">        path to Nifti&#39;s associated .bval file.</span>
+<span class="sd">    project_name: str</span>
+<span class="sd">        the name of the project.</span>
+<span class="sd">    timestep: str</span>
+<span class="sd">        the time step assocaited to this diffusion dataset.</span>
+<span class="sd">    dwis: list of str (mandatory)</span>
+<span class="sd">        path to input Nifti DW datasets.</span>
+<span class="sd">    bvals: list of str (mandatory)</span>
+<span class="sd">        path to Nifti&#39;s associated .bval files.</span>
+<span class="sd">    bvecs: list of str (mandatory)</span>
+<span class="sd">        path to Nifti&#39;s associated .bval files.</span>
 <span class="sd">    manufacturer: str (mandatory)</span>
 <span class="sd">        manufacturer name (e.g. &quot;Siemens&quot;, &quot;GE&quot;...).</span>
 <span class="sd">    delta_TE: float (mandatory)</span>
@@ -224,6 +255,12 @@
 <span class="sd">        path to B0 magnitude map, also contains phase for GE.</span>
 <span class="sd">    b0_phase: str (optional, default None)</span>
 <span class="sd">        not for GE, path to B0 phase map.</span>
+<span class="sd">    phase_axis: str (optional, default &#39;y&#39;)</span>
+<span class="sd">        the acquistion phase axis &#39;x&#39;, &#39;y&#39; or &#39;z&#39;.</span>
+<span class="sd">    slice_axis: str (optional, default &#39;z&#39;)</span>
+<span class="sd">        the acquistion slice axis &#39;x&#39;, &#39;y&#39; or &#39;z&#39;.</span>
+<span class="sd">    flipX, flipY, flipZ: bool (optional, default False)</span>
+<span class="sd">        if True invert the x, y or z-axis of data.</span>
 <span class="sd">    invertX: bool (optional, default True)</span>
 <span class="sd">        if True invert x-axis in diffusion model.</span>
 <span class="sd">    invertY: bool (optional, default False)</span>
@@ -242,12 +279,25 @@
 <span class="sd">        Philips only, B0 field intensity, by default 3.0.</span>
 <span class="sd">    water_fat_shift: float (optional, default 4.68)</span>
 <span class="sd">        Philips only, default 4.68 pixels.</span>
+<span class="sd">    t1_foot_zcropping: int (optional, default 0)</span>
+<span class="sd">        crop the t1 image in the z direction in order to remove the neck.</span>
+<span class="sd">    level_count: int (optional, default 32)</span>
+<span class="sd">        the number of bins in the histogram.</span>
+<span class="sd">    lower_theshold: float (optional, default 0)</span>
+<span class="sd">        remove noise in the image by applying this lower theshold.</span>
+<span class="sd">    apply_smoothing: bool (optional, default True)</span>
+<span class="sd">        smooth the image before performing the histogram analysis.</span>
+<span class="sd">    similarity_measure: str (option, default &#39;mi&#39;)</span>
+<span class="sd">        the eddy + motion correction similarity measure.</span>
 <span class="sd">    delete_steps: bool (optional, default False)</span>
 <span class="sd">        if True remove all intermediate files and directories at the end of</span>
 <span class="sd">        preprocessing, to keep only 4 files: preprocessed Nifti + bval + bvec</span>
 <span class="sd">        + outliers.py</span>
 <span class="sd">    morphologist_dir: str (optional, default None)</span>
 <span class="sd">        the path to the morphologist processings.</span>
+<span class="sd">    already_corrected: bool (optional, default False)</span>
+<span class="sd">        if True, only the first three step are computed in order to facilitate</span>
+<span class="sd">        the modeling, tractography, bundeling steps.</span>
 <span class="sd">    path_connectomist: str (optional)</span>
 <span class="sd">        path to the Connectomist executable.</span>
 
@@ -258,7 +308,6 @@
 <span class="sd">    preproc_outliers: str</span>
 <span class="sd">        path to the outliers detection summary.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="c1"># Step 1 - Create the preprocessing output directory if not existing</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">outdir</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span>
@@ -268,27 +317,54 @@
     <span class="n">data_import_and_qspace_sampling</span><span class="p">(</span>
         <span class="n">raw_dwi_dir</span><span class="p">,</span>
         <span class="n">subject_id</span><span class="p">,</span>
-        <span class="n">dwi</span><span class="p">,</span>
-        <span class="n">bval</span><span class="p">,</span>
-        <span class="n">bvec</span><span class="p">,</span>
+        <span class="n">dwis</span><span class="p">,</span>
+        <span class="n">bvals</span><span class="p">,</span>
+        <span class="n">bvecs</span><span class="p">,</span>
         <span class="n">manufacturer</span><span class="p">,</span>
+        <span class="n">flipX</span><span class="p">,</span>
+        <span class="n">flipY</span><span class="p">,</span>
+        <span class="n">flipZ</span><span class="p">,</span>
         <span class="n">invertX</span><span class="p">,</span>
         <span class="n">invertY</span><span class="p">,</span>
         <span class="n">invertZ</span><span class="p">,</span>
         <span class="n">b0_magnitude</span><span class="p">,</span>
         <span class="n">b0_phase</span><span class="p">,</span>
+        <span class="n">phase_axis</span><span class="p">,</span>
+        <span class="n">slice_axis</span><span class="p">,</span>
         <span class="n">path_connectomist</span><span class="o">=</span><span class="n">path_connectomist</span><span class="p">)</span>
 
-    <span class="c1"># Step 3 - Create a brain mask</span>
-    <span class="n">rough_mask_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">STEPS</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c1"># Step 3 - Registration t1 - dwi</span>
+    <span class="n">registration_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">STEPS</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">dwi_to_anatomy</span><span class="p">(</span>
+        <span class="n">registration_dir</span><span class="p">,</span>
+        <span class="n">raw_dwi_dir</span><span class="p">,</span>
+        <span class="n">morphologist_dir</span><span class="p">,</span>
+        <span class="n">subject_id</span><span class="p">,</span>
+        <span class="n">t1_foot_zcropping</span><span class="o">=</span><span class="n">t1_foot_zcropping</span><span class="p">,</span>
+        <span class="n">level_count</span><span class="o">=</span><span class="n">level_count</span><span class="p">,</span>
+        <span class="n">lower_theshold</span><span class="o">=</span><span class="n">lower_theshold</span><span class="p">,</span>
+        <span class="n">apply_smoothing</span><span class="o">=</span><span class="n">apply_smoothing</span><span class="p">,</span>
+        <span class="n">path_connectomist</span><span class="o">=</span><span class="n">path_connectomist</span><span class="p">)</span>
+
+    <span class="c1"># Step 4 - Create a brain mask</span>
+    <span class="n">rough_mask_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">STEPS</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
     <span class="n">rough_mask_extraction</span><span class="p">(</span>
         <span class="n">rough_mask_dir</span><span class="p">,</span>
         <span class="n">raw_dwi_dir</span><span class="p">,</span>
+        <span class="n">registration_dir</span><span class="p">,</span>
+        <span class="n">morphologist_dir</span><span class="p">,</span>
         <span class="n">subject_id</span><span class="p">,</span>
+        <span class="n">level_count</span><span class="o">=</span><span class="n">level_count</span><span class="p">,</span>
+        <span class="n">lower_theshold</span><span class="o">=</span><span class="n">lower_theshold</span><span class="p">,</span>
+        <span class="n">apply_smoothing</span><span class="o">=</span><span class="n">apply_smoothing</span><span class="p">,</span>
         <span class="n">path_connectomist</span><span class="o">=</span><span class="n">path_connectomist</span><span class="p">)</span>
 
-    <span class="c1"># Step 4 - Detect and correct outlying diffusion slices</span>
-    <span class="n">outliers_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">STEPS</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="c1"># Quit if requested: preproc already performed</span>
+    <span class="k">if</span> <span class="n">already_corrected</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span>
+
+    <span class="c1"># Step 5 - Detect and correct outlying diffusion slices</span>
+    <span class="n">outliers_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">STEPS</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
     <span class="n">outlying_slice_detection</span><span class="p">(</span>
         <span class="n">outliers_dir</span><span class="p">,</span>
         <span class="n">raw_dwi_dir</span><span class="p">,</span>
@@ -296,61 +372,72 @@
         <span class="n">subject_id</span><span class="p">,</span>
         <span class="n">path_connectomist</span><span class="o">=</span><span class="n">path_connectomist</span><span class="p">)</span>
 
-    <span class="c1"># Step 5 - Susceptibility correction</span>
-    <span class="n">susceptibility_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">STEPS</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
-    <span class="n">susceptibility_correction</span><span class="p">(</span>
-        <span class="n">susceptibility_dir</span><span class="p">,</span>
-        <span class="n">raw_dwi_dir</span><span class="p">,</span>
-        <span class="n">rough_mask_dir</span><span class="p">,</span>
-        <span class="n">outliers_dir</span><span class="p">,</span>
-        <span class="n">subject_id</span><span class="p">,</span>
-        <span class="n">delta_TE</span><span class="p">,</span>
-        <span class="n">partial_fourier_factor</span><span class="p">,</span>
-        <span class="n">parallel_acceleration_factor</span><span class="p">,</span>
-        <span class="n">negative_sign</span><span class="p">,</span>
-        <span class="n">echo_spacing</span><span class="p">,</span>
-        <span class="n">EPI_factor</span><span class="p">,</span>
-        <span class="n">b0_field</span><span class="p">,</span>
-        <span class="n">water_fat_shift</span><span class="p">,</span>
-        <span class="n">path_connectomist</span><span class="o">=</span><span class="n">path_connectomist</span><span class="p">)</span>
+    <span class="c1"># Step 6 - Susceptibility correction</span>
+    <span class="k">if</span> <span class="n">b0_magnitude</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">b0_phase</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">corrected_dir</span> <span class="o">=</span> <span class="n">outliers_dir</span>
+        <span class="n">susceptibility_dir</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">corrected_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">STEPS</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+        <span class="n">susceptibility_dir</span> <span class="o">=</span> <span class="n">corrected_dir</span>
+        <span class="n">susceptibility_correction</span><span class="p">(</span>
+            <span class="n">corrected_dir</span><span class="p">,</span>
+            <span class="n">raw_dwi_dir</span><span class="p">,</span>
+            <span class="n">rough_mask_dir</span><span class="p">,</span>
+            <span class="n">outliers_dir</span><span class="p">,</span>
+            <span class="n">subject_id</span><span class="p">,</span>
+            <span class="n">delta_TE</span><span class="p">,</span>
+            <span class="n">partial_fourier_factor</span><span class="p">,</span>
+            <span class="n">parallel_acceleration_factor</span><span class="p">,</span>
+            <span class="n">negative_sign</span><span class="p">,</span>
+            <span class="n">echo_spacing</span><span class="p">,</span>
+            <span class="n">EPI_factor</span><span class="p">,</span>
+            <span class="n">b0_field</span><span class="p">,</span>
+            <span class="n">water_fat_shift</span><span class="p">,</span>
+            <span class="n">path_connectomist</span><span class="o">=</span><span class="n">path_connectomist</span><span class="p">)</span>
 
-    <span class="c1"># Step 6 - Eddy current and motion correction</span>
-    <span class="n">eddy_motion_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">STEPS</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+    <span class="c1"># Step 7 - Eddy current and motion correction</span>
+    <span class="n">eddy_motion_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">STEPS</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
     <span class="n">eddy_and_motion_correction</span><span class="p">(</span>
         <span class="n">eddy_motion_dir</span><span class="p">,</span>
         <span class="n">raw_dwi_dir</span><span class="p">,</span>
         <span class="n">rough_mask_dir</span><span class="p">,</span>
-        <span class="n">susceptibility_dir</span><span class="p">,</span>
+        <span class="n">corrected_dir</span><span class="p">,</span>
         <span class="n">subject_id</span><span class="p">,</span>
+        <span class="n">similarity_measure</span><span class="p">,</span>
         <span class="n">path_connectomist</span><span class="o">=</span><span class="n">path_connectomist</span><span class="p">)</span>
 
-    <span class="c1"># Step 7 - Export result as a Nifti with a .bval and a .bvec</span>
+    <span class="c1"># Step 8 - QC reporting</span>
+    <span class="n">qc_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">STEPS</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
+    <span class="n">qc_reporting</span><span class="p">(</span>
+        <span class="n">qc_dir</span><span class="p">,</span>
+        <span class="n">raw_dwi_dir</span><span class="p">,</span>
+        <span class="n">registration_dir</span><span class="p">,</span>
+        <span class="n">rough_mask_dir</span><span class="p">,</span>
+        <span class="n">outliers_dir</span><span class="p">,</span>
+        <span class="n">susceptibility_dir</span><span class="p">,</span>
+        <span class="n">eddy_motion_dir</span><span class="p">,</span>
+        <span class="n">subject_id</span><span class="p">,</span>
+        <span class="n">project_name</span><span class="o">=</span><span class="n">project_name</span><span class="p">,</span>
+        <span class="n">timestep</span><span class="o">=</span><span class="n">timestep</span><span class="p">,</span>
+        <span class="n">path_connectomist</span><span class="o">=</span><span class="n">path_connectomist</span><span class="p">)</span>
+
+    <span class="c1"># Step 9 - Export result as a Nifti with a .bval and a .bvec</span>
     <span class="n">preproc_files</span> <span class="o">=</span> <span class="n">export_eddy_motion_results_to_nifti</span><span class="p">(</span>
         <span class="n">eddy_motion_dir</span><span class="p">,</span>
         <span class="n">outdir</span><span class="o">=</span><span class="n">outdir</span><span class="p">,</span>
         <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;dwi&quot;</span><span class="p">)</span>
     <span class="n">preproc_dwi</span><span class="p">,</span> <span class="n">preproc_bval</span><span class="p">,</span> <span class="n">preproc_bvec</span> <span class="o">=</span> <span class="n">preproc_files</span>
 
-    <span class="c1"># Step 8 - Export outliers.py</span>
+    <span class="c1"># Step 10 - Export outliers.py</span>
     <span class="n">path_outliers_py</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outliers_dir</span><span class="p">,</span> <span class="s2">&quot;outliers.py&quot;</span><span class="p">)</span>
     <span class="n">preproc_outliers</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;outliers.py&quot;</span><span class="p">)</span>
     <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">path_outliers_py</span><span class="p">,</span> <span class="n">preproc_outliers</span><span class="p">)</span>
 
-    <span class="c1"># Step 9 - Registration t1 - dwi</span>
-    <span class="k">if</span> <span class="n">morphologist_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">registration_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">STEPS</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
-        <span class="n">dwi_to_anatomy</span><span class="p">(</span>
-            <span class="n">registration_dir</span><span class="p">,</span>
-            <span class="n">eddy_motion_dir</span><span class="p">,</span>
-            <span class="n">rough_mask_dir</span><span class="p">,</span>
-            <span class="n">morphologist_dir</span><span class="p">,</span>
-            <span class="n">subject_id</span><span class="p">,</span>
-            <span class="n">path_connectomist</span><span class="o">=</span><span class="n">path_connectomist</span><span class="p">)</span>
-
-    <span class="c1"># Step 10 - Delete intermediate files and directories if requested</span>
+    <span class="c1"># Step 11 - Delete intermediate files and directories if requested</span>
     <span class="k">if</span> <span class="n">delete_steps</span><span class="p">:</span>
-        <span class="n">intermediate_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">raw_dwi_dir</span><span class="p">,</span> <span class="n">rough_mask_dir</span><span class="p">,</span> <span class="n">outliers_dir</span><span class="p">,</span>
-                             <span class="n">susceptibility_dir</span><span class="p">,</span> <span class="n">eddy_motion_dir</span><span class="p">]</span>
+        <span class="n">intermediate_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">raw_dwi_dir</span><span class="p">,</span> <span class="n">registration_dir</span><span class="p">,</span> <span class="n">rough_mask_dir</span><span class="p">,</span>
+                             <span class="n">outliers_dir</span><span class="p">,</span> <span class="n">susceptibility_dir</span><span class="p">,</span> <span class="n">eddy_motion_dir</span><span class="p">,</span>
+                             <span class="n">qc_dir</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">directory</span> <span class="ow">in</span> <span class="n">intermediate_dirs</span><span class="p">:</span>
             <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
 
@@ -360,6 +447,7 @@
           </div>
         </div>
       </div>
+
     <div class="clearer">
     </div>
   </div>
@@ -367,7 +455,7 @@
 </div>
 
 <div class="footer">
-    &copy; 2016, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2017, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
 </div>
   </body>
 </html>

@@ -15,11 +15,12 @@
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.0',
+        VERSION:     '2.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -51,7 +52,18 @@
   </script>
 
   </head>
-  <body role="document"><nav class="navbar navbar-default navbar-static-top">
+  <body role="document"><div class="banner">
+  <div class="container-fluid banner-container">
+    <div class="row banner-inner">
+      <div class="col-xs-4">
+        <img alt="Logo" src="../_static/pyconnectomist.png">
+      </div>
+      <div class="col-xs-8">
+            <p>Using Connectomist in Python.</p>
+      </div>
+    </div>  
+  </div>
+</div><nav class="navbar navbar-default navbar-static-top">
   <div class="container-fluid">
     <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -61,38 +73,36 @@
           <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="../index.html">
-        <img alt="Logo" src="../_static/pyconnectomist.png">
         </a>
     </div>
     <div id="navbar" class="navbar-collapse collapse" ng-controller="navCtrl" ng-app="navApp">
       <ul class="nav navbar-nav">
         <li ng-class="{ active: isActive('index') }"><a href="../index.html">Home</a></li>
         <li ng-class="{ active: isActive('installation') }"><a href="installation.html">Installation</a></li>
-        <li ng-class="{ active: isActive('documentation') }"><a href="documentation.html">Documentation</a></li>
-        <li class="dropdown">
+        <li ng-class="{ active: isActive('gallery') }"><a href="../auto_gallery/gallery.html">Gallery</a></li>
+        <li ng-class="{ active: isActive('documentation') }"><a href="documentation.html">API documentation</a></li>
+        <!--<li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></a>
           <ul class="dropdown-menu">
 	        <li><a href="pyconnectomist.html">Pyconnectomist</a></li>
-<li><a href="pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
 <li><a href="pyconnectomist.tractography.html">Pyconnectomist.tractography</a></li>
-<li><a href="pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
 <li><a href="pyconnectomist.clustering.html">Pyconnectomist.clustering</a></li>
+<li><a href="pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
+<li><a href="pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
           </ul>
-        </li>
+        </li>-->
         <li><a href="https://github.com/AGrigis/pysphinxdoc">PYSPHINXDOC</a></li>
       </ul>
     </div>
   </div>
 </nav>
-
-
 <div class="content-wrapper">
     <div class="sphinxsidebar">
       <div class="sphinxsidebarwrapper">
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for pyconnectomist <strong>version 1.0.0</strong>
+           This documentation is for pyconnectomist <strong>version 2.0.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -117,8 +127,15 @@
             
   <span class="target" id="module-pyconnectomist.preproc.susceptibility"></span><p>Wrapper to Connectomist&#8217;s &#8216;Susceptibility&#8217; tab.</p>
 <dl class="function">
+<dt id="pyconnectomist.preproc.susceptibility.check_brainsuite_installation">
+<code class="descclassname">pyconnectomist.preproc.susceptibility.</code><code class="descname">check_brainsuite_installation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/preproc/susceptibility.html#check_brainsuite_installation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.preproc.susceptibility.check_brainsuite_installation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that Brainsuite commands, &#8216;bfc&#8217; and &#8216;bdp.sh&#8217;, are executable.
+If not raise an Exception.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyconnectomist.preproc.susceptibility.susceptibility_correction">
-<code class="descclassname">pyconnectomist.preproc.susceptibility.</code><code class="descname">susceptibility_correction</code><span class="sig-paren">(</span><em>outdir</em>, <em>raw_dwi_dir</em>, <em>rough_mask_dir</em>, <em>outliers_dir</em>, <em>subject_id</em>, <em>delta_TE</em>, <em>partial_fourier_factor</em>, <em>parallel_acceleration_factor</em>, <em>negative_sign=False</em>, <em>echo_spacing=None</em>, <em>EPI_factor=None</em>, <em>b0_field=3.0</em>, <em>water_fat_shift=4.68</em>, <em>path_connectomist='/i2bm/local/Ubuntu-14.04-x86_64/ptk/bin/connectomist'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/preproc/susceptibility.html#susceptibility_correction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.preproc.susceptibility.susceptibility_correction" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyconnectomist.preproc.susceptibility.</code><code class="descname">susceptibility_correction</code><span class="sig-paren">(</span><em>outdir</em>, <em>raw_dwi_dir</em>, <em>rough_mask_dir</em>, <em>outliers_dir</em>, <em>subject_id</em>, <em>delta_TE</em>, <em>partial_fourier_factor</em>, <em>parallel_acceleration_factor</em>, <em>negative_sign=False</em>, <em>echo_spacing=None</em>, <em>EPI_factor=None</em>, <em>b0_field=3.0</em>, <em>water_fat_shift=4.68</em>, <em>path_connectomist='/volatile/PTK-6.0-Ubuntu-14.04LTS-x86_64/bin/connectomist'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/preproc/susceptibility.html#susceptibility_correction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.preproc.susceptibility.susceptibility_correction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper to Connectomist&#8217;s &#8216;Susceptibility&#8217; tab.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -192,11 +209,99 @@ i.e. echo train length.</p>
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="pyconnectomist.preproc.susceptibility.susceptibility_correction_wo_fieldmap">
+<code class="descclassname">pyconnectomist.preproc.susceptibility.</code><code class="descname">susceptibility_correction_wo_fieldmap</code><span class="sig-paren">(</span><em>outdir</em>, <em>t1</em>, <em>dwi</em>, <em>bval</em>, <em>bvec</em>, <em>subject_id</em>, <em>phase_enc_dir</em>, <em>t1_mask=None</em>, <em>nodif_mask=None</em>, <em>fsl_sh=None</em>, <em>nthread=4</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/preproc/susceptibility.html#susceptibility_correction_wo_fieldmap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.preproc.susceptibility.susceptibility_correction_wo_fieldmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assuming the beginning of the preprocessing was done with Connectomist
+up to Eddy current and motion correction, we now want to make susceptbility
+distortion correction without fieldmap using registration based
+distortion correction.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>outdir: str</strong></p>
+<blockquote>
+<div><p>path to directory where to output.</p>
+</div></blockquote>
+<p><strong>t1: str</strong></p>
+<blockquote>
+<div><p>path to the T1 Nifti image.</p>
+</div></blockquote>
+<p><strong>dwi: str</strong></p>
+<blockquote>
+<div><p>path to the preprocessed diffusion-weighted Nifti image.</p>
+</div></blockquote>
+<p><strong>bval: str</strong></p>
+<blockquote>
+<div><p>path to the bval file associated to the DWI image.</p>
+</div></blockquote>
+<p><strong>bvec: str</strong></p>
+<blockquote>
+<div><p>path to the bvec file associated to the DWI image.</p>
+</div></blockquote>
+<p><strong>subject_id: str</strong></p>
+<blockquote>
+<div><p>the subject code in study.</p>
+</div></blockquote>
+<p><strong>phase_enc_dir: str</strong></p>
+<blockquote>
+<div><p>in plane phase encoding direction, &#8216;y&#8217;, or &#8216;x&#8217;.</p>
+</div></blockquote>
+<p><strong>t1_mask: str, default None</strong></p>
+<blockquote>
+<div><p>path to the t1 brain mask image.</p>
+</div></blockquote>
+<p><strong>nodif_mask: str, default None</strong></p>
+<blockquote>
+<div><p>path to the nodif brain mask image.</p>
+</div></blockquote>
+<p><strong>fsl_sh: str, default None</strong></p>
+<blockquote>
+<div><p>path to the FSL configuration file.</p>
+</div></blockquote>
+<p><strong>nthread: int, default 4</strong></p>
+<blockquote>
+<div><p>number of threads to be used (see bdp.sh &#8211;thread flag).</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">dwi_wo_susceptibility: str</p>
+<blockquote>
+<div><p>path to the corrected diffusion-weighted Nifti image.</p>
+</div></blockquote>
+<p>bval: str</p>
+<blockquote>
+<div><p>path to the bval file associated to the DWI image.</p>
+</div></blockquote>
+<p>bvec: str</p>
+<blockquote>
+<div><p>path to the bvec file associated to the DWI image.</p>
+</div></blockquote>
+<p>t1_in_dwi_space: str</p>
+<blockquote>
+<div><p>bias field corrected image in diffusion coordinates.</p>
+</div></blockquote>
+<p>bo_in_t1_space: str</p>
+<blockquote>
+<div><p>b=0 image in T1 coordinates.</p>
+</div></blockquote>
+<p>t1_brain: str</p>
+<blockquote class="last">
+<div><p>the T1 brain image.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 
 
           </div>
         </div>
       </div>
+
     <div class="clearer">
     </div>
   </div>
@@ -204,7 +309,7 @@ i.e. echo train length.</p>
 </div>
 
 <div class="footer">
-    &copy; 2016, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2017, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
 </div>
   </body>
 </html>

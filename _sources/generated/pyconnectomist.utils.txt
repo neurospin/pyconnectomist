@@ -2,8 +2,8 @@
 
 :orphan:
 
-Documentation of *pyconnectomist.utils*
-========================================
+API documentation of *pyconnectomist.utils*
+============================================
 
 
 Utility functions wrapped from the Connectomist package.
@@ -23,6 +23,12 @@ Utility functions wrapped from the Connectomist package.
     </td>
     </tr>
     <tr class='row-even'>
+    <td><a class='reference internal' href='pyconnectomist.utils.pdftools.html'><em>pyconnectomist.utils.pdftools</em></a></td>
+    <td>
+    
+    </td>
+    </tr>
+    <tr class='row-odd'>
     <td><a class='reference internal' href='pyconnectomist.utils.dwitools.html'><em>pyconnectomist.utils.dwitools</em></a></td>
     <td>
         <p>Utility Python functions to load diffusion metadata.</p>

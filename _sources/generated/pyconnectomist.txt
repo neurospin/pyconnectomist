@@ -2,8 +2,8 @@
 
 :orphan:
 
-Documentation of *pyconnectomist*
-==================================
+API documentation of *pyconnectomist*
+======================================
 
 
 Package to wrap the Connectomist software and simplify scripting calls.

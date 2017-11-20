@@ -1,0 +1,323 @@
+
+
+.. _sphx_glr_auto_gallery_pyconnectomist_tractography.py:
+
+
+Pyconnectomist Tractography
+===========================
+
+Example automatically generated from package script.
+
+
+
+.. code-block:: python
+
+
+
+    # System import
+    from __future__ import print_function
+    import argparse
+    import os
+    import shutil
+    from datetime import datetime
+    from pprint import pprint
+    import json
+
+    # Bredala import
+    try:
+        import bredala
+        bredala.USE_PROFILER = False
+        bredala.register("pyconnectomist.tractography",
+                         names=["complete_tractography"])
+        bredala.register("pyconnectomist.tractography.model",
+                         names=["dwi_local_modeling", "export_scalars_to_nifti"])
+        bredala.register("pyconnectomist.tractography.mask",
+                         names=["tractography_mask", "export_mask_to_nifti"])
+        bredala.register("pyconnectomist.tractography.tractography",
+                         names=["tractography"])
+        bredala.register("pyconnectomist.clustering.labeling",
+                         names=["fast_bundle_labeling", "export_bundles_to_trk"])
+        bredala.register("pyconnectomist.wrappers",
+                         names=["ConnectomistWrapper.__call__"])
+    except:
+        pass
+
+    # Clindmri import
+    from pyconnectomist import __version__ as version
+    from pyconnectomist.tractography import complete_tractography
+    from pyconnectomist.wrappers import ConnectomistWrapper
+    from pyconnectomist import DEFAULT_CONNECTOMIST_PATH
+
+
+    # Parameters to keep trace
+    __hopla__ = ["runtime", "inputs", "outputs"]
+
+    # Script documentation
+    doc = """
+    Connectomist tractography
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    Function that runs all the Connectomist tractography tabs.
+    Generates results in '<outdir>/<subjectid>/tract'.
+
+    Steps:
+
+    1- Create the tractography output directory if not existing.
+    2- Detect the Connectomist registration folder.
+    3- Detect the Connectomist eddy motion correction folder.
+    4- Detect the Connectomist rough mask folder.
+    5- Compute the diffusion model.
+    6- Create the tractography mask.
+    7- The tractography algorithm.
+    8- Fast bundle labeling.
+    9- Export diffusion scalars.
+    10- Export tractography mask.
+    11- Export bundels.
+
+    Command:
+
+    python $HOME/git/pyconnectomist/pyconnectomist/scripts/pyconnectomist_tractography \
+        -v 2 \
+        -o /tmp/pyconnectomist \
+        -g /neurospin/senior/nsap/data/V4/morphologist \
+        -s jp090065 \
+        -m aqbi \
+        -r 4 \
+        -t streamline_regularize_deterministic \
+        -i 5. \
+        -a 300. \
+        -d 1 \
+        -e
+    """
+
+
+    def is_file(filearg):
+        """ Type for argparse - checks that file exists but does not open.
+        """
+        if not os.path.isfile(filearg):
+            raise argparse.ArgumentError(
+                "The file '{0}' does not exist!".format(filearg))
+        return filearg
+
+
+    def is_directory(dirarg):
+        """ Type for argparse - checks that directory exists.
+        """
+        if not os.path.isdir(dirarg):
+            raise argparse.ArgumentError(
+                "The directory '{0}' does not exist!".format(dirarg))
+        return dirarg
+
+
+    parser = argparse.ArgumentParser(description=doc,
+                                     formatter_class=argparse.RawTextHelpFormatter)
+    parser.add_argument(
+        "-v", "--verbose", dest="verbose", type=int, choices=[0, 1, 2], default=0,
+        help="increase the verbosity level: 0 silent, [1, 2] verbose.")
+    parser.add_argument(
+        "-e", "--erase", dest="erase", action="store_true",
+        help="if activated, clean the subject folder if already created.")
+    parser.add_argument(
+        "-c", "--connectomistconfig", dest="connectomistconfig", metavar="PATH",
+        help="the path to the Connectomist configuration file.", type=is_file)
+    parser.add_argument(
+        "-o", "--outdir", dest="outdir", metavar="PATH",
+        help="the Connectomist tractography home directory.", type=is_directory)
+    parser.add_argument(
+        "-s", "--subjectid", dest="subjectid", required=True,
+        help="the subject identifier.")
+    parser.add_argument(
+        "-p", "--preprocdir", dest="preprocdir", metavar="PATH",
+        help=("the path to the Connectomist diffusion preprocessings. If not "
+              "specified assume data in '<outdir>/<subjectid>/preproc'."),
+        type=is_directory)
+    parser.add_argument(
+        "-m", "--model", dest="model", default="aqbi", choices=["aqbi", "sdt"],
+        help="the diffusion model.")
+    parser.add_argument(
+        "-r", "--order", dest="order", default=4, type=int,
+        help="the diffusion model order.")
+    parser.add_argument(
+        "-t", "--tracking", dest="tracking",
+        default="streamline_regularize_deterministic",
+        choices=["streamline_regularize_deterministic", "streamline_deterministic",
+                 "streamline_probabilistic"],
+        help="the tractography algorithm.")
+    parser.add_argument(
+        "-i", "--minlength", dest="minlength", default=5., type=float,
+        help="the minimum length of a fiber.")
+    parser.add_argument(
+        "-a", "--maxlength", dest="maxlength", default=300., type=float,
+        help="the maximum length of a fiber.")
+    parser.add_argument(
+        "-d", "--seeds", dest="seeds", default=8, type=int,
+        help="the number of seeds per voxel.")
+    parser.add_argument(
+        "-g", "--morphologistdir", dest="morphologistdir", required=True,
+        metavar="PATH", type=is_directory,
+        help="the path to the morphologist processings home directory.")
+    parser.add_argument(
+        "-n", "--tractdir", dest="tractdir", metavar="PATH",
+        help=("the path to the Connectomist tractography. If not "
+              "specified generate data in '<outdir>/<subjectid>/tract'."),
+        type=is_directory)
+    args = parser.parse_args()
+
+
+
+First check if the Connectomist subject directory exists on the file system,
+and clean it if requested.
+
+
+
+.. code-block:: python
+
+
+    tool = "pyconnectomist_tractography"
+    timestamp = datetime.now().isoformat()
+    tool_version = version
+    connectomist_config = args.connectomistconfig or DEFAULT_CONNECTOMIST_PATH
+    connectomist_version = ConnectomistWrapper._connectomist_version_check(
+        connectomist_config)
+    runtime = dict([(name, locals()[name])
+                   for name in ("connectomist_config", "tool", "tool_version",
+                                "connectomist_version", "timestamp")])
+    if args.verbose > 0:
+        print("[info] Start Connectomist tractography...")
+        print("[info] Directory: {0}.".format(args.outdir))
+        print("[info] Subject: {0}.".format(args.subjectid))
+        print("[info] Preproc dir: {0}.".format(args.preprocdir))
+        print("[info] Model: {0}.".format(args.model))
+        print("[info] Model order: {0}.".format(args.order))
+        print("[info] Tractography algorithm: {0}.".format(args.tracking))
+        print("[info] Number of seeds: {0}.".format(args.seeds))
+        print("[info] Keeping fibers of length: [{0} - "
+              "{1}].".format(args.minlength, args.maxlength))
+    outdir = args.outdir
+    subjectid = args.subjectid
+    preprocdir = args.preprocdir
+    morphologistdir = args.morphologistdir
+    model = args.model
+    order = args.order
+    min_fiber_length = args.minlength
+    max_fiber_length = args.maxlength
+    aperture_angle = 30.
+    tracking_type = args.tracking
+    voxel_sampler_point_count = args.seeds
+    tractdir = args.tractdir
+    if tractdir is None:
+        if outdir is None:
+            raise ValueError("Trying to generate output directory. You need to "
+                             "specify the -o, --outdir command line option.")
+        tractdir = os.path.join(outdir, subjectid, "tract")
+        if args.verbose > 0:
+            print("[info] Generated tractdir dir: {0}.".format(tractdir))
+    if preprocdir is None:
+        preprocdir = os.path.join(args.outdir, subjectid, "preproc")
+        if args.verbose > 0:
+            print("[info] Generated preproc dir: {0}.".format(preprocdir))
+    if not os.path.isdir(tractdir):
+        os.makedirs(tractdir)
+    elif args.erase and os.path.isdir(tractdir):
+        shutil.rmtree(tractdir)
+        os.mkdir(tractdir)
+    inputs = [preprocdir]
+    inputs = dict([(name, locals()[name])
+                   for name in ("outdir", "subjectid", "tractdir", "preprocdir",
+                                "morphologistdir", "model", "order", 
+                                "min_fiber_length", "max_fiber_length",
+                                "aperture_angle", "tracking_type",
+                                "voxel_sampler_point_count")])
+    outputs = None
+
+
+
+Connectomist tractography: all steps
+
+
+
+.. code-block:: python
+
+
+    scalars, mask, bundles = complete_tractography(
+        tractdir,
+        preprocdir,
+        morphologistdir,
+        subjectid,
+        model=model,
+        order=order,
+        aqbi_laplacebeltrami_sharpefactor=0.0,
+        regularization_lccurvefactor=0.006,
+        dti_estimator="linear",
+        constrained_sd=False,
+        sd_kernel_type="symmetric_tensor",
+        sd_kernel_lower_fa=0.65,
+        sd_kernel_upper_fa=0.85,
+        sd_kernel_voxel_count=300,
+        add_cerebelum=True,
+        add_commissures=True,
+        tracking_type=tracking_type,
+        bundlemap="aimsbundlemap",
+        min_fiber_length=min_fiber_length,
+        max_fiber_length=max_fiber_length,
+        aperture_angle=aperture_angle,
+        forward_step=0.2,
+        voxel_sampler_point_count=voxel_sampler_point_count,
+        gibbs_temperature=1.,
+        storing_increment=10,
+        output_orientation_count=500,
+        rgbscale=3.0,
+        model_only=False,
+        path_connectomist=connectomist_config)
+
+
+
+Update the outputs and save them and the inputs in a 'logs' directory.
+
+
+
+.. code-block:: python
+
+
+    logdir = os.path.join(tractdir, "logs")
+    if not os.path.isdir(logdir):
+        os.mkdir(logdir)
+    outputs = dict([(name, locals()[name])
+                   for name in ("scalars", "mask", "bundles")])
+    for name, final_struct in [("inputs", inputs), ("outputs", outputs),
+                               ("runtime", runtime)]:
+        log_file = os.path.join(logdir, "{0}.json".format(name))
+        with open(log_file, "wt") as open_file:
+            json.dump(final_struct, open_file, sort_keys=True, check_circular=True,
+                      indent=4)
+    if args.verbose > 1:
+        print("[final]")
+        pprint(outputs)
+
+**Total running time of the script:** ( 0 minutes  0.000 seconds)
+
+
+
+.. only :: html
+
+ .. container:: sphx-glr-footer
+
+
+  .. container:: sphx-glr-download
+
+     :download:`Download Python source code: pyconnectomist_tractography.py <pyconnectomist_tractography.py>`
+
+
+
+  .. container:: sphx-glr-download
+
+     :download:`Download Jupyter notebook: pyconnectomist_tractography.ipynb <pyconnectomist_tractography.ipynb>`
+
+
+.. only:: html
+
+ .. rst-class:: sphx-glr-signature
+
+    Gallery generated by Sphinx-Gallery
+
+

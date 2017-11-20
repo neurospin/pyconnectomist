@@ -15,11 +15,12 @@
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.0',
+        VERSION:     '2.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -51,7 +52,18 @@
   </script>
 
   </head>
-  <body role="document"><nav class="navbar navbar-default navbar-static-top">
+  <body role="document"><div class="banner">
+  <div class="container-fluid banner-container">
+    <div class="row banner-inner">
+      <div class="col-xs-4">
+        <img alt="Logo" src="../_static/pyconnectomist.png">
+      </div>
+      <div class="col-xs-8">
+            <p>Using Connectomist in Python.</p>
+      </div>
+    </div>  
+  </div>
+</div><nav class="navbar navbar-default navbar-static-top">
   <div class="container-fluid">
     <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -61,38 +73,36 @@
           <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="../index.html">
-        <img alt="Logo" src="../_static/pyconnectomist.png">
         </a>
     </div>
     <div id="navbar" class="navbar-collapse collapse" ng-controller="navCtrl" ng-app="navApp">
       <ul class="nav navbar-nav">
         <li ng-class="{ active: isActive('index') }"><a href="../index.html">Home</a></li>
         <li ng-class="{ active: isActive('installation') }"><a href="installation.html">Installation</a></li>
-        <li ng-class="{ active: isActive('documentation') }"><a href="documentation.html">Documentation</a></li>
-        <li class="dropdown">
+        <li ng-class="{ active: isActive('gallery') }"><a href="../auto_gallery/gallery.html">Gallery</a></li>
+        <li ng-class="{ active: isActive('documentation') }"><a href="documentation.html">API documentation</a></li>
+        <!--<li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></a>
           <ul class="dropdown-menu">
 	        <li><a href="pyconnectomist.html">Pyconnectomist</a></li>
-<li><a href="pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
 <li><a href="pyconnectomist.tractography.html">Pyconnectomist.tractography</a></li>
-<li><a href="pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
 <li><a href="pyconnectomist.clustering.html">Pyconnectomist.clustering</a></li>
+<li><a href="pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
+<li><a href="pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
           </ul>
-        </li>
+        </li>-->
         <li><a href="https://github.com/AGrigis/pysphinxdoc">PYSPHINXDOC</a></li>
       </ul>
     </div>
   </div>
 </nav>
-
-
 <div class="content-wrapper">
     <div class="sphinxsidebar">
       <div class="sphinxsidebarwrapper">
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for pyconnectomist <strong>version 1.0.0</strong>
+           This documentation is for pyconnectomist <strong>version 2.0.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -118,7 +128,7 @@
   <span class="target" id="module-pyconnectomist.preproc.qspace"></span><p>Wrapper to Connectomist&#8217;s &#8216;DWI &amp; Q-space&#8217; tab.</p>
 <dl class="function">
 <dt id="pyconnectomist.preproc.qspace.data_import_and_qspace_sampling">
-<code class="descclassname">pyconnectomist.preproc.qspace.</code><code class="descname">data_import_and_qspace_sampling</code><span class="sig-paren">(</span><em>outdir</em>, <em>subject_id</em>, <em>dwi</em>, <em>bval</em>, <em>bvec</em>, <em>manufacturer</em>, <em>invertX=True</em>, <em>invertY=False</em>, <em>invertZ=False</em>, <em>b0_magnitude=None</em>, <em>b0_phase=None</em>, <em>path_connectomist='/i2bm/local/Ubuntu-14.04-x86_64/ptk/bin/connectomist'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/preproc/qspace.html#data_import_and_qspace_sampling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.preproc.qspace.data_import_and_qspace_sampling" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyconnectomist.preproc.qspace.</code><code class="descname">data_import_and_qspace_sampling</code><span class="sig-paren">(</span><em>outdir</em>, <em>subject_id</em>, <em>dwis</em>, <em>bvals</em>, <em>bvecs</em>, <em>manufacturer</em>, <em>flipX=False</em>, <em>flipY=False</em>, <em>flipZ=False</em>, <em>invertX=True</em>, <em>invertY=False</em>, <em>invertZ=False</em>, <em>b0_magnitude=None</em>, <em>b0_phase=None</em>, <em>phase_axis='y'</em>, <em>slice_axis='z'</em>, <em>path_connectomist='/volatile/PTK-6.0-Ubuntu-14.04LTS-x86_64/bin/connectomist'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/preproc/qspace.html#data_import_and_qspace_sampling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.preproc.qspace.data_import_and_qspace_sampling" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper to Connectomist&#8217;s &#8216;DWI &amp; Q-space&#8217; tab.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -132,21 +142,25 @@
 <blockquote>
 <div><p>the subject code in study.</p>
 </div></blockquote>
-<p><strong>dwi: str</strong></p>
+<p><strong>dwis: list of str</strong></p>
 <blockquote>
-<div><p>path to Nifti diffusion-weighted data.</p>
+<div><p>path to Nifti diffusion-weighted datasets.</p>
 </div></blockquote>
-<p><strong>bvec: str</strong></p>
+<p><strong>bvals: list of str</strong></p>
 <blockquote>
-<div><p>path to .bval file associated to the Nifti.</p>
+<div><p>path to .bval files associated to the Nifti.</p>
 </div></blockquote>
-<p><strong>bval: str</strong></p>
+<p><strong>bvecs: list of str</strong></p>
 <blockquote>
-<div><p>path to .bvec file associated to the Nifti.</p>
+<div><p>path to .bvec files associated to the Nifti.</p>
 </div></blockquote>
 <p><strong>manufacturer: str</strong></p>
 <blockquote>
 <div><p>name of the manufacturer (e.g. &#8220;Siemens&#8221;, &#8220;GE&#8221;, &#8220;Philips&#8221; or &#8220;Bruker&#8221;).</p>
+</div></blockquote>
+<p><strong>flipX, flipY, flipZ: bool (optional, default False)</strong></p>
+<blockquote>
+<div><p>if True invert the x, y or z-axis of data.</p>
 </div></blockquote>
 <p><strong>invertX: bool (optional, default True)</strong></p>
 <blockquote>
@@ -166,6 +180,14 @@ susceptibility distortions is to be used).</p>
 <div><p>path to phase fieldmap (if fieldmap-based correction of susceptibility
 distortions is to be used).</p>
 </div></blockquote>
+<p><strong>phase_axis: str (optional, default &#8216;y&#8217;)</strong></p>
+<blockquote>
+<div><p>the acquistion phase axis &#8216;x&#8217;, &#8216;y&#8217; or &#8216;z&#8217;.</p>
+</div></blockquote>
+<p><strong>slice_axis: str (optional, default &#8216;z&#8217;)</strong></p>
+<blockquote>
+<div><p>the acquistion slice axis &#8216;x&#8217;, &#8216;y&#8217; or &#8216;z&#8217;.</p>
+</div></blockquote>
 <p><strong>path_connectomist: str (optional)</strong></p>
 <blockquote>
 <div><p>path to the Connectomist executable.</p>
@@ -184,7 +206,7 @@ distortions is to be used).</p>
 
 <dl class="function">
 <dt id="pyconnectomist.preproc.qspace.gather_and_format_input_files">
-<code class="descclassname">pyconnectomist.preproc.qspace.</code><code class="descname">gather_and_format_input_files</code><span class="sig-paren">(</span><em>outdir</em>, <em>dwi</em>, <em>bval</em>, <em>bvec</em>, <em>b0_magnitude=None</em>, <em>b0_phase=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/preproc/qspace.html#gather_and_format_input_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.preproc.qspace.gather_and_format_input_files" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyconnectomist.preproc.qspace.</code><code class="descname">gather_and_format_input_files</code><span class="sig-paren">(</span><em>outdir</em>, <em>dwis</em>, <em>bvals</em>, <em>bvecs</em>, <em>b0_magnitude=None</em>, <em>b0_phase=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/preproc/qspace.html#gather_and_format_input_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.preproc.qspace.gather_and_format_input_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gather all files needed to start the preprocessing in the right format
 (Gis format for images and B0 maps).</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -195,17 +217,17 @@ distortions is to be used).</p>
 <blockquote>
 <div><p>path to directory where to gather all files.</p>
 </div></blockquote>
-<p><strong>dwi: str</strong></p>
+<p><strong>dwis: str</strong></p>
 <blockquote>
-<div><p>path to input Nifti file to be preprocessed.</p>
+<div><p>path to input Nifti files to be preprocessed.</p>
 </div></blockquote>
-<p><strong>bval: str</strong></p>
+<p><strong>bvals: str</strong></p>
 <blockquote>
-<div><p>path to .bval file associated to Nifti.</p>
+<div><p>path to .bval files associated to Nifti.</p>
 </div></blockquote>
-<p><strong>bvec: str</strong></p>
+<p><strong>bvecs: str</strong></p>
 <blockquote>
-<div><p>path to .bvec file associated to Nifti.</p>
+<div><p>path to .bvec files associated to Nifti.</p>
 </div></blockquote>
 <p><strong>b0_magnitude: str (optional, default None)</strong></p>
 <blockquote>
@@ -223,7 +245,7 @@ correction of susceptibility distortions.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">raw_dwi_dir:</p>
 <blockquote class="last">
-<div><p>Connectomist&#8217;s import data directory with file in Gis format.</p>
+<div><p>Connectomist&#8217;s import data directory with files in Gis format.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -236,6 +258,7 @@ correction of susceptibility distortions.</p>
           </div>
         </div>
       </div>
+
     <div class="clearer">
     </div>
   </div>
@@ -243,7 +266,7 @@ correction of susceptibility distortions.</p>
 </div>
 
 <div class="footer">
-    &copy; 2016, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2017, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
 </div>
   </body>
 </html>

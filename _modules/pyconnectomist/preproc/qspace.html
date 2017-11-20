@@ -15,11 +15,12 @@
     
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/gallery.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.0.0',
+        VERSION:     '2.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -52,7 +53,18 @@
   </script>
 
   </head>
-  <body role="document"><nav class="navbar navbar-default navbar-static-top">
+  <body role="document"><div class="banner">
+  <div class="container-fluid banner-container">
+    <div class="row banner-inner">
+      <div class="col-xs-4">
+        <img alt="Logo" src="../../../_static/pyconnectomist.png">
+      </div>
+      <div class="col-xs-8">
+            <p>Using Connectomist in Python.</p>
+      </div>
+    </div>  
+  </div>
+</div><nav class="navbar navbar-default navbar-static-top">
   <div class="container-fluid">
     <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -62,38 +74,36 @@
           <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="../../../index.html">
-        <img alt="Logo" src="../../../_static/pyconnectomist.png">
         </a>
     </div>
     <div id="navbar" class="navbar-collapse collapse" ng-controller="navCtrl" ng-app="navApp">
       <ul class="nav navbar-nav">
         <li ng-class="{ active: isActive('index') }"><a href="../../../index.html">Home</a></li>
         <li ng-class="{ active: isActive('installation') }"><a href="../../../generated/installation.html">Installation</a></li>
-        <li ng-class="{ active: isActive('documentation') }"><a href="../../../generated/documentation.html">Documentation</a></li>
-        <li class="dropdown">
+        <li ng-class="{ active: isActive('gallery') }"><a href="../../../auto_gallery/gallery.html">Gallery</a></li>
+        <li ng-class="{ active: isActive('documentation') }"><a href="../../../generated/documentation.html">API documentation</a></li>
+        <!--<li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></a>
           <ul class="dropdown-menu">
 	        <li><a href="../../../generated/pyconnectomist.html">Pyconnectomist</a></li>
-<li><a href="../../../generated/pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
 <li><a href="../../../generated/pyconnectomist.tractography.html">Pyconnectomist.tractography</a></li>
-<li><a href="../../../generated/pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
 <li><a href="../../../generated/pyconnectomist.clustering.html">Pyconnectomist.clustering</a></li>
+<li><a href="../../../generated/pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
+<li><a href="../../../generated/pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
           </ul>
-        </li>
+        </li>-->
         <li><a href="https://github.com/AGrigis/pysphinxdoc">PYSPHINXDOC</a></li>
       </ul>
     </div>
   </div>
 </nav>
-
-
 <div class="content-wrapper">
     <div class="sphinxsidebar">
       <div class="sphinxsidebarwrapper">
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for pyconnectomist <strong>version 1.0.0</strong>
+           This documentation is for pyconnectomist <strong>version 2.0.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -131,6 +141,7 @@
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">nibabel</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="c1"># pyConnectomist import</span>
 <span class="kn">from</span> <span class="nn">pyconnectomist</span> <span class="kn">import</span> <span class="n">DEFAULT_CONNECTOMIST_PATH</span>
@@ -142,12 +153,19 @@
 <span class="kn">from</span> <span class="nn">pyconnectomist.utils.dwitools</span> <span class="kn">import</span> <span class="n">read_bvals_bvecs</span>
 <span class="kn">from</span> <span class="nn">pyconnectomist.utils.filetools</span> <span class="kn">import</span> <span class="n">ptk_nifti_to_gis</span>
 
+<span class="c1"># Define axis mapping</span>
+<span class="n">AXIS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="mi">2</span>
+<span class="p">}</span>
+
 
 <div class="viewcode-block" id="gather_and_format_input_files"><a class="viewcode-back" href="../../../generated/pyconnectomist.preproc.qspace.html#pyconnectomist.preproc.qspace.gather_and_format_input_files">[docs]</a><span class="k">def</span> <span class="nf">gather_and_format_input_files</span><span class="p">(</span>
         <span class="n">outdir</span><span class="p">,</span>
-        <span class="n">dwi</span><span class="p">,</span>
-        <span class="n">bval</span><span class="p">,</span>
-        <span class="n">bvec</span><span class="p">,</span>
+        <span class="n">dwis</span><span class="p">,</span>
+        <span class="n">bvals</span><span class="p">,</span>
+        <span class="n">bvecs</span><span class="p">,</span>
         <span class="n">b0_magnitude</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
         <span class="n">b0_phase</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Gather all files needed to start the preprocessing in the right format</span>
@@ -157,12 +175,12 @@
 <span class="sd">    ----------</span>
 <span class="sd">    outdir: str</span>
 <span class="sd">        path to directory where to gather all files.</span>
-<span class="sd">    dwi: str</span>
-<span class="sd">        path to input Nifti file to be preprocessed.</span>
-<span class="sd">    bval: str</span>
-<span class="sd">        path to .bval file associated to Nifti.</span>
-<span class="sd">    bvec: str</span>
-<span class="sd">        path to .bvec file associated to Nifti.</span>
+<span class="sd">    dwis: str</span>
+<span class="sd">        path to input Nifti files to be preprocessed.</span>
+<span class="sd">    bvals: str</span>
+<span class="sd">        path to .bval files associated to Nifti.</span>
+<span class="sd">    bvecs: str</span>
+<span class="sd">        path to .bvec files associated to Nifti.</span>
 <span class="sd">    b0_magnitude: str (optional, default None)</span>
 <span class="sd">        path to B0 magnitude map, may also contain phase.</span>
 <span class="sd">        Required only if you want to make fieldmap-based</span>
@@ -175,10 +193,10 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    raw_dwi_dir:</span>
-<span class="sd">        Connectomist&#39;s import data directory with file in Gis format.</span>
+<span class="sd">        Connectomist&#39;s import data directory with files in Gis format.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Check that files exist</span>
-    <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">dwi</span><span class="p">,</span> <span class="n">bval</span><span class="p">,</span> <span class="n">bvec</span><span class="p">]</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="n">dwis</span> <span class="o">+</span> <span class="n">bvals</span> <span class="o">+</span> <span class="n">bvecs</span>
     <span class="k">if</span> <span class="n">b0_magnitude</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b0_magnitude</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">b0_phase</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
@@ -207,14 +225,28 @@
             <span class="n">magnitude</span><span class="o">.</span><span class="n">to_filename</span><span class="p">(</span><span class="n">b0_magnitude</span><span class="p">)</span>
             <span class="n">phase</span><span class="o">.</span><span class="n">to_filename</span><span class="p">(</span><span class="n">b0_phase</span><span class="p">)</span>
 
-    <span class="c1"># Convert Nifti to Gis</span>
-    <span class="n">dwi</span> <span class="o">=</span> <span class="n">ptk_nifti_to_gis</span><span class="p">(</span><span class="n">dwi</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;dwi.ima&quot;</span><span class="p">))</span>
+    <span class="c1"># Go through all DWI data that must be converted</span>
+    <span class="n">copied_dwis</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">copied_bvals</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">copied_bvecs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">nb_of_sequences</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dwis</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="n">dwi</span><span class="p">,</span> <span class="n">bval</span><span class="p">,</span> <span class="n">bvec</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">dwis</span><span class="p">,</span> <span class="n">bvals</span><span class="p">,</span> <span class="n">bvecs</span><span class="p">)):</span>
 
-    <span class="c1"># Copy bval and bvec files, with homogeneous names</span>
-    <span class="n">bval_copy</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;dwi.bval&quot;</span><span class="p">)</span>
-    <span class="n">bvec_copy</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;dwi.bvec&quot;</span><span class="p">)</span>
-    <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">bval</span><span class="p">,</span> <span class="n">bval_copy</span><span class="p">)</span>
-    <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">bvec</span><span class="p">,</span> <span class="n">bvec_copy</span><span class="p">)</span>
+        <span class="c1"># One sequence name special case</span>
+        <span class="k">if</span> <span class="n">nb_of_sequences</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="c1"># Convert Nifti to Gis</span>
+        <span class="n">copied_dwis</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ptk_nifti_to_gis</span><span class="p">(</span>
+            <span class="n">dwi</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;dwi{0}.ima&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">index</span><span class="p">))))</span>
+
+        <span class="c1"># Copy bval and bvec files, with homogeneous names</span>
+        <span class="n">bval_copy</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;dwi{0}.bval&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+        <span class="n">bvec_copy</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;dwi{0}.bvec&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">bval</span><span class="p">,</span> <span class="n">bval_copy</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">bvec</span><span class="p">,</span> <span class="n">bvec_copy</span><span class="p">)</span>
+        <span class="n">copied_bvals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bval_copy</span><span class="p">)</span>
+        <span class="n">copied_bvecs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bvec_copy</span><span class="p">)</span>
 
     <span class="c1"># Convert and rename B0 map(s) if they are given</span>
     <span class="k">if</span> <span class="n">b0_magnitude</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
@@ -225,21 +257,26 @@
         <span class="n">b0_phase</span> <span class="o">=</span> <span class="n">ptk_nifti_to_gis</span><span class="p">(</span>
             <span class="n">b0_phase</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;b0_phase.ima&quot;</span><span class="p">))</span>
 
-    <span class="k">return</span> <span class="n">dwi</span><span class="p">,</span> <span class="n">bval_copy</span><span class="p">,</span> <span class="n">bvec_copy</span><span class="p">,</span> <span class="n">b0_magnitude</span><span class="p">,</span> <span class="n">b0_phase</span></div>
+    <span class="k">return</span> <span class="n">copied_dwis</span><span class="p">,</span> <span class="n">copied_bvals</span><span class="p">,</span> <span class="n">copied_bvecs</span><span class="p">,</span> <span class="n">b0_magnitude</span><span class="p">,</span> <span class="n">b0_phase</span></div>
 
 
 <div class="viewcode-block" id="data_import_and_qspace_sampling"><a class="viewcode-back" href="../../../generated/pyconnectomist.preproc.qspace.html#pyconnectomist.preproc.qspace.data_import_and_qspace_sampling">[docs]</a><span class="k">def</span> <span class="nf">data_import_and_qspace_sampling</span><span class="p">(</span>
         <span class="n">outdir</span><span class="p">,</span>
         <span class="n">subject_id</span><span class="p">,</span>
-        <span class="n">dwi</span><span class="p">,</span>
-        <span class="n">bval</span><span class="p">,</span>
-        <span class="n">bvec</span><span class="p">,</span>
+        <span class="n">dwis</span><span class="p">,</span>
+        <span class="n">bvals</span><span class="p">,</span>
+        <span class="n">bvecs</span><span class="p">,</span>
         <span class="n">manufacturer</span><span class="p">,</span>
+        <span class="n">flipX</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+        <span class="n">flipY</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+        <span class="n">flipZ</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
         <span class="n">invertX</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
         <span class="n">invertY</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
         <span class="n">invertZ</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
         <span class="n">b0_magnitude</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
         <span class="n">b0_phase</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+        <span class="n">phase_axis</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span>
+        <span class="n">slice_axis</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">,</span>
         <span class="n">path_connectomist</span><span class="o">=</span><span class="n">DEFAULT_CONNECTOMIST_PATH</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Wrapper to Connectomist&#39;s &#39;DWI &amp; Q-space&#39; tab.</span>
 
@@ -249,14 +286,16 @@
 <span class="sd">        path to Connectomist&#39;s output directory.</span>
 <span class="sd">    subject_id: str</span>
 <span class="sd">        the subject code in study.</span>
-<span class="sd">    dwi: str</span>
-<span class="sd">        path to Nifti diffusion-weighted data.</span>
-<span class="sd">    bvec: str</span>
-<span class="sd">        path to .bval file associated to the Nifti.</span>
-<span class="sd">    bval: str</span>
-<span class="sd">        path to .bvec file associated to the Nifti.</span>
+<span class="sd">    dwis: list of str</span>
+<span class="sd">        path to Nifti diffusion-weighted datasets.</span>
+<span class="sd">    bvals: list of str</span>
+<span class="sd">        path to .bval files associated to the Nifti.</span>
+<span class="sd">    bvecs: list of str</span>
+<span class="sd">        path to .bvec files associated to the Nifti.</span>
 <span class="sd">    manufacturer: str</span>
 <span class="sd">        name of the manufacturer (e.g. &quot;Siemens&quot;, &quot;GE&quot;, &quot;Philips&quot; or &quot;Bruker&quot;).</span>
+<span class="sd">    flipX, flipY, flipZ: bool (optional, default False)</span>
+<span class="sd">        if True invert the x, y or z-axis of data.</span>
 <span class="sd">    invertX: bool (optional, default True)</span>
 <span class="sd">        if True invert x-axis of diffusion model.</span>
 <span class="sd">    invertY, invertZ: bool (optional, default False)</span>
@@ -267,6 +306,10 @@
 <span class="sd">    b0_phase: str (optional, default None)</span>
 <span class="sd">        path to phase fieldmap (if fieldmap-based correction of susceptibility</span>
 <span class="sd">        distortions is to be used).</span>
+<span class="sd">    phase_axis: str (optional, default &#39;y&#39;)</span>
+<span class="sd">        the acquistion phase axis &#39;x&#39;, &#39;y&#39; or &#39;z&#39;.</span>
+<span class="sd">    slice_axis: str (optional, default &#39;z&#39;)</span>
+<span class="sd">        the acquistion slice axis &#39;x&#39;, &#39;y&#39; or &#39;z&#39;.</span>
 <span class="sd">    path_connectomist: str (optional)</span>
 <span class="sd">        path to the Connectomist executable.</span>
 
@@ -275,12 +318,20 @@
 <span class="sd">    outdir: str</span>
 <span class="sd">        path to Connectomist&#39;s output directory.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check input parameters</span>
+    <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="p">(</span><span class="n">phase_axis</span><span class="p">,</span> <span class="n">slice_axis</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">axis</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">AXIS</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid axis &#39;{0}&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">axis</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="p">(</span><span class="n">dwis</span><span class="p">,</span> <span class="n">bvecs</span><span class="p">,</span> <span class="n">bvals</span><span class="p">))))</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The DWIs, BVECs and BVALs must have the same number &quot;</span>
+                         <span class="s2">&quot;of elements.&quot;</span><span class="p">)</span>
+
     <span class="c1"># Create the Connectomist&#39;s import data directory</span>
-    <span class="n">dwi</span><span class="p">,</span> <span class="n">bval</span><span class="p">,</span> <span class="n">bvec</span><span class="p">,</span> <span class="n">b0_magnitude</span><span class="p">,</span> <span class="n">b0_phase</span> <span class="o">=</span> <span class="n">gather_and_format_input_files</span><span class="p">(</span>
+    <span class="n">dwis</span><span class="p">,</span> <span class="n">bvals</span><span class="p">,</span> <span class="n">bvecs</span><span class="p">,</span> <span class="n">b0_magnitude</span><span class="p">,</span> <span class="n">b0_phase</span> <span class="o">=</span> <span class="n">gather_and_format_input_files</span><span class="p">(</span>
         <span class="n">outdir</span><span class="p">,</span>
-        <span class="n">dwi</span><span class="p">,</span>
-        <span class="n">bval</span><span class="p">,</span>
-        <span class="n">bvec</span><span class="p">,</span>
+        <span class="n">dwis</span><span class="p">,</span>
+        <span class="n">bvals</span><span class="p">,</span>
+        <span class="n">bvecs</span><span class="p">,</span>
         <span class="n">b0_magnitude</span><span class="p">,</span>
         <span class="n">b0_phase</span><span class="p">)</span>
 
@@ -291,15 +342,15 @@
 
         <span class="c1"># ---------------------------------------------------------------------</span>
         <span class="c1"># Field: &quot;Diffusion weighted-images&quot;</span>
-        <span class="s2">&quot;fileNameDwi&quot;</span><span class="p">:</span>        <span class="n">dwi</span><span class="p">,</span>  <span class="c1"># &quot;DW data&quot;</span>
-        <span class="s2">&quot;sliceAxis&quot;</span><span class="p">:</span>            <span class="mi">2</span><span class="p">,</span>  <span class="c1"># &quot;Slice axis&quot;, default &quot;Z-axis&quot;</span>
-        <span class="s2">&quot;phaseAxis&quot;</span><span class="p">:</span>            <span class="mi">1</span><span class="p">,</span>  <span class="c1"># &quot;Phase axis&quot;, default &quot;Y-axis&quot;</span>
-        <span class="s2">&quot;manufacturer&quot;</span><span class="p">:</span>      <span class="bp">None</span><span class="p">,</span>
+        <span class="s2">&quot;fileNameDwi&quot;</span><span class="p">:</span>  <span class="s2">&quot;;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dwis</span><span class="p">),</span>  <span class="c1"># &quot;DW data&quot;</span>
+        <span class="s2">&quot;sliceAxis&quot;</span><span class="p">:</span>    <span class="n">AXIS</span><span class="p">[</span><span class="n">slice_axis</span><span class="p">],</span>  <span class="c1"># &quot;Slice axis&quot;, default &quot;Z-axis&quot;</span>
+        <span class="s2">&quot;phaseAxis&quot;</span><span class="p">:</span>    <span class="n">AXIS</span><span class="p">[</span><span class="n">phase_axis</span><span class="p">],</span>  <span class="c1"># &quot;Phase axis&quot;, default &quot;Y-axis&quot;</span>
+        <span class="s2">&quot;manufacturer&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
 
         <span class="c1"># Subfield: &quot;Advanced parameters&quot;</span>
-        <span class="s2">&quot;flipAlongX&quot;</span><span class="p">:</span>           <span class="mi">0</span><span class="p">,</span>  <span class="c1"># &quot;Flip data along x&quot;</span>
-        <span class="s2">&quot;flipAlongY&quot;</span><span class="p">:</span>           <span class="mi">0</span><span class="p">,</span>
-        <span class="s2">&quot;flipAlongZ&quot;</span><span class="p">:</span>           <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;flipAlongX&quot;</span><span class="p">:</span>           <span class="mi">2</span> <span class="k">if</span> <span class="n">flipX</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span>  <span class="c1"># &quot;Flip data along x&quot;</span>
+        <span class="s2">&quot;flipAlongY&quot;</span><span class="p">:</span>           <span class="mi">2</span> <span class="k">if</span> <span class="n">flipY</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;flipAlongZ&quot;</span><span class="p">:</span>           <span class="mi">2</span> <span class="k">if</span> <span class="n">flipZ</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span>
         <span class="s2">&quot;numberOfDiscarded&quot;</span><span class="p">:</span>    <span class="mi">0</span><span class="p">,</span>  <span class="c1"># &quot;#discarded images at beginning&quot;</span>
         <span class="s2">&quot;numberOfT2&quot;</span><span class="p">:</span>        <span class="bp">None</span><span class="p">,</span>  <span class="c1"># &quot;#T2&quot;</span>
         <span class="s2">&quot;numberOfRepetitions&quot;</span><span class="p">:</span>  <span class="mi">1</span><span class="p">,</span>  <span class="c1"># &quot;#repetitions&quot;</span>
@@ -316,9 +367,10 @@
         <span class="s2">&quot;qSpaceTransform_zz&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
         <span class="c1"># ---------------------------------------------------------------------</span>
         <span class="c1"># Field: &quot;Q-space sampling&quot;</span>
-        <span class="s2">&quot;qSpaceSamplingType&quot;</span><span class="p">:</span>     <span class="mi">4</span><span class="p">,</span>  <span class="c1"># default &quot;spherical single-shell custom&quot;</span>
-        <span class="s2">&quot;qSpaceChoice5BValue&quot;</span><span class="p">:</span> <span class="mi">1300</span><span class="p">,</span>
-        <span class="s2">&quot;qSpaceChoice5OrientationFileNames&quot;</span><span class="p">:</span> <span class="n">bvec</span><span class="p">,</span>
+        <span class="s2">&quot;qSpaceSamplingType&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>  <span class="c1"># default &quot;spherical single-shell custom&quot;</span>
+        <span class="s2">&quot;qSpaceChoice5BValueFileNames&quot;</span><span class="p">:</span> <span class="s2">&quot;;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bvals</span><span class="p">),</span>
+        <span class="s2">&quot;qSpaceChoice5BValueThreshold&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+        <span class="s2">&quot;qSpaceChoice5OrientationFileNames&quot;</span><span class="p">:</span> <span class="s2">&quot;;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bvecs</span><span class="p">),</span>
 
         <span class="c1"># Apparently Connectomist uses 2 as True, and 0 as False.</span>
         <span class="s2">&quot;invertXAxis&quot;</span><span class="p">:</span> <span class="mi">2</span> <span class="k">if</span> <span class="n">invertX</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span>
@@ -336,8 +388,6 @@
         <span class="s2">&quot;qSpaceChoice9BValues&quot;</span><span class="p">:</span>               <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="s2">&quot;qSpaceChoice10BValues&quot;</span><span class="p">:</span>              <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="s2">&quot;qSpaceChoice11BValues&quot;</span><span class="p">:</span>              <span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;qSpaceChoice12BValues&quot;</span><span class="p">:</span>              <span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;qSpaceChoice13BValues&quot;</span><span class="p">:</span>              <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="s2">&quot;qSpaceChoice1NumberOfSteps&quot;</span><span class="p">:</span>         <span class="mi">11</span><span class="p">,</span>
         <span class="s2">&quot;qSpaceChoice2NumberOfOrientations&quot;</span><span class="p">:</span>   <span class="mi">6</span><span class="p">,</span>
         <span class="s2">&quot;qSpaceChoice3NumberOfOrientations&quot;</span><span class="p">:</span>   <span class="mi">6</span><span class="p">,</span>
@@ -345,14 +395,12 @@
         <span class="s2">&quot;qSpaceChoice6NumberOfOrientations&quot;</span><span class="p">:</span>   <span class="mi">6</span><span class="p">,</span>
         <span class="s2">&quot;qSpaceChoice7NumberOfOrientations&quot;</span><span class="p">:</span>   <span class="mi">6</span><span class="p">,</span>
         <span class="s2">&quot;qSpaceChoice8NumberOfOrientations&quot;</span><span class="p">:</span>   <span class="mi">6</span><span class="p">,</span>
-        <span class="s2">&quot;qSpaceChoice9OrientationFileNames&quot;</span><span class="p">:</span>  <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="s2">&quot;qSpaceChoice10NumberOfOrientations&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="s2">&quot;qSpaceChoice11NumberOfOrientations&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;qSpaceChoice12NumberOfOrientations&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="s2">&quot;qSpaceChoice13OrientationFileNames&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="c1"># ---------------------------------------------------------------------</span>
-        <span class="c1"># Field: &quot;Diffusion time (in ms)&quot;</span>
-        <span class="s2">&quot;diffusionTime&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="c1"># Field: micro structure config&quot;</span>
+        <span class="s2">&quot;gradientCharacteristicsFileNames&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="c1"># ---------------------------------------------------------------------</span>
         <span class="c1"># Field: &quot;Work directory&quot;</span>
         <span class="s2">&quot;outputWorkDirectory&quot;</span><span class="p">:</span> <span class="n">outdir</span><span class="p">,</span>
@@ -367,7 +415,7 @@
     <span class="n">parameters_dict</span><span class="p">[</span><span class="s2">&quot;manufacturer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MANUFACTURERS</span><span class="p">[</span><span class="n">manufacturer</span><span class="p">]</span>
 
     <span class="c1"># Read bvals and bvecs</span>
-    <span class="n">bvals</span><span class="p">,</span> <span class="n">bvecs</span><span class="p">,</span> <span class="n">nb_shells</span><span class="p">,</span> <span class="n">nb_nodiff</span> <span class="o">=</span> <span class="n">read_bvals_bvecs</span><span class="p">(</span><span class="n">bval</span><span class="p">,</span> <span class="n">bvec</span><span class="p">)</span>
+    <span class="n">bvalues</span><span class="p">,</span> <span class="n">bvectors</span><span class="p">,</span> <span class="n">nb_shells</span><span class="p">,</span> <span class="n">nb_nodiff</span> <span class="o">=</span> <span class="n">read_bvals_bvecs</span><span class="p">(</span><span class="n">bvals</span><span class="p">,</span> <span class="n">bvecs</span><span class="p">)</span>
 
     <span class="c1"># Update Connectomist step description</span>
     <span class="n">parameters_dict</span><span class="p">[</span><span class="s2">&quot;numberOfT2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nb_nodiff</span>
@@ -375,9 +423,13 @@
         <span class="c1"># Spherical single-shell custom</span>
         <span class="n">parameters_dict</span><span class="p">[</span><span class="s2">&quot;qSpaceSamplingType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ConnectomistError</span><span class="p">(</span>
-            <span class="s2">&quot;&#39;{0}&#39; shell model(s) not handled yet: path to .bval file: &quot;</span>
-            <span class="s2">&quot;&#39;{1}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nb_shells</span><span class="p">,</span> <span class="n">bval</span><span class="p">))</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;&#39;{0}&#39; shell model(s) not handled yet.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nb_shells</span><span class="p">))</span>
+        <span class="c1"># Arbitrary shell</span>
+        <span class="n">parameters_dict</span><span class="p">[</span><span class="s2">&quot;qSpaceSamplingType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">12</span>
+        <span class="n">parameters_dict</span><span class="p">[</span><span class="s2">&quot;qSpaceChoice13BValueFileNames&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bvals</span><span class="p">)</span>
+        <span class="n">parameters_dict</span><span class="p">[</span><span class="s2">&quot;qSpaceChoice13BValueThreshold&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">50.0</span>
+        <span class="n">parameters_dict</span><span class="p">[</span><span class="s2">&quot;qSpaceChoice13OrientationFileNames&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bvecs</span><span class="p">)</span>
 
     <span class="c1"># Call with Connectomist</span>
     <span class="n">process</span> <span class="o">=</span> <span class="n">ConnectomistWrapper</span><span class="p">(</span><span class="n">path_connectomist</span><span class="p">)</span>
@@ -385,15 +437,17 @@
         <span class="n">algorithm</span><span class="p">,</span> <span class="n">parameters_dict</span><span class="p">,</span> <span class="n">outdir</span><span class="p">)</span>
     <span class="n">process</span><span class="p">(</span><span class="n">algorithm</span><span class="p">,</span> <span class="n">parameter_file</span><span class="p">,</span> <span class="n">outdir</span><span class="p">)</span>
 
-    <span class="c1"># When there are multiple t2 (nodif) volumes, Connectomist merges them</span>
+    <span class="c1"># When there are multiple volume or when there are multiple t2 (nodif)</span>
+    <span class="c1"># volumes, Connectomist merges them</span>
     <span class="c1"># rewrite bvec, bval file accordingly (remove extra T2 values)</span>
     <span class="k">if</span> <span class="n">nb_nodiff</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">dw_indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">bvals</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">new_bvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(([</span><span class="mi">0</span><span class="p">],</span> <span class="n">bvals</span><span class="p">[</span><span class="n">dw_indexes</span><span class="p">]))</span>
+        <span class="n">bval</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;dwi.bval&quot;</span><span class="p">)</span>
+        <span class="n">dw_indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">bvalues</span> <span class="o">&gt;=</span> <span class="mi">100</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">new_bvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(([</span><span class="mi">0</span><span class="p">],</span> <span class="n">bvalues</span><span class="p">[</span><span class="n">dw_indexes</span><span class="p">]))</span>
         <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">bval</span><span class="p">,</span> <span class="n">new_bvals</span><span class="p">)</span>
-
-        <span class="n">new_bvecs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(([[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">bvecs</span><span class="o">.</span><span class="n">T</span><span class="p">[:,</span> <span class="n">dw_indexes</span><span class="p">]),</span>
-                                   <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">bvec</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;dwi.bvec&quot;</span><span class="p">)</span>
+        <span class="n">new_bvecs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+            <span class="p">([[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">bvectors</span><span class="o">.</span><span class="n">T</span><span class="p">[:,</span> <span class="n">dw_indexes</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">bvec</span><span class="p">,</span> <span class="n">new_bvecs</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">outdir</span></div>
@@ -402,6 +456,7 @@
           </div>
         </div>
       </div>
+
     <div class="clearer">
     </div>
   </div>
@@ -409,7 +464,7 @@
 </div>
 
 <div class="footer">
-    &copy; 2016, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2017, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
 </div>
   </body>
 </html>

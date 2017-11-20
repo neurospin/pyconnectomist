@@ -15,11 +15,12 @@
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.0',
+        VERSION:     '2.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -51,7 +52,18 @@
   </script>
 
   </head>
-  <body role="document"><nav class="navbar navbar-default navbar-static-top">
+  <body role="document"><div class="banner">
+  <div class="container-fluid banner-container">
+    <div class="row banner-inner">
+      <div class="col-xs-4">
+        <img alt="Logo" src="../_static/pyconnectomist.png">
+      </div>
+      <div class="col-xs-8">
+            <p>Using Connectomist in Python.</p>
+      </div>
+    </div>  
+  </div>
+</div><nav class="navbar navbar-default navbar-static-top">
   <div class="container-fluid">
     <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -61,38 +73,36 @@
           <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="../index.html">
-        <img alt="Logo" src="../_static/pyconnectomist.png">
         </a>
     </div>
     <div id="navbar" class="navbar-collapse collapse" ng-controller="navCtrl" ng-app="navApp">
       <ul class="nav navbar-nav">
         <li ng-class="{ active: isActive('index') }"><a href="../index.html">Home</a></li>
         <li ng-class="{ active: isActive('installation') }"><a href="installation.html">Installation</a></li>
-        <li ng-class="{ active: isActive('documentation') }"><a href="documentation.html">Documentation</a></li>
-        <li class="dropdown">
+        <li ng-class="{ active: isActive('gallery') }"><a href="../auto_gallery/gallery.html">Gallery</a></li>
+        <li ng-class="{ active: isActive('documentation') }"><a href="documentation.html">API documentation</a></li>
+        <!--<li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></a>
           <ul class="dropdown-menu">
 	        <li><a href="pyconnectomist.html">Pyconnectomist</a></li>
-<li><a href="pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
 <li><a href="pyconnectomist.tractography.html">Pyconnectomist.tractography</a></li>
-<li><a href="pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
 <li><a href="pyconnectomist.clustering.html">Pyconnectomist.clustering</a></li>
+<li><a href="pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
+<li><a href="pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
           </ul>
-        </li>
+        </li>-->
         <li><a href="https://github.com/AGrigis/pysphinxdoc">PYSPHINXDOC</a></li>
       </ul>
     </div>
   </div>
 </nav>
-
-
 <div class="content-wrapper">
     <div class="sphinxsidebar">
       <div class="sphinxsidebarwrapper">
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for pyconnectomist <strong>version 1.0.0</strong>
+           This documentation is for pyconnectomist <strong>version 2.0.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -117,20 +127,61 @@
             
   <span class="target" id="module-pyconnectomist.utils.dwitools"></span><p>Utility Python functions to load diffusion metadata.</p>
 <dl class="function">
-<dt id="pyconnectomist.utils.dwitools.read_bvals_bvecs">
-<code class="descclassname">pyconnectomist.utils.dwitools.</code><code class="descname">read_bvals_bvecs</code><span class="sig-paren">(</span><em>bvals_path</em>, <em>bvecs_path</em>, <em>min_bval=100.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/utils/dwitools.html#read_bvals_bvecs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.utils.dwitools.read_bvals_bvecs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read b-values and associated b-vectors.</p>
+<dt id="pyconnectomist.utils.dwitools.extract_dwi_shells">
+<code class="descclassname">pyconnectomist.utils.dwitools.</code><code class="descname">extract_dwi_shells</code><span class="sig-paren">(</span><em>dwi_nii_path</em>, <em>bvals_path</em>, <em>bvecs_path</em>, <em>outdir</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/utils/dwitools.html#extract_dwi_shells"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.utils.dwitools.extract_dwi_shells" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a multi-shell serie to multiple single shell series.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>bvals_path: str</strong></p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>dwi_nii_path: str</strong></p>
+<blockquote>
+<div><p>path to the diffusion volume file.</p>
+</div></blockquote>
+<p><strong>bvals_path: str</strong></p>
 <blockquote>
 <div><p>path to the diffusion b-values file.</p>
 </div></blockquote>
 <p><strong>bvecs_path: str</strong></p>
 <blockquote>
 <div><p>path to the diffusion b-vectors file.</p>
+</div></blockquote>
+<p><strong>outdir: str</strong></p>
+<blockquote>
+<div><p>path to the destination folder.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">nodiff_file: str</p>
+<blockquote>
+<div><p>path to the mean b0 file.</p>
+</div></blockquote>
+<p>dwis: dict</p>
+<blockquote class="last">
+<div><p>path the each shell &#8216;dwi&#8217;, &#8216;bvals&#8217; and &#8216;bvecs&#8217; files: b-values are
+the keys of this dictionary.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyconnectomist.utils.dwitools.read_bvals_bvecs">
+<code class="descclassname">pyconnectomist.utils.dwitools.</code><code class="descname">read_bvals_bvecs</code><span class="sig-paren">(</span><em>bvals_path</em>, <em>bvecs_path</em>, <em>min_bval=200.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/utils/dwitools.html#read_bvals_bvecs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.utils.dwitools.read_bvals_bvecs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read b-values and associated b-vectors.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>bvals_path: str or list of str</strong></p>
+<blockquote>
+<div><p>path to the diffusion b-values file(s).</p>
+</div></blockquote>
+<p><strong>bvecs_path: str or list of str</strong></p>
+<blockquote>
+<div><p>path to the diffusion b-vectors file(s).</p>
 </div></blockquote>
 <p><strong>min_bval: float, optional</strong></p>
 <blockquote>
@@ -171,6 +222,7 @@
           </div>
         </div>
       </div>
+
     <div class="clearer">
     </div>
   </div>
@@ -178,7 +230,7 @@
 </div>
 
 <div class="footer">
-    &copy; 2016, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2017, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
 </div>
   </body>
 </html>

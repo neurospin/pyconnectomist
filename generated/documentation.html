@@ -15,11 +15,12 @@
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.0',
+        VERSION:     '2.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -52,7 +53,18 @@
   </script>
 
   </head>
-  <body role="document"><nav class="navbar navbar-default navbar-static-top">
+  <body role="document"><div class="banner">
+  <div class="container-fluid banner-container">
+    <div class="row banner-inner">
+      <div class="col-xs-4">
+        <img alt="Logo" src="../_static/pyconnectomist.png">
+      </div>
+      <div class="col-xs-8">
+            <p>Using Connectomist in Python.</p>
+      </div>
+    </div>  
+  </div>
+</div><nav class="navbar navbar-default navbar-static-top">
   <div class="container-fluid">
     <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -62,38 +74,36 @@
           <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="../index.html">
-        <img alt="Logo" src="../_static/pyconnectomist.png">
         </a>
     </div>
     <div id="navbar" class="navbar-collapse collapse" ng-controller="navCtrl" ng-app="navApp">
       <ul class="nav navbar-nav">
         <li ng-class="{ active: isActive('index') }"><a href="../index.html">Home</a></li>
         <li ng-class="{ active: isActive('installation') }"><a href="installation.html">Installation</a></li>
-        <li ng-class="{ active: isActive('documentation') }"><a href="#">Documentation</a></li>
-        <li class="dropdown">
+        <li ng-class="{ active: isActive('gallery') }"><a href="../auto_gallery/gallery.html">Gallery</a></li>
+        <li ng-class="{ active: isActive('documentation') }"><a href="#">API documentation</a></li>
+        <!--<li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></a>
           <ul class="dropdown-menu">
 	        <li><a href="pyconnectomist.html">Pyconnectomist</a></li>
-<li><a href="pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
 <li><a href="pyconnectomist.tractography.html">Pyconnectomist.tractography</a></li>
-<li><a href="pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
 <li><a href="pyconnectomist.clustering.html">Pyconnectomist.clustering</a></li>
+<li><a href="pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
+<li><a href="pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
           </ul>
-        </li>
+        </li>-->
         <li><a href="https://github.com/AGrigis/pysphinxdoc">PYSPHINXDOC</a></li>
       </ul>
     </div>
   </div>
 </nav>
-
-
 <div class="content-wrapper">
     <div class="sphinxsidebar">
       <div class="sphinxsidebarwrapper">
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for pyconnectomist <strong>version 1.0.0</strong>
+           This documentation is for pyconnectomist <strong>version 2.0.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -103,7 +113,7 @@
 
       <!-- toc tree -->
       <ul>
-<li><a class="reference internal" href="#">Documentation of PYCONNECTOMIST</a></li>
+<li><a class="reference internal" href="#">API documentation of PYCONNECTOMIST</a></li>
 </ul>
 
 
@@ -117,11 +127,25 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="documentation-of-pyconnectomist">
-<h1>Documentation of PYCONNECTOMIST<a class="headerlink" href="#documentation-of-pyconnectomist" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="api-documentation-of-pyconnectomist">
+<h1>API documentation of PYCONNECTOMIST<a class="headerlink" href="#api-documentation-of-pyconnectomist" title="Permalink to this headline">¶</a></h1>
+<p>This is the classes and functions reference in pyconnectomist. Please refer to the gallery for further details, as the class and function raw specifications may not be enough to give full guidelines on their uses.</p>
+<dl class="documentation-contents docutils">
+<dt><strong>Contents</strong>:</dt>
+<dd><ul class="first last simple">
+<li><a class="reference external" href="pyconnectomist.html">pyconnectomist</a></li>
+<li><a class="reference external" href="pyconnectomist.tractography.html">pyconnectomist.tractography</a></li>
+<li><a class="reference external" href="pyconnectomist.clustering.html">pyconnectomist.clustering</a></li>
+<li><a class="reference external" href="pyconnectomist.utils.html">pyconnectomist.utils</a></li>
+<li><a class="reference external" href="pyconnectomist.preproc.html">pyconnectomist.preproc</a></li>
+</ul>
+</dd>
+</dl>
 <!-- Block section -->
 
 <div class='container-fluid'>
+
+<div class='float-left'>
 
 <div class='row'>
 
@@ -141,16 +165,6 @@ In the root location of the module are implemented:</p>
 </blockquote>    </blockquote>
 </div>
 <div class='col-md-4'>
-<h3><a href='pyconnectomist.preproc.html'>
-pyconnectomist.preproc
-</a></h3>
-<blockquote>
-    <p>Each preprocessing step (i.e. one Connectomist tab) can be run through the use
-of a dedicated function of the package.</p>
-<p>All the preprocessing steps can be done at once calling the
-complete_preprocessing function.</p>    </blockquote>
-</div>
-<div class='col-md-4'>
 <h3><a href='pyconnectomist.tractography.html'>
 pyconnectomist.tractography
 </a></h3>
@@ -159,13 +173,6 @@ pyconnectomist.tractography
 of a dedicated function of the package.</p>
 <p>All the tractography steps can be done at once calling the
 'complete_tractography' function.</p>    </blockquote>
-</div>
-<div class='col-md-4'>
-<h3><a href='pyconnectomist.utils.html'>
-pyconnectomist.utils
-</a></h3>
-<blockquote>
-    <p>Utility functions wrapped from the Connectomist package.</p>    </blockquote>
 </div>
 <div class='col-md-4'>
 <h3><a href='pyconnectomist.clustering.html'>
@@ -179,12 +186,33 @@ the use of a dedicated function of the package.</p>
 </div>
 
 </div>
+<div class='row'>    <div class='col-md-4'>
+<h3><a href='pyconnectomist.utils.html'>
+pyconnectomist.utils
+</a></h3>
+<blockquote>
+    <p>Utility functions wrapped from the Connectomist package.</p>    </blockquote>
+</div>
+<div class='col-md-4'>
+<h3><a href='pyconnectomist.preproc.html'>
+pyconnectomist.preproc
+</a></h3>
+<blockquote>
+    <p>Each preprocessing step (i.e. one Connectomist tab) can be run through the use
+of a dedicated function of the package.</p>
+<p>All the preprocessing steps can be done at once calling the
+complete_preprocessing function.</p>    </blockquote>
+</div>
+
+</div>
+</div>
 </div></div>
 
 
           </div>
         </div>
       </div>
+
     <div class="clearer">
     </div>
   </div>
@@ -192,7 +220,7 @@ the use of a dedicated function of the package.</p>
 </div>
 
 <div class="footer">
-    &copy; 2016, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2017, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
 </div>
   </body>
 </html>

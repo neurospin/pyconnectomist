@@ -1,0 +1,588 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+    <title>PYCONNECTOMIST &mdash; pyConnectomist</title>
+  <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../_static/css/bootstrap.min.css" media="screen" />
+
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyConnectomist" href="../index.html" />
+  
+   
+       <script type="text/javascript" src="../_static/sidebar.js"></script>
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="../_static/js/bootstrap.min.js" type="text/javascript"></script>
+
+  <script src="../_static/js/angular.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    var app = angular.module("navApp", []);
+    app.controller('navCtrl', ['$scope', '$window', function($scope, $window) {
+      $scope.isActive = function (viewLocation) {
+        var rel = $window.location.pathname.split("/")
+        rel = rel[rel.length - 1]
+        rel = rel.split(".")[0]
+        var active = (viewLocation === rel);
+        return active;};
+    }]);
+  </script>
+
+  </head>
+  <body role="document"><div class="banner">
+  <div class="container-fluid banner-container">
+    <div class="row banner-inner">
+      <div class="col-xs-4">
+        <img alt="Logo" src="../_static/pyconnectomist.png">
+      </div>
+      <div class="col-xs-8">
+            <p>Using Connectomist in Python.</p>
+      </div>
+    </div>  
+  </div>
+</div><nav class="navbar navbar-default navbar-static-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+        </a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse" ng-controller="navCtrl" ng-app="navApp">
+      <ul class="nav navbar-nav">
+        <li ng-class="{ active: isActive('index') }"><a href="../index.html">Home</a></li>
+        <li ng-class="{ active: isActive('installation') }"><a href="../generated/installation.html">Installation</a></li>
+        <li ng-class="{ active: isActive('gallery') }"><a href="gallery.html">Gallery</a></li>
+        <li ng-class="{ active: isActive('documentation') }"><a href="../generated/documentation.html">API documentation</a></li>
+        <!--<li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+	        <li><a href="../generated/pyconnectomist.html">Pyconnectomist</a></li>
+<li><a href="../generated/pyconnectomist.tractography.html">Pyconnectomist.tractography</a></li>
+<li><a href="../generated/pyconnectomist.clustering.html">Pyconnectomist.clustering</a></li>
+<li><a href="../generated/pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
+<li><a href="../generated/pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
+          </ul>
+        </li>-->
+        <li><a href="https://github.com/AGrigis/pysphinxdoc">PYSPHINXDOC</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="content-wrapper">
+    <div class="sphinxsidebar">
+      <div class="sphinxsidebarwrapper">
+
+        <!-- info setup -->
+          <p class="doc-version">
+           This documentation is for pyconnectomist <strong>version 2.0.0</strong>
+          </p>
+        <p class="citing">
+          If you use the software, please do not esitate to 
+          <a &mdash; <a href="https://github.com/neurospin/pyconnectomist">
+          Report a Bug</a>.
+        </p>
+
+      <!-- toc tree -->
+      <ul>
+<li><a class="reference internal" href="#">Pyconnectomist Preproc</a></li>
+</ul>
+
+
+      </div>
+    </div>
+  
+
+  <div class="content">
+      
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pyconnectomist-preproc">
+<span id="sphx-glr-auto-gallery-pyconnectomist-preproc-py"></span><h1>Pyconnectomist Preproc<a class="headerlink" href="#pyconnectomist-preproc" title="Permalink to this headline">¶</a></h1>
+<p>Example automatically generated from package script.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># System import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+
+<span class="c1"># Bredala import</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">bredala</span>
+    <span class="n">bredala</span><span class="o">.</span><span class="n">USE_PROFILER</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">bredala</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;pyconnectomist.preproc&quot;</span><span class="p">,</span>
+                     <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;complete_preprocessing&quot;</span><span class="p">])</span>
+    <span class="n">bredala</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;pyconnectomist.preproc.qspace&quot;</span><span class="p">,</span>
+                     <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;data_import_and_qspace_sampling&quot;</span><span class="p">])</span>
+    <span class="n">bredala</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;pyconnectomist.preproc.mask&quot;</span><span class="p">,</span>
+                     <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;rough_mask_extraction&quot;</span><span class="p">])</span>
+    <span class="n">bredala</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;pyconnectomist.preproc.outliers&quot;</span><span class="p">,</span>
+                     <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;outlying_slice_detection&quot;</span><span class="p">])</span>
+    <span class="n">bredala</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;pyconnectomist.preproc.susceptibility&quot;</span><span class="p">,</span>
+                     <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;susceptibility_correction&quot;</span><span class="p">])</span>
+    <span class="n">bredala</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;pyconnectomist.preproc.registration&quot;</span><span class="p">,</span>
+                     <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;dwi_to_anatomy&quot;</span><span class="p">])</span>
+    <span class="n">bredala</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;pyconnectomist.preproc.eddy&quot;</span><span class="p">,</span>
+                     <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;eddy_and_motion_correction&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;export_eddy_motion_results_to_nifti&quot;</span><span class="p">])</span>
+    <span class="n">bredala</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;pyconnectomist.preproc.qc&quot;</span><span class="p">,</span>
+                     <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;qc_reporting&quot;</span><span class="p">])</span>
+    <span class="n">bredala</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;pyconnectomist.wrappers&quot;</span><span class="p">,</span>
+                     <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ConnectomistWrapper.__call__&quot;</span><span class="p">])</span>
+    <span class="n">bredala</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;pyconnectomist.utils.pdftools&quot;</span><span class="p">,</span>
+                     <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;generate_pdf&quot;</span><span class="p">])</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+<span class="c1"># Pyconnectomist import</span>
+<span class="kn">import</span> <span class="nn">pyconnectomist</span>
+<span class="kn">from</span> <span class="nn">pyconnectomist</span> <span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">version</span>
+<span class="kn">from</span> <span class="nn">pyconnectomist.preproc</span> <span class="kn">import</span> <span class="n">complete_preprocessing</span>
+<span class="kn">from</span> <span class="nn">pyconnectomist.preproc</span> <span class="kn">import</span> <span class="n">STEPS</span>
+<span class="kn">from</span> <span class="nn">pyconnectomist.manufacturers</span> <span class="kn">import</span> <span class="n">MANUFACTURERS</span>
+<span class="kn">from</span> <span class="nn">pyconnectomist.wrappers</span> <span class="kn">import</span> <span class="n">ConnectomistWrapper</span>
+<span class="kn">from</span> <span class="nn">pyconnectomist</span> <span class="kn">import</span> <span class="n">DEFAULT_CONNECTOMIST_PATH</span>
+<span class="kn">from</span> <span class="nn">pyconnectomist.utils.pdftools</span> <span class="kn">import</span> <span class="n">generate_pdf</span>
+<span class="kn">from</span> <span class="nn">pyconnectomist.info</span> <span class="kn">import</span> <span class="n">PTK_RELEASE</span>
+
+
+<span class="c1"># Parameters to keep trace</span>
+<span class="n">__hopla__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;runtime&quot;</span><span class="p">,</span> <span class="s2">&quot;inputs&quot;</span><span class="p">,</span> <span class="s2">&quot;outputs&quot;</span><span class="p">]</span>
+
+<span class="c1"># Script documentation</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">Connectomist preproc</span>
+<span class="s2">~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="s2">Function that runs all the Connectomist preprocessing tabs.</span>
+<span class="s2">Generates results in &#39;&lt;outdir&gt;/&lt;subjectid&gt;/proeproc&#39;.</span>
+
+<span class="s2">Steps:</span>
+
+<span class="s2">1- Create the preprocessing output directory if not existing.</span>
+<span class="s2">2- Import files to Connectomist and choose q-space model.</span>
+<span class="s2">3- Registration t1 - dwi</span>
+<span class="s2">4- Create a brain mask.</span>
+<span class="s2">5- Detect and correct outlying diffusion slices.</span>
+<span class="s2">6- Susceptibility correction.</span>
+<span class="s2">7- Eddy current and motion correction.</span>
+<span class="s2">8- QC reporting.</span>
+<span class="s2">9- Export result as a Nifti with a .bval and a .bvec.</span>
+<span class="s2">10- Export outliers.</span>
+<span class="s2">11- Delete intermediate files and directories if requested.</span>
+<span class="s2">12- Generate QC reporting.</span>
+
+<span class="s2">Command:</span>
+
+<span class="s2">python $HOME/git/pyconnectomist/pyconnectomist/scripts/pyconnectomist_preproc </span><span class="se">\</span>
+<span class="s2">    -v 2 </span><span class="se">\</span>
+<span class="s2">    -o /tmp/pyconnectomist </span><span class="se">\</span>
+<span class="s2">    -s jp090065 </span><span class="se">\</span>
+<span class="s2">    -P myproject </span><span class="se">\</span>
+<span class="s2">    -T t0 </span><span class="se">\</span>
+<span class="s2">    -i /neurospin/senior/nsap/data/V4/nifti/jp090065/000007_HARDI1/HARDI1.nii.gz </span><span class="se">\</span>
+<span class="s2">    -r /neurospin/senior/nsap/data/V4/nifti/jp090065/000007_HARDI1/HARDI1.bvec </span><span class="se">\</span>
+<span class="s2">    -b /neurospin/senior/nsap/data/V4/nifti/jp090065/000007_HARDI1/HARDI1.bval </span><span class="se">\</span>
+<span class="s2">    -m Siemens </span><span class="se">\</span>
+<span class="s2">    -t 2.46 </span><span class="se">\</span>
+<span class="s2">    -f 0.75 </span><span class="se">\</span>
+<span class="s2">    -a 2 </span><span class="se">\</span>
+<span class="s2">    -u /neurospin/senior/nsap/data/V4/nifti/jp090065/000019_B0MAP/B0MAP.nii.gz </span><span class="se">\</span>
+<span class="s2">    -p /neurospin/senior/nsap/data/V4/nifti/jp090065/000020_B0MAP/B0MAP.nii.gz </span><span class="se">\</span>
+<span class="s2">    -x </span><span class="se">\</span>
+<span class="s2">    -q 0.75 </span><span class="se">\</span>
+<span class="s2">    -l 3.0 </span><span class="se">\</span>
+<span class="s2">    -g /neurospin/senior/nsap/data/V4/morphologist </span><span class="se">\</span>
+<span class="s2">    -e</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">is_file</span><span class="p">(</span><span class="n">filearg</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Type for argparse - checks that file exists but does not open.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filearg</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentError</span><span class="p">(</span>
+            <span class="s2">&quot;The file &#39;{0}&#39; does not exist!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filearg</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">filearg</span>
+
+
+<span class="k">def</span> <span class="nf">is_directory</span><span class="p">(</span><span class="n">dirarg</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Type for argparse - checks that directory exists.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">dirarg</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentError</span><span class="p">(</span>
+            <span class="s2">&quot;The directory &#39;{0}&#39; does not exist!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dirarg</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">dirarg</span>
+
+
+<span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="n">doc</span><span class="p">,</span>
+                                 <span class="n">formatter_class</span><span class="o">=</span><span class="n">argparse</span><span class="o">.</span><span class="n">RawTextHelpFormatter</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-v&quot;</span><span class="p">,</span> <span class="s2">&quot;--verbose&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;verbose&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;increase the verbosity level: 0 silent, [1, 2] verbose.&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-e&quot;</span><span class="p">,</span> <span class="s2">&quot;--erase&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;erase&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;if activated, clean the subject folder if already created.&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-C&quot;</span><span class="p">,</span> <span class="s2">&quot;--clientname&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;clientname&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;NC&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the client name.&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-P&quot;</span><span class="p">,</span> <span class="s2">&quot;--projectname&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;projectname&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the project name.&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-T&quot;</span><span class="p">,</span> <span class="s2">&quot;--timestep&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the time step assocaited to the diffusion dataset.&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-c&quot;</span><span class="p">,</span> <span class="s2">&quot;--connectomistconfig&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;connectomistconfig&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;PATH&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the path to the Connectomist configuration file.&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">is_file</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-o&quot;</span><span class="p">,</span> <span class="s2">&quot;--outdir&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;outdir&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;PATH&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the Connectomist preprocessing home directory.&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">is_directory</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-s&quot;</span><span class="p">,</span> <span class="s2">&quot;--subjectid&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;subjectid&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the subject identifier.&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-i&quot;</span><span class="p">,</span> <span class="s2">&quot;--dwifiles&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;dwifiles&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the subject diffusion images to be processed.&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">is_file</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-r&quot;</span><span class="p">,</span> <span class="s2">&quot;--bvecfiles&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;bvecfiles&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the subject diffusion b-vectors to be processed.&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">is_file</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-b&quot;</span><span class="p">,</span> <span class="s2">&quot;--bvalfiles&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;bvalfiles&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the subject diffusion b-values to be processed.&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">is_file</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;--manufacturer&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;manufacturer&quot;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">MANUFACTURERS</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the MRI scanner manufacturer.&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-t&quot;</span><span class="p">,</span> <span class="s2">&quot;--delta_te&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;delta_te&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;the difference in msec between the 2 echoes of the B0 magnitude &quot;</span>
+          <span class="s2">&quot;map.&quot;</span><span class="p">))</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-f&quot;</span><span class="p">,</span> <span class="s2">&quot;--partial_fourier_factor&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;partial_fourier_factor&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the percentage of k-space plane acquired (]0;1]).&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-a&quot;</span><span class="p">,</span> <span class="s2">&quot;--parallel_acceleration_factor&quot;</span><span class="p">,</span>
+    <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;parallel_acceleration_factor&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the number of parallel acquisition in the k-space plane.&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-u&quot;</span><span class="p">,</span> <span class="s2">&quot;--b0_magnitude&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;b0_magnitude&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the path to the B0 magnitude map (also contains phase for GE).&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">is_file</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-p&quot;</span><span class="p">,</span> <span class="s2">&quot;--b0_phase&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;b0_phase&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the path to the B0 phase map (not for GE).&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">is_file</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-ph&quot;</span><span class="p">,</span> <span class="s2">&quot;--phase_axis&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;phase_axis&quot;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">],</span>
+     <span class="n">default</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the acquistion phase axis.&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-j&quot;</span><span class="p">,</span> <span class="s2">&quot;--slice_axis&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;slice_axis&quot;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">],</span>
+    <span class="n">default</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the acquistion slice axis.&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-ix&quot;</span><span class="p">,</span> <span class="s2">&quot;--flipx&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;flipx&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;if activated, invert the x-axis in the data.&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-iy&quot;</span><span class="p">,</span> <span class="s2">&quot;--flipy&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;flipy&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;if activated, invert the y-axis in the data.&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-iz&quot;</span><span class="p">,</span> <span class="s2">&quot;--flipz&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;flipz&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;if activated, invert the z-axis in the data.&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-x&quot;</span><span class="p">,</span> <span class="s2">&quot;--invertx&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;invertx&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;if activated, invert the x-axis in diffusion model.&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-y&quot;</span><span class="p">,</span> <span class="s2">&quot;--inverty&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;inverty&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;if activated, invert the y-axis in diffusion model.&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-z&quot;</span><span class="p">,</span> <span class="s2">&quot;--invertz&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;invertz&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;if activated, invert the z-axis in diffusion model.&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-n&quot;</span><span class="p">,</span> <span class="s2">&quot;--negative_sign&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;negative_sign&quot;</span><span class="p">,</span>  <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;if activated, invert the direction of unwarping in the &quot;</span>
+          <span class="s2">&quot;suceptibility distortion correction.&quot;</span><span class="p">))</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-q&quot;</span><span class="p">,</span> <span class="s2">&quot;--echo_spacing&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;echo_spacing&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;the acquisition time in msec between 2 centers of 2 &quot;</span>
+          <span class="s2">&quot;consecutively acquired lines in k-space (not for Philips).&quot;</span><span class="p">))</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-k&quot;</span><span class="p">,</span> <span class="s2">&quot;--epi_factor&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;epi_factor&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the number of echoes after one RF pulse, i.e. echo train length.&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-l&quot;</span><span class="p">,</span> <span class="s2">&quot;--b0_field&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;b0_field&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the B0 field intensity (Philips only).&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-w&quot;</span><span class="p">,</span> <span class="s2">&quot;--water_fat_shift&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;water_fat_shift&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="mf">4.68</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Philips only, the spins frequency offsets.&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-Z&quot;</span><span class="p">,</span> <span class="s2">&quot;--t1zcropping&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;t1zcropping&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Crop the t1 image in the z direction in order to remove &quot;</span>
+                     <span class="s2">&quot;the neck.&quot;</span><span class="p">))</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-L&quot;</span><span class="p">,</span> <span class="s2">&quot;--levelcount&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;level_count&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The number of bins in the histogram.&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-K&quot;</span><span class="p">,</span> <span class="s2">&quot;--lowertheshold&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;lower_theshold&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Remove noise in the image by applying this lower &quot;</span>
+                     <span class="s2">&quot;theshold.&quot;</span><span class="p">))</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-S&quot;</span><span class="p">,</span> <span class="s2">&quot;--nosmoothing&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;no_smoothing&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Do not smooth the image before performing the histogram analysis.&quot;</span><span class="p">))</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-M&quot;</span><span class="p">,</span> <span class="s2">&quot;--similarity&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;similarity&quot;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;mi&quot;</span><span class="p">,</span> <span class="s2">&quot;norm_mi&quot;</span><span class="p">],</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the eddy + motion correction similarity measure.&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-d&quot;</span><span class="p">,</span> <span class="s2">&quot;--delete_steps&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;delete_steps&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;if activated, remove all intermediate files and directories at &quot;</span>
+          <span class="s2">&quot;the end.&quot;</span><span class="p">))</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-g&quot;</span><span class="p">,</span> <span class="s2">&quot;--morphologist_dir&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;morphologist_dir&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;PATH&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">is_directory</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the path to the morphologist processings home directory.&quot;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-Q&quot;</span><span class="p">,</span> <span class="s2">&quot;--already_corrected&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;already_corrected&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;if activated, only the first three step are computed in order to &quot;</span>
+          <span class="s2">&quot;facilitate the modeling, tractography, bundeling steps.&quot;</span><span class="p">))</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-R&quot;</span><span class="p">,</span> <span class="s2">&quot;--report_only&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;report_only&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;if activated, only the report will be generated. Might be &quot;</span>
+          <span class="s2">&quot;usefull when manual operations must be performed.&quot;</span><span class="p">))</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="s2">&quot;-O&quot;</span><span class="p">,</span> <span class="s2">&quot;--preprocdir&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;preprocdir&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;PATH&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;the path to the Connectomist diffusion preprocessings. If not &quot;</span>
+          <span class="s2">&quot;specified generate data in &#39;&lt;outdir&gt;/&lt;subjectid&gt;/preproc&#39;.&quot;</span><span class="p">),</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">is_directory</span><span class="p">)</span>
+<span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>First check if the Connectomist subject directory exists on the file system,
+and clean it if requested.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">tool</span> <span class="o">=</span> <span class="s2">&quot;pyconnectomist_preproc&quot;</span>
+<span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+<span class="n">tool_version</span> <span class="o">=</span> <span class="n">version</span>
+<span class="n">connectomist_config</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">connectomistconfig</span> <span class="ow">or</span> <span class="n">DEFAULT_CONNECTOMIST_PATH</span>
+<span class="n">connectomist_version</span> <span class="o">=</span> <span class="n">ConnectomistWrapper</span><span class="o">.</span><span class="n">_connectomist_version_check</span><span class="p">(</span>
+    <span class="n">connectomist_config</span><span class="p">)</span>
+<span class="n">runtime</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">name</span><span class="p">,</span> <span class="nb">locals</span><span class="p">()[</span><span class="n">name</span><span class="p">])</span>
+               <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;connectomist_config&quot;</span><span class="p">,</span> <span class="s2">&quot;tool&quot;</span><span class="p">,</span> <span class="s2">&quot;tool_version&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;connectomist_version&quot;</span><span class="p">,</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">)])</span>
+<span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[info] Start Connectomist preproc...&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[info] Directory: {0}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">outdir</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[info] Subject: {0}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">subjectid</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[info] DWIS: {0}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">dwifiles</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[info] BVECS: {0}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">bvecfiles</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[info] BVALS: {0}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">bvalfiles</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[info] Magnitude: {0}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">b0_magnitude</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[info] Phase: {0}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">b0_phase</span><span class="p">))</span>
+<span class="n">outdir</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">outdir</span>
+<span class="n">subjectid</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">subjectid</span>
+<span class="n">preprocdir</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">preprocdir</span>
+<span class="n">clientname</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">clientname</span>
+<span class="n">projectname</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">projectname</span>
+<span class="n">timestep</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">timestep</span>
+<span class="k">if</span> <span class="n">preprocdir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">outdir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Trying to generate output directory. You need to &quot;</span>
+                         <span class="s2">&quot;specify the -o, --outdir command line option.&quot;</span><span class="p">)</span>
+    <span class="n">preprocdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">outdir</span><span class="p">,</span> <span class="n">subjectid</span><span class="p">,</span> <span class="s2">&quot;preproc&quot;</span><span class="p">)</span>
+<span class="n">dwis</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">dwifiles</span>
+<span class="n">bvecs</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">bvecfiles</span>
+<span class="n">bvals</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">bvalfiles</span>
+<span class="n">manufacturer</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">manufacturer</span>
+<span class="n">delta_te</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">delta_te</span>
+<span class="n">partial_fourier_factor</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">partial_fourier_factor</span>
+<span class="n">parallel_acceleration_factor</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">parallel_acceleration_factor</span>
+<span class="n">b0_magnitude</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">b0_magnitude</span>
+<span class="n">b0_phase</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">b0_phase</span>
+<span class="n">phase_axis</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">phase_axis</span>
+<span class="n">slice_axis</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">slice_axis</span>
+<span class="n">flipx</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">flipx</span>
+<span class="n">flipy</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">flipy</span>
+<span class="n">flipz</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">flipz</span>
+<span class="n">invertx</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">invertx</span>
+<span class="n">inverty</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">inverty</span>
+<span class="n">invertz</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">invertz</span>
+<span class="n">negative_sign</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">negative_sign</span>
+<span class="n">echo_spacing</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">echo_spacing</span>
+<span class="n">epi_factor</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">epi_factor</span>
+<span class="n">b0_field</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">b0_field</span>
+<span class="n">water_fat_shift</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">water_fat_shift</span>
+<span class="n">t1zcropping</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">t1zcropping</span>
+<span class="n">level_count</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">level_count</span>
+<span class="n">apply_smoothing</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">no_smoothing</span>
+<span class="n">lower_theshold</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">lower_theshold</span>
+<span class="n">similarity</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">similarity</span>
+<span class="n">delete_steps</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">delete_steps</span>
+<span class="n">morphologist_dir</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">morphologist_dir</span>
+<span class="n">already_corrected</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">already_corrected</span>
+<span class="n">report_only</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">report_only</span>
+<span class="n">inputs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">name</span><span class="p">,</span> <span class="nb">locals</span><span class="p">()[</span><span class="n">name</span><span class="p">])</span>
+               <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;outdir&quot;</span><span class="p">,</span> <span class="s2">&quot;subjectid&quot;</span><span class="p">,</span> <span class="s2">&quot;preprocdir&quot;</span><span class="p">,</span> <span class="s2">&quot;dwis&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;bvecs&quot;</span><span class="p">,</span> <span class="s2">&quot;bvals&quot;</span><span class="p">,</span> <span class="s2">&quot;manufacturer&quot;</span><span class="p">,</span> <span class="s2">&quot;delta_te&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;partial_fourier_factor&quot;</span><span class="p">,</span> <span class="s2">&quot;negative_sign&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;parallel_acceleration_factor&quot;</span><span class="p">,</span> <span class="s2">&quot;b0_phase&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;b0_magnitude&quot;</span><span class="p">,</span> <span class="s2">&quot;invertx&quot;</span><span class="p">,</span> <span class="s2">&quot;inverty&quot;</span><span class="p">,</span> <span class="s2">&quot;invertz&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;echo_spacing&quot;</span><span class="p">,</span> <span class="s2">&quot;epi_factor&quot;</span><span class="p">,</span> <span class="s2">&quot;b0_field&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;water_fat_shift&quot;</span><span class="p">,</span> <span class="s2">&quot;delete_steps&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;morphologist_dir&quot;</span><span class="p">,</span> <span class="s2">&quot;projectname&quot;</span><span class="p">,</span> <span class="s2">&quot;timestep&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;t1zcropping&quot;</span><span class="p">,</span> <span class="s2">&quot;level_count&quot;</span><span class="p">,</span> <span class="s2">&quot;apply_smoothing&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;lower_theshold&quot;</span><span class="p">,</span> <span class="s2">&quot;clientname&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;already_corrected&quot;</span><span class="p">,</span> <span class="s2">&quot;report_only&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;flipx&quot;</span><span class="p">,</span> <span class="s2">&quot;flipy&quot;</span><span class="p">,</span> <span class="s2">&quot;flipz&quot;</span><span class="p">,</span> <span class="s2">&quot;similarity&quot;</span><span class="p">)])</span>
+<span class="n">outputs</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">preprocdir</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">preprocdir</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">erase</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">preprocdir</span><span class="p">):</span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">preprocdir</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">preprocdir</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Connectomist preproc: all steps</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="ow">not</span> <span class="n">report_only</span><span class="p">:</span>
+    <span class="n">returned_values</span> <span class="o">=</span> <span class="n">complete_preprocessing</span><span class="p">(</span>
+        <span class="n">preprocdir</span><span class="p">,</span>
+        <span class="n">subjectid</span><span class="p">,</span>
+        <span class="n">projectname</span><span class="p">,</span>
+        <span class="n">timestep</span><span class="p">,</span>
+        <span class="n">dwis</span><span class="p">,</span>
+        <span class="n">bvals</span><span class="p">,</span>
+        <span class="n">bvecs</span><span class="p">,</span>
+        <span class="n">manufacturer</span><span class="p">,</span>
+        <span class="n">delta_te</span><span class="p">,</span>
+        <span class="n">partial_fourier_factor</span><span class="p">,</span>
+        <span class="n">parallel_acceleration_factor</span><span class="p">,</span>
+        <span class="n">b0_magnitude</span><span class="p">,</span>
+        <span class="n">b0_phase</span><span class="o">=</span><span class="n">b0_phase</span><span class="p">,</span>
+        <span class="n">phase_axis</span><span class="o">=</span><span class="n">phase_axis</span><span class="p">,</span>
+        <span class="n">slice_axis</span><span class="o">=</span><span class="n">slice_axis</span><span class="p">,</span>
+        <span class="n">flipX</span><span class="o">=</span><span class="n">flipx</span><span class="p">,</span>
+        <span class="n">flipY</span><span class="o">=</span><span class="n">flipy</span><span class="p">,</span>
+        <span class="n">flipZ</span><span class="o">=</span><span class="n">flipz</span><span class="p">,</span>
+        <span class="n">invertX</span><span class="o">=</span><span class="n">invertx</span><span class="p">,</span>
+        <span class="n">invertY</span><span class="o">=</span><span class="n">inverty</span><span class="p">,</span>
+        <span class="n">invertZ</span><span class="o">=</span><span class="n">invertz</span><span class="p">,</span>
+        <span class="n">negative_sign</span><span class="o">=</span><span class="n">negative_sign</span><span class="p">,</span>
+        <span class="n">echo_spacing</span><span class="o">=</span><span class="n">echo_spacing</span><span class="p">,</span>
+        <span class="n">EPI_factor</span><span class="o">=</span><span class="n">epi_factor</span><span class="p">,</span>
+        <span class="n">b0_field</span><span class="o">=</span><span class="n">b0_field</span><span class="p">,</span>
+        <span class="n">water_fat_shift</span><span class="o">=</span><span class="n">water_fat_shift</span><span class="p">,</span>
+        <span class="n">t1_foot_zcropping</span><span class="o">=</span><span class="n">t1zcropping</span><span class="p">,</span>
+        <span class="n">level_count</span><span class="o">=</span><span class="n">level_count</span><span class="p">,</span>
+        <span class="n">lower_theshold</span><span class="o">=</span><span class="n">lower_theshold</span><span class="p">,</span>
+        <span class="n">apply_smoothing</span><span class="o">=</span><span class="n">apply_smoothing</span><span class="p">,</span>
+        <span class="n">similarity_measure</span><span class="o">=</span><span class="n">similarity</span><span class="p">,</span>
+        <span class="n">delete_steps</span><span class="o">=</span><span class="n">delete_steps</span><span class="p">,</span>
+        <span class="n">morphologist_dir</span><span class="o">=</span><span class="n">morphologist_dir</span><span class="p">,</span>
+        <span class="n">already_corrected</span><span class="o">=</span><span class="n">already_corrected</span><span class="p">,</span>
+        <span class="n">path_connectomist</span><span class="o">=</span><span class="n">connectomist_config</span><span class="p">)</span>
+    <span class="n">preproc_dwi</span><span class="p">,</span> <span class="n">preproc_bval</span><span class="p">,</span> <span class="n">preproc_bvec</span><span class="p">,</span> <span class="n">preproc_outliers</span> <span class="o">=</span> <span class="n">returned_values</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[result] In folder: {0}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">preprocdir</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Generate QC reporting</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">reportfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">preprocdir</span><span class="p">,</span> <span class="s2">&quot;QcFast_{0}_{1}_{2}.pdf&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+    <span class="n">projectname</span><span class="p">,</span> <span class="n">subjectid</span><span class="p">,</span> <span class="n">timestep</span><span class="p">))</span>
+<span class="n">tic</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+<span class="n">generate_pdf</span><span class="p">(</span>
+    <span class="n">datapath</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">preprocdir</span><span class="p">,</span> <span class="n">STEPS</span><span class="p">[</span><span class="mi">6</span><span class="p">]),</span>
+    <span class="n">struct_file</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">pyconnectomist</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s2">&quot;utils&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;resources&quot;</span><span class="p">,</span> <span class="s2">&quot;pyconnectomist_qcfast.json&quot;</span><span class="p">),</span>
+    <span class="n">author</span><span class="o">=</span><span class="s2">&quot;NeuroSpin&quot;</span><span class="p">,</span>
+    <span class="n">client</span><span class="o">=</span><span class="n">clientname</span><span class="p">,</span>
+    <span class="n">poweredby</span><span class="o">=</span><span class="s2">&quot;Connectomist-{0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">PTK_RELEASE</span><span class="p">),</span>
+    <span class="n">project</span><span class="o">=</span><span class="n">projectname</span><span class="p">,</span>
+    <span class="n">timepoint</span><span class="o">=</span><span class="n">timestep</span><span class="p">,</span>
+    <span class="n">subject</span><span class="o">=</span><span class="n">subjectid</span><span class="p">,</span>
+    <span class="n">date</span><span class="o">=</span><span class="s2">&quot;{0}-{1}-{2}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tic</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">tic</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">tic</span><span class="o">.</span><span class="n">day</span><span class="p">),</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;DWI QC Reporting&quot;</span><span class="p">,</span>
+    <span class="n">filename</span><span class="o">=</span><span class="n">reportfile</span><span class="p">,</span>
+    <span class="n">pagesize</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+    <span class="n">left_margin</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">right_margin</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">top_margin</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">bottom_margin</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">show_boundary</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[result] In file: {0}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">reportfile</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Update the outputs and save them and the inputs in a &#8216;logs&#8217; directory.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="ow">not</span> <span class="n">report_only</span><span class="p">:</span>
+    <span class="n">logdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">preprocdir</span><span class="p">,</span> <span class="s2">&quot;logs&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">logdir</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">logdir</span><span class="p">)</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">name</span><span class="p">,</span> <span class="nb">locals</span><span class="p">()[</span><span class="n">name</span><span class="p">])</span>
+                   <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;reportfile&quot;</span><span class="p">,</span> <span class="s2">&quot;preproc_dwi&quot;</span><span class="p">,</span> <span class="s2">&quot;preproc_bval&quot;</span><span class="p">,</span>
+                                <span class="s2">&quot;preproc_bvec&quot;</span><span class="p">,</span> <span class="s2">&quot;preproc_outliers&quot;</span><span class="p">)])</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">final_struct</span> <span class="ow">in</span> <span class="p">[(</span><span class="s2">&quot;inputs&quot;</span><span class="p">,</span> <span class="n">inputs</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;outputs&quot;</span><span class="p">,</span> <span class="n">outputs</span><span class="p">),</span>
+                               <span class="p">(</span><span class="s2">&quot;runtime&quot;</span><span class="p">,</span> <span class="n">runtime</span><span class="p">)]:</span>
+        <span class="n">log_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">logdir</span><span class="p">,</span> <span class="s2">&quot;{0}.json&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s2">&quot;wt&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">open_file</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">final_struct</span><span class="p">,</span> <span class="n">open_file</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                      <span class="n">check_circular</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;[final]&quot;</span><span class="p">)</span>
+        <span class="n">pprint</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Total running time of the script:</strong> ( 0 minutes  0.000 seconds)</p>
+<div class="sphx-glr-footer container">
+<div class="sphx-glr-download container">
+<a class="reference download internal" href="../_downloads/pyconnectomist_preproc.py" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">pyconnectomist_preproc.py</span></code></a></div>
+<div class="sphx-glr-download container">
+<a class="reference download internal" href="../_downloads/pyconnectomist_preproc.ipynb" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">pyconnectomist_preproc.ipynb</span></code></a></div>
+</div>
+<p class="sphx-glr-signature">Gallery generated by Sphinx-Gallery</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+    <div class="clearer">
+    </div>
+  </div>
+  
+</div>
+
+<div class="footer">
+    &copy; 2017, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
+</div>
+  </body>
+</html>

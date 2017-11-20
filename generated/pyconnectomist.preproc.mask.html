@@ -15,11 +15,12 @@
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.0',
+        VERSION:     '2.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -51,7 +52,18 @@
   </script>
 
   </head>
-  <body role="document"><nav class="navbar navbar-default navbar-static-top">
+  <body role="document"><div class="banner">
+  <div class="container-fluid banner-container">
+    <div class="row banner-inner">
+      <div class="col-xs-4">
+        <img alt="Logo" src="../_static/pyconnectomist.png">
+      </div>
+      <div class="col-xs-8">
+            <p>Using Connectomist in Python.</p>
+      </div>
+    </div>  
+  </div>
+</div><nav class="navbar navbar-default navbar-static-top">
   <div class="container-fluid">
     <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -61,38 +73,36 @@
           <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="../index.html">
-        <img alt="Logo" src="../_static/pyconnectomist.png">
         </a>
     </div>
     <div id="navbar" class="navbar-collapse collapse" ng-controller="navCtrl" ng-app="navApp">
       <ul class="nav navbar-nav">
         <li ng-class="{ active: isActive('index') }"><a href="../index.html">Home</a></li>
         <li ng-class="{ active: isActive('installation') }"><a href="installation.html">Installation</a></li>
-        <li ng-class="{ active: isActive('documentation') }"><a href="documentation.html">Documentation</a></li>
-        <li class="dropdown">
+        <li ng-class="{ active: isActive('gallery') }"><a href="../auto_gallery/gallery.html">Gallery</a></li>
+        <li ng-class="{ active: isActive('documentation') }"><a href="documentation.html">API documentation</a></li>
+        <!--<li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></a>
           <ul class="dropdown-menu">
 	        <li><a href="pyconnectomist.html">Pyconnectomist</a></li>
-<li><a href="pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
 <li><a href="pyconnectomist.tractography.html">Pyconnectomist.tractography</a></li>
-<li><a href="pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
 <li><a href="pyconnectomist.clustering.html">Pyconnectomist.clustering</a></li>
+<li><a href="pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
+<li><a href="pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
           </ul>
-        </li>
+        </li>-->
         <li><a href="https://github.com/AGrigis/pysphinxdoc">PYSPHINXDOC</a></li>
       </ul>
     </div>
   </div>
 </nav>
-
-
 <div class="content-wrapper">
     <div class="sphinxsidebar">
       <div class="sphinxsidebarwrapper">
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for pyconnectomist <strong>version 1.0.0</strong>
+           This documentation is for pyconnectomist <strong>version 2.0.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -118,7 +128,7 @@
   <span class="target" id="module-pyconnectomist.preproc.mask"></span><p>Wrapper to Connectomist&#8217;s &#8216;Rough mask&#8217; tab.</p>
 <dl class="function">
 <dt id="pyconnectomist.preproc.mask.rough_mask_extraction">
-<code class="descclassname">pyconnectomist.preproc.mask.</code><code class="descname">rough_mask_extraction</code><span class="sig-paren">(</span><em>outdir</em>, <em>raw_dwi_dir</em>, <em>subject_id</em>, <em>path_connectomist='/i2bm/local/Ubuntu-14.04-x86_64/ptk/bin/connectomist'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/preproc/mask.html#rough_mask_extraction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.preproc.mask.rough_mask_extraction" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pyconnectomist.preproc.mask.</code><code class="descname">rough_mask_extraction</code><span class="sig-paren">(</span><em>outdir</em>, <em>raw_dwi_dir</em>, <em>registration_dir</em>, <em>morphologist_dir</em>, <em>subject_id</em>, <em>level_count=32</em>, <em>lower_theshold=0.0</em>, <em>apply_smoothing=True</em>, <em>path_connectomist='/volatile/PTK-6.0-Ubuntu-14.04LTS-x86_64/bin/connectomist'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyconnectomist/preproc/mask.html#rough_mask_extraction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyconnectomist.preproc.mask.rough_mask_extraction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper to Connectomist&#8217;s &#8216;Rough mask&#8217; tab.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -132,9 +142,29 @@
 <blockquote>
 <div><p>path to Connectomist Raw DWI folder.</p>
 </div></blockquote>
+<p><strong>registration_dir: str</strong></p>
+<blockquote>
+<div><p>path to Connectomist registration folder.</p>
+</div></blockquote>
+<p><strong>morphologist_dir: str</strong></p>
+<blockquote>
+<div><p>path to Morphologist directory.</p>
+</div></blockquote>
 <p><strong>subject_id: str</strong></p>
 <blockquote>
 <div><p>the subject code in study.</p>
+</div></blockquote>
+<p><strong>level_count: int (optional, default 32)</strong></p>
+<blockquote>
+<div><p>the number of bins in the histogram.</p>
+</div></blockquote>
+<p><strong>lower_theshold: float (optional, default 0)</strong></p>
+<blockquote>
+<div><p>remove noise in the image by applying this lower theshold.</p>
+</div></blockquote>
+<p><strong>apply_smoothing: bool (optional, default True)</strong></p>
+<blockquote>
+<div><p>smooth the image before performing the histogram analysis.</p>
 </div></blockquote>
 <p><strong>path_connectomist: str (optional)</strong></p>
 <blockquote>
@@ -157,6 +187,7 @@
           </div>
         </div>
       </div>
+
     <div class="clearer">
     </div>
   </div>
@@ -164,7 +195,7 @@
 </div>
 
 <div class="footer">
-    &copy; 2016, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2017, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
 </div>
   </body>
 </html>

@@ -15,11 +15,12 @@
     
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/gallery.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.0.0',
+        VERSION:     '2.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -52,7 +53,18 @@
   </script>
 
   </head>
-  <body role="document"><nav class="navbar navbar-default navbar-static-top">
+  <body role="document"><div class="banner">
+  <div class="container-fluid banner-container">
+    <div class="row banner-inner">
+      <div class="col-xs-4">
+        <img alt="Logo" src="../../../_static/pyconnectomist.png">
+      </div>
+      <div class="col-xs-8">
+            <p>Using Connectomist in Python.</p>
+      </div>
+    </div>  
+  </div>
+</div><nav class="navbar navbar-default navbar-static-top">
   <div class="container-fluid">
     <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -62,38 +74,36 @@
           <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="../../../index.html">
-        <img alt="Logo" src="../../../_static/pyconnectomist.png">
         </a>
     </div>
     <div id="navbar" class="navbar-collapse collapse" ng-controller="navCtrl" ng-app="navApp">
       <ul class="nav navbar-nav">
         <li ng-class="{ active: isActive('index') }"><a href="../../../index.html">Home</a></li>
         <li ng-class="{ active: isActive('installation') }"><a href="../../../generated/installation.html">Installation</a></li>
-        <li ng-class="{ active: isActive('documentation') }"><a href="../../../generated/documentation.html">Documentation</a></li>
-        <li class="dropdown">
+        <li ng-class="{ active: isActive('gallery') }"><a href="../../../auto_gallery/gallery.html">Gallery</a></li>
+        <li ng-class="{ active: isActive('documentation') }"><a href="../../../generated/documentation.html">API documentation</a></li>
+        <!--<li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></a>
           <ul class="dropdown-menu">
 	        <li><a href="../../../generated/pyconnectomist.html">Pyconnectomist</a></li>
-<li><a href="../../../generated/pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
 <li><a href="../../../generated/pyconnectomist.tractography.html">Pyconnectomist.tractography</a></li>
-<li><a href="../../../generated/pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
 <li><a href="../../../generated/pyconnectomist.clustering.html">Pyconnectomist.clustering</a></li>
+<li><a href="../../../generated/pyconnectomist.utils.html">Pyconnectomist.utils</a></li>
+<li><a href="../../../generated/pyconnectomist.preproc.html">Pyconnectomist.preproc</a></li>
           </ul>
-        </li>
+        </li>-->
         <li><a href="https://github.com/AGrigis/pysphinxdoc">PYSPHINXDOC</a></li>
       </ul>
     </div>
   </div>
 </nav>
-
-
 <div class="content-wrapper">
     <div class="sphinxsidebar">
       <div class="sphinxsidebarwrapper">
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for pyconnectomist <strong>version 1.0.0</strong>
+           This documentation is for pyconnectomist <strong>version 2.0.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -264,11 +274,16 @@
 
     <span class="c1"># Get Connectomist transformations</span>
     <span class="n">dwtot1file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">registered_dwi_dir</span><span class="p">,</span> <span class="s2">&quot;dw_to_t1.trm&quot;</span><span class="p">)</span>
-    <span class="n">t1total</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-            <span class="n">morphologist_dir</span><span class="p">,</span> <span class="n">subject_id</span><span class="p">,</span> <span class="s2">&quot;t1mri&quot;</span><span class="p">,</span> <span class="s2">&quot;default_acquisition&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;registration&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;RawT1-{0}_default_acquisition_TO_Talairach-ACPC.trm&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">subject_id</span><span class="p">))</span>
+    <span class="n">morphologist_regpattern</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">morphologist_dir</span><span class="p">,</span> <span class="n">subject_id</span><span class="p">,</span> <span class="s2">&quot;t1mri&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;registration&quot;</span><span class="p">)</span>
+    <span class="n">morphologist_regdirs</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">morphologist_regpattern</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">morphologist_regdirs</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ConnectomistBadFileError</span><span class="p">(</span><span class="n">morphologist_regpattern</span><span class="p">)</span>
+    <span class="n">morphologist_regdir</span> <span class="o">=</span> <span class="n">morphologist_regdirs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">timepoint</span> <span class="o">=</span> <span class="n">morphologist_regdir</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">t1total</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">morphologist_regdir</span><span class="p">,</span>
+                           <span class="s2">&quot;RawT1-{0}_{1}_TO_Talairach-ACPC.trm&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">subject_id</span><span class="p">,</span> <span class="n">timepoint</span><span class="p">))</span>
 
     <span class="c1"># Check input parameter files existence</span>
     <span class="n">required_files</span> <span class="o">=</span> <span class="n">paths_bundle_map</span> <span class="o">+</span> <span class="p">[</span><span class="n">dwtot1file</span><span class="p">,</span> <span class="n">t1total</span><span class="p">]</span>
@@ -363,6 +378,7 @@
           </div>
         </div>
       </div>
+
     <div class="clearer">
     </div>
   </div>
@@ -370,7 +386,7 @@
 </div>
 
 <div class="footer">
-    &copy; 2016, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2017, pyConnectomist developers &lt;antoine.grigis@cea.fr&gt;.
 </div>
   </body>
 </html>

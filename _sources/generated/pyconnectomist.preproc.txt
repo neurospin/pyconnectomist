@@ -2,8 +2,8 @@
 
 :orphan:
 
-Documentation of *pyconnectomist.preproc*
-==========================================
+API documentation of *pyconnectomist.preproc*
+==============================================
 
 
 Each preprocessing step (i.e. one Connectomist tab) can be run through the use
@@ -20,27 +20,15 @@ complete_preprocessing function.
     <colgroup><col width='25%'/><col width='75%'/></colgroup>
     <tbody valign='top'>
     <tr class='row-odd'>
-    <td><a class='reference internal' href='pyconnectomist.preproc.mask.html'><em>pyconnectomist.preproc.mask</em></a></td>
+    <td><a class='reference internal' href='pyconnectomist.preproc.registration.html'><em>pyconnectomist.preproc.registration</em></a></td>
     <td>
-        <p>Wrapper to Connectomist's 'Rough mask' tab.</p>
+        <p>Wrapper to Connectomist's 'Anatomy &amp; Talairach' tab.</p>
     </td>
     </tr>
     <tr class='row-even'>
-    <td><a class='reference internal' href='pyconnectomist.preproc.qspace.html'><em>pyconnectomist.preproc.qspace</em></a></td>
-    <td>
-        <p>Wrapper to Connectomist's 'DWI &amp; Q-space' tab.</p>
-    </td>
-    </tr>
-    <tr class='row-odd'>
     <td><a class='reference internal' href='pyconnectomist.preproc.outliers.html'><em>pyconnectomist.preproc.outliers</em></a></td>
     <td>
         <p>Wrapper to Connectomist's 'Outliers' tab.</p>
-    </td>
-    </tr>
-    <tr class='row-even'>
-    <td><a class='reference internal' href='pyconnectomist.preproc.all_steps.html'><em>pyconnectomist.preproc.all_steps</em></a></td>
-    <td>
-        <p>Function that runs all preprocessing tabs from Connectomist.</p>
     </td>
     </tr>
     <tr class='row-odd'>
@@ -50,15 +38,33 @@ complete_preprocessing function.
     </td>
     </tr>
     <tr class='row-even'>
-    <td><a class='reference internal' href='pyconnectomist.preproc.registration.html'><em>pyconnectomist.preproc.registration</em></a></td>
+    <td><a class='reference internal' href='pyconnectomist.preproc.qspace.html'><em>pyconnectomist.preproc.qspace</em></a></td>
     <td>
-        <p>Wrapper to Connectomist's 'Anatomy &amp; Talairach' tab.</p>
+        <p>Wrapper to Connectomist's 'DWI &amp; Q-space' tab.</p>
     </td>
     </tr>
     <tr class='row-odd'>
     <td><a class='reference internal' href='pyconnectomist.preproc.eddy.html'><em>pyconnectomist.preproc.eddy</em></a></td>
     <td>
         <p>Wrapper to Connectomist's 'Eddy current &amp; motion' tab.</p>
+    </td>
+    </tr>
+    <tr class='row-even'>
+    <td><a class='reference internal' href='pyconnectomist.preproc.mask.html'><em>pyconnectomist.preproc.mask</em></a></td>
+    <td>
+        <p>Wrapper to Connectomist's 'Rough mask' tab.</p>
+    </td>
+    </tr>
+    <tr class='row-odd'>
+    <td><a class='reference internal' href='pyconnectomist.preproc.all_steps.html'><em>pyconnectomist.preproc.all_steps</em></a></td>
+    <td>
+        <p>Function that runs all preprocessing tabs from Connectomist.</p>
+    </td>
+    </tr>
+    <tr class='row-even'>
+    <td><a class='reference internal' href='pyconnectomist.preproc.qc.html'><em>pyconnectomist.preproc.qc</em></a></td>
+    <td>
+        <p>Wrapper to Connectomist's 'QC Reporting' tab.</p>
     </td>
     </tr>
     </tbody>

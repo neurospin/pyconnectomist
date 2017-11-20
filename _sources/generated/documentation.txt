@@ -1,13 +1,26 @@
 .. AUTO-GENERATED FILE -- DO NOT EDIT!
 
-Documentation of PYCONNECTOMIST
-================================
+API documentation of PYCONNECTOMIST
+====================================
+
+This is the classes and functions reference in pyconnectomist. Please refer to the gallery for further details, as the class and function raw specifications may not be enough to give full guidelines on their uses.
+
+.. rst-class:: documentation-contents
+
+  **Contents**:
+    * `pyconnectomist <pyconnectomist.html>`_
+    * `pyconnectomist.tractography <pyconnectomist.tractography.html>`_
+    * `pyconnectomist.clustering <pyconnectomist.clustering.html>`_
+    * `pyconnectomist.utils <pyconnectomist.utils.html>`_
+    * `pyconnectomist.preproc <pyconnectomist.preproc.html>`_
 
 .. raw:: html
 
     <!-- Block section -->
 
     <div class='container-fluid'>
+
+    <div class='float-left'>
 
     <div class='row'>
 
@@ -27,16 +40,6 @@ Documentation of PYCONNECTOMIST
     </blockquote>    </blockquote>
     </div>
     <div class='col-md-4'>
-    <h3><a href='pyconnectomist.preproc.html'>
-    pyconnectomist.preproc
-    </a></h3>
-    <blockquote>
-        <p>Each preprocessing step (i.e. one Connectomist tab) can be run through the use
-    of a dedicated function of the package.</p>
-    <p>All the preprocessing steps can be done at once calling the
-    complete_preprocessing function.</p>    </blockquote>
-    </div>
-    <div class='col-md-4'>
     <h3><a href='pyconnectomist.tractography.html'>
     pyconnectomist.tractography
     </a></h3>
@@ -45,13 +48,6 @@ Documentation of PYCONNECTOMIST
     of a dedicated function of the package.</p>
     <p>All the tractography steps can be done at once calling the
     'complete_tractography' function.</p>    </blockquote>
-    </div>
-    <div class='col-md-4'>
-    <h3><a href='pyconnectomist.utils.html'>
-    pyconnectomist.utils
-    </a></h3>
-    <blockquote>
-        <p>Utility functions wrapped from the Connectomist package.</p>    </blockquote>
     </div>
     <div class='col-md-4'>
     <h3><a href='pyconnectomist.clustering.html'>
@@ -64,5 +60,25 @@ Documentation of PYCONNECTOMIST
     'complete_labeling' function.</p>    </blockquote>
     </div>
 
+    </div>
+    <div class='row'>    <div class='col-md-4'>
+    <h3><a href='pyconnectomist.utils.html'>
+    pyconnectomist.utils
+    </a></h3>
+    <blockquote>
+        <p>Utility functions wrapped from the Connectomist package.</p>    </blockquote>
+    </div>
+    <div class='col-md-4'>
+    <h3><a href='pyconnectomist.preproc.html'>
+    pyconnectomist.preproc
+    </a></h3>
+    <blockquote>
+        <p>Each preprocessing step (i.e. one Connectomist tab) can be run through the use
+    of a dedicated function of the package.</p>
+    <p>All the preprocessing steps can be done at once calling the
+    complete_preprocessing function.</p>    </blockquote>
+    </div>
+
+    </div>
     </div>
     </div>
