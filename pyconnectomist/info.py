@@ -87,7 +87,11 @@ REQUIRES = [
     "nibabel>=1.1.0",
     "reportlab>=3.0"
 ]
-EXTRA_REQUIRES = {}
+EXTRA_REQUIRES = {
+    "standalone": {
+        "pyconnectome>=1.0.0"
+    }
+}
 SCRIPTS = [
     "pyconnectomist/scripts/pyconnectomist_preproc",
     "pyconnectomist/scripts/pyconnectomist_tractography",
