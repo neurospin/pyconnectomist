@@ -68,7 +68,9 @@ def complete_preprocessing(
         level_count=32,
         lower_theshold=0.0,
         apply_smoothing=True,
+        init_center_gravity=False,
         similarity_measure="mi",
+        transform_type=0,
         delete_steps=False,
         morphologist_dir=None,
         already_corrected=False,
@@ -160,8 +162,13 @@ def complete_preprocessing(
         remove noise in the image by applying this lower theshold.
     apply_smoothing: bool (optional, default True)
         smooth the image before performing the histogram analysis.
+    init_center_gravity: bool (optional, default False)
+        initialize coefficients using the center of gravity.
     similarity_measure: str (option, default 'mi')
         the eddy + motion correction similarity measure.
+    transform_type: int (optional, default 0)
+        type of DWI to T1 registration(rigid=0, affine_wo_shearing=1,
+        affine=2).
     delete_steps: bool (optional, default False)
         if True remove all intermediate files and directories at the end of
         preprocessing, to keep only 4 files: preprocessed Nifti + bval + bvec
@@ -217,6 +224,8 @@ def complete_preprocessing(
         level_count=level_count,
         lower_theshold=lower_theshold,
         apply_smoothing=apply_smoothing,
+        init_center_gravity=init_center_gravity,
+        transform_type=transform_type,
         path_connectomist=path_connectomist)
 
     # Step 4 - Create a brain mask

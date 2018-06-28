@@ -184,7 +184,7 @@ parser.add_argument(
     help="the path to the B0 phase map (not for GE).", type=is_file)
 parser.add_argument(
     "-ph", "--phase_axis", dest="phase_axis", choices=["x", "y", "z"],
-     default="y", help="the acquistion phase axis.")
+    default="y", help="the acquistion phase axis.")
 parser.add_argument(
     "-j", "--slice_axis", dest="slice_axis", choices=["x", "y", "z"],
     default="z", help="the acquistion slice axis.")
@@ -228,12 +228,20 @@ parser.add_argument(
     default=0, help=("Crop the t1 image in the z direction in order to remove "
                      "the neck."))
 parser.add_argument(
+    "-A", "--transform", dest="transform_type", type=int,
+    default=0, help=("DWI to T1 registration transform (0=rigid,"
+                     "1=affine_wo_shearing, 2=affine."))
+parser.add_argument(
     "-L", "--levelcount", dest="level_count", type=int,
     default=32, help="The number of bins in the histogram.")
 parser.add_argument(
     "-K", "--lowertheshold", dest="lower_theshold", type=float,
     default=0., help=("Remove noise in the image by applying this lower "
-                     "theshold."))
+                      "theshold."))
+parser.add_argument(
+    "-G", "--init-center-gravity", dest="init_center_gravity",
+    action="store_true",
+    help=("initialize coefficients using the center of gravity."))
 parser.add_argument(
     "-S", "--nosmoothing", dest="no_smoothing", action="store_true",
     help=("Do not smooth the image before performing the histogram analysis."))
@@ -260,7 +268,7 @@ parser.add_argument(
     "-O", "--preprocdir", dest="preprocdir", metavar="PATH",
     help=("the path to the Connectomist diffusion preprocessings. If not "
           "specified generate data in '<outdir>/<subjectid>/preproc'."),
-    type=is_directory)       
+    type=is_directory)
 args = parser.parse_args()
 
 """
@@ -326,6 +334,8 @@ level_count = args.level_count
 apply_smoothing = not args.no_smoothing
 lower_theshold = args.lower_theshold
 similarity = args.similarity
+transform_type = args.transform_type
+init_center_gravity = args.init_center_gravity
 delete_steps = args.delete_steps
 morphologist_dir = args.morphologist_dir
 already_corrected = args.already_corrected
@@ -335,14 +345,16 @@ inputs = dict([(name, locals()[name])
                             "bvecs", "bvals", "manufacturer", "delta_te",
                             "partial_fourier_factor", "negative_sign",
                             "parallel_acceleration_factor", "b0_phase",
-                            "b0_magnitude", "invertx", "inverty", "invertz", 
+                            "b0_magnitude", "invertx", "inverty", "invertz",
                             "echo_spacing", "epi_factor", "b0_field",
                             "water_fat_shift", "delete_steps",
                             "morphologist_dir", "projectname", "timestep",
-                            "t1zcropping", "level_count", "apply_smoothing",
+                            "t1zcropping", "level_count",
+                            "init_center_gravity", "apply_smoothing",
                             "lower_theshold", "clientname",
                             "already_corrected", "report_only",
-                            "flipx", "flipy", "flipz", "similarity")])
+                            "flipx", "flipy", "flipz", "similarity",
+                            "transform_type")])
 outputs = None
 if not os.path.isdir(preprocdir):
     os.makedirs(preprocdir)
@@ -386,7 +398,9 @@ if not report_only:
         level_count=level_count,
         lower_theshold=lower_theshold,
         apply_smoothing=apply_smoothing,
+        init_center_gravity=init_center_gravity,
         similarity_measure=similarity,
+        transform_type=transform_type,
         delete_steps=delete_steps,
         morphologist_dir=morphologist_dir,
         already_corrected=already_corrected,
