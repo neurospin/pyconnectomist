@@ -30,6 +30,8 @@ def dwi_to_anatomy(
         level_count=32,
         lower_theshold=0.0,
         apply_smoothing=True,
+        init_center_gravity=False,
+        transform_type=0,
         path_connectomist=DEFAULT_CONNECTOMIST_PATH):
     """ Wrapper to Connectomist's 'Anatomy & Talairach' tab.
 
@@ -51,6 +53,10 @@ def dwi_to_anatomy(
         remove noise in the image by applying this lower theshold.
     apply_smoothing: bool (optional, default True)
         smooth the image before performing the histogram analysis.
+    init_center_gravity: bool (optional, default False)
+        initialize coefficients using the center of gravity.
+    transform_type: int (optional, default 0)
+        type of registration (rigid=0, affine_wo_shearing=1, affine=2).
     path_connectomist: str (optional)
         path to the Connectomist executable.
 
@@ -113,7 +119,7 @@ def dwi_to_anatomy(
             "initialParametersTranslationX": 0,
             "initialParametersTranslationY": 0,
             "initialParametersTranslationZ": 0,
-            "initializeCoefficientsUsingCenterOfGravity": False,
+            "initializeCoefficientsUsingCenterOfGravity": init_center_gravity,
             "levelCount": level_count,
             "maximumIterationCount": 1000,
             "maximumTestGradient": 1000.0,
@@ -137,7 +143,7 @@ def dwi_to_anatomy(
             "stepSize": 0.1,
             "stoppingCriterionError": 0.01,
             "subSamplingMaximumSizes": "64 {0}".format(mindim),
-            "transform3DType": 0},
+            "transform3DType": transform_type},
         "_subjectName": subject_id,
         "anteriorPosteriorAdditionSliceCount": 0,
         "correctedDwiDirectory": raw_dwi_dir,
