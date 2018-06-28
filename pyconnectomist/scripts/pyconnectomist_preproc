@@ -271,8 +271,11 @@ tool = "pyconnectomist_preproc"
 timestamp = datetime.now().isoformat()
 tool_version = version
 connectomist_config = args.connectomistconfig or DEFAULT_CONNECTOMIST_PATH
-connectomist_version = ConnectomistWrapper._connectomist_version_check(
+if not args.report_only:
+    connectomist_version = ConnectomistWrapper._connectomist_version_check(
     connectomist_config)
+else:
+    connectomist_version = "NA"
 runtime = dict([(name, locals()[name])
                for name in ("connectomist_config", "tool", "tool_version",
                             "connectomist_version", "timestamp")])
