@@ -241,7 +241,7 @@ parser.add_argument(
 parser.add_argument(
     "-G", "--init-center-gravity", dest="init_center_gravity",
     action="store_true",
-    help=("Do not smooth the image before performing the histogram analysis."))
+    help=("initialize coefficients using the center of gravity."))
 parser.add_argument(
     "-S", "--nosmoothing", dest="no_smoothing", action="store_true",
     help=("Do not smooth the image before performing the histogram analysis."))
@@ -255,7 +255,7 @@ parser.add_argument(
 parser.add_argument(
     "-g", "--morphologist_dir", dest="morphologist_dir", required=True,
     metavar="PATH", type=is_directory,
-    help="initialize coefficients using the center of gravity..")
+    help="the path to the morphologist processings home directory.")
 parser.add_argument(
     "-Q", "--already_corrected", dest="already_corrected", action="store_true",
     help=("if activated, only the first three step are computed in order to "
@@ -332,6 +332,7 @@ apply_smoothing = not args.no_smoothing
 lower_theshold = args.lower_theshold
 similarity = args.similarity
 transform_type = args.transform_type
+init_center_gravity=args.init_center_gravity
 delete_steps = args.delete_steps
 morphologist_dir = args.morphologist_dir
 already_corrected = args.already_corrected
