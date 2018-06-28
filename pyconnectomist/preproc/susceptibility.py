@@ -330,7 +330,7 @@ def susceptibility_correction_wo_fieldmap(
     # Check in plane phase encoding direction
     # The sign of the phase encoding direction has no impact in this strategy
     # e.g. for "+y" or "-y" use "y"
-    possible_phase_enc_dirs = {"y", "x"}
+    possible_phase_enc_dirs = {"y", "x", "x-", "y-"}
     if phase_enc_dir not in possible_phase_enc_dirs:
         raise ValueError("Bad argument 'phase_enc_dir': {0}, should be in "
                          "{1}.".format(phase_enc_dir, possible_phase_enc_dirs))
