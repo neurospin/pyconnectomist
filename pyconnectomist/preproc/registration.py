@@ -103,7 +103,7 @@ def dwi_to_anatomy(
     parameters_dict = {
         "useCustomMorphologistDirectory": 2,
         "customMorphologistDirectory": subject_morphologist_dir,
-        "computeNormalization": 2,
+        "computeNormalization": 0,
         "dwToT1RegistrationParameter": {
             "applySmoothing": apply_smoothing,
             "floatingLowerThreshold": lower_theshold,
@@ -167,5 +167,16 @@ def dwi_to_anatomy(
     parameter_file = ConnectomistWrapper.create_parameter_file(
         algorithm, parameters_dict, outdir)
     connprocess(algorithm, parameter_file, outdir)
+
+    # Create expected morphologist outputs
+    brain_file = os.path.join(
+        morphologist_dir, subject_id, "t1mri", "default_acquisition",
+        "default_analysis", "segmentation", "brain_{0}.nii.gz".format(
+            subject_id))
+    inner_morphologist_dir = os.path.join(outdir, "Morphologist")
+    if not os.path.isdir(inner_morphologist_dir):
+        os.mkdir(inner_morphologist_dir)
+    dest_brain_file = os.path.join(inner_morphologist_dir, "brain_t1.ima")
+    ptk_nifti_to_gis(brain_file, dest_brain_file)
 
     return outdir

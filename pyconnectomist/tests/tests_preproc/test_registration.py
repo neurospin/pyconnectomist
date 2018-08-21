@@ -101,7 +101,7 @@ class ConnectomistRegistration(unittest.TestCase):
              "{0}.nii.gz".format(self.kwargs["subject_id"])],
             []]
         mock_path.isfile.side_effect = [True, True, False]
-        mock_path.isdir.return_value = False
+        mock_path.isdir.side_effect = [False, True]
         mock_params.return_value = "/my/path/mock_parameters"
         mock_path.join.side_effect = lambda *x: "/".join(x)
         mock_conversion.side_effect = lambda *x: x[-1]
@@ -120,7 +120,7 @@ class ConnectomistRegistration(unittest.TestCase):
                          mock_path.isfile.call_args_list)
         self.assertEqual([mock.call(self.kwargs["outdir"])],
                          mock_mkdir.call_args_list)
-        self.assertEqual(len(mock_conversion.call_args_list), 1)
+        self.assertEqual(len(mock_conversion.call_args_list), 2)
 
 
 if __name__ == "__main__":
