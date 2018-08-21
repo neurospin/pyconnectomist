@@ -247,6 +247,7 @@ parser.add_argument(
     help=("Do not smooth the image before performing the histogram analysis."))
 parser.add_argument(
     "-M", "--similarity", dest="similarity", choices=["mi", "norm_mi"],
+    default="mi",
     help="the eddy + motion correction similarity measure.")
 parser.add_argument(
     "-d", "--delete_steps", dest="delete_steps", action="store_true",
