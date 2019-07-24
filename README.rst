@@ -31,8 +31,3 @@ the Connectomist software developped by the
 It is meant to be run as part of a research collaboration or a charged
 service. For more information about its terms of use, please contact Cyril
 Poupon and Vincent Frouin.
-
-
-
-
-
